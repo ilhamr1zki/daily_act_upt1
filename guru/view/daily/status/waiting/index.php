@@ -4,8 +4,9 @@
     
   	$timeRunningOut = time() + 5;
 
-	$timeIsOut = 0;
-	$sesi      = 0;
+	$timeIsOut 	= 0;
+	$sesi      	= 0;
+	$groupOrStd = "";
 
 	// echo "Waktu Habis : " . $timeOut . " Waktu Berjalan : " . $timeRunningOut . "<br>";
 
@@ -39,30 +40,60 @@
 
 		// echo $_POST['judul'];exit;
 		$queryWaitingApprovedDaily = mysqli_query($con, "
-		    SELECT
-		    daily_siswa_approved.id as daily_id,
-		    daily_siswa_approved.from_nip as from_nip,
-		    guru.nama as nama_guru,
-		    admin.username as nama_user,
-		    siswa.nama as nama_siswa,
-		    daily_siswa_approved.status_approve as status,
-		    daily_siswa_approved.image as foto,
-		    daily_siswa_approved.title_daily as judul,
-		    daily_siswa_approved.isi_daily as isi_daily,
-		    daily_siswa_approved.tanggal_dibuat as tanggal_dibuat,
-		    daily_siswa_approved.tanggal_disetujui_atau_tidak as tanggal_disetujui_atau_tidak,
-		    daily_siswa_approved.stamp as created_date
-		    FROM 
-		    daily_siswa_approved 
-		    LEFT JOIN guru
-		    ON daily_siswa_approved.from_nip = guru.nip
-		    LEFT JOIN admin
-		    ON daily_siswa_approved.from_nip = admin.c_admin
-		    LEFT JOIN siswa
-		    ON daily_siswa_approved.nis_siswa = siswa.nis
-		    WHERE daily_siswa_approved.status_approve = 0
-		    AND daily_siswa_approved.from_nip = '$_SESSION[nip_guru]'
-  			ORDER BY daily_siswa_approved.tanggal_dibuat DESC
+		    SELECT *
+		    FROM (
+		      SELECT 
+		        daily_siswa_approved.id as daily_id,
+		        daily_siswa_approved.from_nip as from_nip,
+		        daily_siswa_approved.image as foto,
+		        daily_siswa_approved.isi_daily as isi_daily,
+		        daily_siswa_approved.nis_siswa as nis_or_id_group_kelas,
+		        daily_siswa_approved.title_daily as judul,
+		        daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		        daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		        daily_siswa_approved.status_approve AS status_approve,
+		        guru.nama as nama_guru,
+		        admin.username as nama_user,
+		        siswa.nama as nama_siswa_or_nama_group_kelas,
+		        ruang_pesan.room_key as room_key
+		      FROM daily_siswa_approved
+		      LEFT JOIN guru
+		        ON daily_siswa_approved.from_nip = guru.nip
+		        LEFT JOIN admin
+		        ON daily_siswa_approved.from_nip = admin.c_admin
+		        LEFT JOIN siswa
+		        ON daily_siswa_approved.nis_siswa = siswa.nis
+		        LEFT JOIN ruang_pesan
+		        ON ruang_pesan.daily_id = daily_siswa_approved.id
+		      UNION
+		      SELECT 
+		        group_siswa_approved.id as group_daily_id,
+		        group_siswa_approved.from_nip as from_nip,
+		        group_siswa_approved.image as foto,
+		        group_siswa_approved.isi_daily as isi_daily,
+		        group_siswa_approved.group_kelas_id as group_kelas_id,
+		        group_siswa_approved.title_daily as judul,
+		        group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		        group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		        group_siswa_approved.status_approve AS status_approve,
+		        guru.nama as nama_guru,
+		        admin.username as nama_user,
+		        group_kelas.nama_group_kelas as nama_group_kelas,
+		        ruang_pesan.room_key as room_key
+		      FROM group_siswa_approved
+		      LEFT JOIN guru
+		        ON group_siswa_approved.from_nip = guru.nip
+		        LEFT JOIN admin
+		        ON group_siswa_approved.from_nip = admin.c_admin
+		        LEFT JOIN group_kelas
+		        ON group_siswa_approved.group_kelas_id = group_kelas.id
+		        LEFT JOIN ruang_pesan
+		        ON ruang_pesan.daily_id = group_siswa_approved.id
+		      ) AS U
+		    WHERE 
+		      U.status_approve = 0
+		      AND U.from_nip = '$_SESSION[nip_guru]'
+		      ORDER BY U.tgl_dibuat DESC
   		");
 
   		$no = 1;
@@ -161,7 +192,7 @@
 		        <thead>
 		            <tr style="background-color: lightyellow;">
 		                <th style="text-align: center;" width="5%">NO</th>
-			          	<th style="text-align: center;"> SISWA </th>
+			          	<th style="text-align: center;"> DAILY </th>
 			          	<th style="text-align: center;"> JUDUL </th>
 			          	<th style="text-align: center;"> STATUS </th>
 			          	<th style="text-align: center;"> TANGGAL DIBUAT </th>
@@ -171,20 +202,55 @@
 		        	
 		        	<?php foreach ($queryWaitingApprovedDaily as $waiting_appr): ?>
 					      	
+		        		<?php  
+
+				        	$dailyID = $waiting_appr['daily_id'];
+
+				        	// Check Group ID
+				        	$queryCheckGroupID = mysqli_query($con, "
+				        		SELECT group_kelas_id FROM group_siswa_approved
+				        		WHERE id = '$dailyID'
+				        	");
+
+				        	// Check Student ID
+				        	$queryCheckStdID = mysqli_query($con, "
+				        		SELECT nis_siswa FROM daily_siswa_approved
+				        		WHERE id = '$dailyID'
+				        	");
+
+				        	$countQueryGroupID 	= mysqli_num_rows($queryCheckGroupID);
+				        	$countQueryStdID 	= mysqli_num_rows($queryCheckStdID);
+
+				        	if ($countQueryGroupID == 1) {
+				        		$groupOrStd = "group";
+				        	} else if ($countQueryStdID == 1) {
+				        		$groupOrStd = "student";
+				        	}
+
+
+				        ?>
+
 				      	<tr id="tr_dashboard" style="background-color: aqua;" onclick="showDataWaitAppr(
+				      		`<?= $groupOrStd; ?>`,
 					      	`<?= $waiting_appr['daily_id']; ?>`, 
 					      	`<?= strtoupper($waiting_appr['nama_guru']); ?>`, 
-					      	`<?= $waiting_appr['tanggal_dibuat']; ?>`, 
-					      	`<?= strtoupper($waiting_appr['nama_siswa']); ?>`,
+					      	`<?= $waiting_appr['tgl_dibuat']; ?>`, 
+					      	`<?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?>`,
 					      	`<?= $waiting_appr['foto']; ?>`,
 					      	`<?= $waiting_appr['judul']; ?>`,
 					      	`<?= $waiting_appr['isi_daily']; ?>`
 				      	)">
 					        <td style="text-align: center;"> <?= $no++; ?> </td>
-					        <td style="text-align: center;"> <?= strtoupper($waiting_appr['nama_siswa']); ?> </td>
+					        <td style="text-align: center;"> 
+					        	<?php if ($countQueryGroupID == 1): ?>
+					        		GROUP <?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?> 
+					        	<?php else: ?>
+					        		<?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?>
+					        	<?php endif ?>
+					        </td>
 					        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
 				        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
-					        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['created_date']); ?> </td>
+					        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['tgl_dibuat']); ?> </td>
 
 				      	</tr>
 
@@ -312,7 +378,7 @@
 
   // 	}
 
-  	function showDataWaitAppr(dailyID, from, dateposted, nm, photo, title, main) {
+  	function showDataWaitAppr(groupOrStd, dailyID, from, dateposted, nm, photo, title, main) {
 
 	 	$("#inpage-wt-appr").modal('show');
 
@@ -325,6 +391,14 @@
       	hgImage.setAttribute("src", `../image_uploads/${dataInPageImage}`);
       	let dataInPageTitle 	= title;
       	let dataInPageMain      = main;
+      	let grouporstd    		= groupOrStd;
+      	let labelstdgroup 		= $("#lbl_inpage_wtappr_std_or_gp").html();
+
+      	if (grouporstd == 'group') {
+	        $("#lbl_inpage_wtappr_std_or_gp").text('GROUP');
+      	} else {
+	        $("#lbl_inpage_wtappr_std_or_gp").text('STUDENT');
+      	}
 
       	$("#inpage_id_daily_waiiting_wt_appr").val(dataInPageDailyId);
       	$("#inpage_pengirim_wt_appr").val(dataInPageFrom);

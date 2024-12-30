@@ -1443,8 +1443,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="date_approved"> DATE APPROVE </label>
-                    <input type="text" id="date_approved" name="date_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="tanggal_upload_appr" name="tanggal_upload_appr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -1460,8 +1460,8 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="tanggal_upload_appr" name="tanggal_upload_appr" class="form-control">
+                    <label for="date_approved"> DATE APPROVE </label>
+                    <input type="text" id="date_approved" name="date_approved" readonly class="form-control">
                   </div>
                 </div>
 
@@ -1501,7 +1501,7 @@ oncontextmenu="return false">
         <form action="lookactivity" method="post">
           <input type="hidden" id="df_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="df_roomkey_lookdaily" name="roomkey_lookdaily">
-          <input type="hidden" id="df_nis_siswa_lookdaily" name="nis_lookdaily">
+          <input type="hidden" id="df_nis_or_idgroup_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="df_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
           <input type="hidden" id="df_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="df_nama_guru_lookdaily" name="guru_lookdaily">
@@ -2507,7 +2507,7 @@ oncontextmenu="return false">
               $("#siswa_daily_appr").val(dataSiswa);
               $("#df_lookdaily_appr").val(dataDailyId);
               $("#df_nama_guru_lookdaily").val(dataGuru);
-              $("#df_nis_siswa_lookdaily").val(dataNisSiswa);
+              $("#df_nis_or_idgroup_lookdaily").val(dataNisSiswa);
               $("#df_nama_siswa_lookdaily").val(dataSiswa);
               $("#df_foto_upload_lookdaily").val(dataImageAprr);
               $("#df_tgl_posting").val(dataTglAppr);
@@ -2708,7 +2708,7 @@ oncontextmenu="return false">
 //angka 500 dibawah ini artinya pesan akan muncul dalam 0,5 detik setelah document ready
 $(document).ready(function(){setTimeout(function(){$(".alert").fadeIn('fast');}, 100);});
 //angka 3000 dibawah ini artinya pesan akan hilang dalam 3 detik setelah muncul
-setTimeout(function(){$(".alert").fadeOut('fast');}, 3000);
+// setTimeout(function(){$(".alert").fadeOut('fast');}, 3000);
 </script>
 </body>
 </html>

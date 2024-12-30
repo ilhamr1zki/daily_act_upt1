@@ -219,9 +219,9 @@
       cursor: pointer;
     }
 
-    #date_approved {
+    /*#date_approved {
       width: 212px;
-    }
+    }*/
 
     #gambar {
       height: 100%;
@@ -866,16 +866,16 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="date_approved"> DATE APPROVE </label>
-                    <input type="text" id="date_approved" name="date_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="tanggal_upload_appr" name="tanggal_upload_appr" class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label> DATE POSTED </label>
-                <input type="text" readonly id="tanggal_upload_appr" name="tanggal_upload_appr" class="form-control">
+                <label for="date_approved"> DATE APPROVE </label>
+                <input type="text" id="date_approved" name="date_approved" readonly class="form-control">
               </div>
 
               <div class="form-group">
@@ -1296,7 +1296,7 @@ oncontextmenu="return false">
               </div>
 
               <div class="form-group">
-                <label for="inpage_siswa_daily_wt_appr">STUDENT</label>
+                <label for="inpage_siswa_daily_wt_appr" id="lbl_inpage_wtappr_std_or_gp">STUDENT</label>
                 <input type="text" id="inpage_siswa_daily_wt_appr" name="inpage_siswa_daily_wt_appr" readonly class="form-control">
               </div>
 

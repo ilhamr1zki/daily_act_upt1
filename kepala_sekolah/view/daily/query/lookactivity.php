@@ -4,14 +4,14 @@
     
   	$timeRunningOut = time() + 5;
 
-	$timeIsOut = 0;
-	$sesi      = 0;
-	$nama      = "";
-	$nis       = 0;
-	$guru      = "";
-	$key_room  = "";
-	$users     = "";
-	$sesiKomen = 1;
+	$timeIsOut 			= 0;
+	$sesi      			= 0;
+	$nama      			= "";
+	$nis_or_idgroup     = 0;
+	$guru      			= "";
+	$key_room  			= "";
+	$users     			= "";
+	$sesiKomen 			= 1;
 
 	$tglSkrngAwal 	= "";
 	$tglSkrngAkhir 	= "";
@@ -58,22 +58,22 @@
 
   		if (isset($_POST['krm'])) {
 
-	  		$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi        = $_POST['isi'];
-	  		$nipGuru    = $_POST['nipguru_lookdaily'];
-	  		$users      = $nipKepsek;
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nis_or_idgroup = htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi        	= $_POST['isi'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
+	  		$users      	= $nipKepsek;
 
 	  		date_default_timezone_set("Asia/Jakarta");
 			  
-		  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-		  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
 
 	  		$sesi 		= 1;
 
@@ -111,30 +111,50 @@
 
 		    $countDataChat = mysqli_num_rows($getDataKomenOther);
 
-		  	$fromPage   = $_POST['frompage'];
+		  	$fromPage   	= $_POST['frompage'];
 
-	  		$key_room   = $roomKey;
+	  		$key_room   	= $roomKey;
 	  		
 	  	} else if (isset($_POST['redirectLookDaily'])) {
 
-	  		$roomKey    = $_POST['roomkey_lookdaily'];
-	  		$nama 		= htmlspecialchars($_POST['nama_siswa_lookdaily']);
-	  		$nis        = htmlspecialchars($_POST['nis_lookdaily']);
-	  		$guru 		= htmlspecialchars($_POST['guru_lookdaily']);
-	  		$foto 		= $_POST['foto_upload_lookdaily'];
-	  		$tglPosting = $_POST['tgl_posting_lookdaily'];
-	  		$tglOri     = $_POST['tglori_posting_lookdaily'];
-	  		$judul      = htmlspecialchars($_POST['jdl_posting_lookdaily']);
-	  		$isi 		= $_POST['isi_posting_lookdaily'];
-	  		$nipGuru    = $_POST['nipguru_lookdaily'];
-	  		$users      = $nipKepsek;
+	  		$roomKey    	= $_POST['roomkey_lookdaily'];
+	  		$nama 			= htmlspecialchars($_POST['nama_siswa_lookdaily']);
 
-	  		$sesi 		= 1;
+	  		$nis_or_idgroup = htmlspecialchars($_POST['nis_or_idgroup_lookdaily']);
+
+	  		// Check Nis Or ID Group
+	  		$queryCheckNis = mysqli_query($con, "
+	  			SELECT nis FROM siswa WHERE nis = '$nis_or_idgroup'
+	  		");
+
+	  		$queryCheckIdGroup = mysqli_query($con, "
+	  			SELECT id FROM group_kelas WHERE id = '$nis_or_idgroup'
+	  		");
+
+	  		$countCheckNis 		= mysqli_num_rows($queryCheckNis);
+	  		$countCheckIDGroup 	= mysqli_num_rows($queryCheckIdGroup);
+
+	  		if ($countCheckIDGroup == 1) {
+
+	  			$nama = 'GROUP ' . $nama;
+
+	  		}
+
+	  		$guru 			= htmlspecialchars($_POST['guru_lookdaily']);
+	  		$foto 			= $_POST['foto_upload_lookdaily'];
+	  		$tglPosting 	= $_POST['tgl_posting_lookdaily'];
+	  		$tglOri     	= $_POST['tglori_posting_lookdaily'];
+	  		$judul      	= htmlspecialchars($_POST['jdl_posting_lookdaily']);
+	  		$isi 			= $_POST['isi_posting_lookdaily'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
+	  		$users      	= $nipKepsek;
+
+	  		$sesi 			= 1;
 
 	  		date_default_timezone_set("Asia/Jakarta");
 			  
-		  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-		  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
 
 		  	if ($tglOri < $tglSkrngAwal) {
 		  		$sesiKomen = 0;
@@ -175,21 +195,21 @@
 
 	  	} elseif (isset($_POST['send_mssg'])) {
 
-	  		$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi   		= $_POST['isi'];
-	  		$users      = $nipKepsek;
-	  		$nipGuru    = $_POST['nipguru_lookdaily'];
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nis_or_idgroup = htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi   			= $_POST['isi'];
+	  		$users      	= $nipKepsek;
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
 
-	  		$fromPage   = $_POST['frompage'];
+	  		$fromPage   	= $_POST['frompage'];
 
-	  		$isKomen    = mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
+	  		$isKomen    	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
 
 	  		if ($isKomen == null) {
 
@@ -358,7 +378,7 @@
 			    	<form action="lookactivity" method="post">
 			    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
 			    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-			        	<input type="hidden" name="nis" value="<?= $nis; ?>">
+			        	<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
 			        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
 			        	<input type="hidden" name="foto" value="<?= $foto; ?>">
@@ -428,7 +448,7 @@
 							          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							        </div>
 
-							    <?php elseif($data['fromnip'] == $nis): ?>
+							    <?php elseif($data['fromnip'] == $nis_or_idgroup): ?>
 
 							    	<div class="direct-chat-msg">
 							         	<div class="direct-chat-info clearfix">
@@ -459,7 +479,7 @@
 			            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
 			            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
 			            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-				        	<input type="hidden" name="nis" value="<?= $nis; ?>">
+				        	<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 				        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
 				        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
 				        	<input type="hidden" name="foto" value="<?= $foto; ?>">
@@ -490,7 +510,7 @@
 						
 						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -499,7 +519,7 @@
 
 						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -517,7 +537,7 @@
 
 						<form action="<?= $basegu; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -526,7 +546,7 @@
 
 						<form action="teachercreatedaily" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -548,7 +568,7 @@
 		          <div style="display: none;" class="alert alert-danger alert-dismissable"> Tidak Ada Data Yang Di Kirim! 
 		             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		             <?php 
-		             	$nis = 0;
+		             	$nis_or_idgroup = 0;
 		             	unset($_SESSION['data']);
 		             ?>
 		          </div>
@@ -564,7 +584,7 @@
 	let rooms 		= `<?= $key_room; ?>`
 	let nip_guru   	= `<?= $nipGuru; ?>`
 	let komenSes 	= `<?= $sesiKomen; ?>`
-	let nis_siswa   = `<?= $nis; ?>`
+	let nis_siswa   = `<?= $nis_or_idgroup; ?>`
 	let emptyKomen  = `<?= $empty; ?>`
 
 	// if(localStorage.getItem("showpopup") == "tidak") {
@@ -653,7 +673,7 @@
 
 		}
 
-	    if (`<?= $nis; ?>` == 0) {
+	    if (`<?= $nis_or_idgroup; ?>` == 0) {
 			setTimeout(() => {
 				location.href = `<?= $basegu; ?>querydailystudent`
 			}, 1000);
