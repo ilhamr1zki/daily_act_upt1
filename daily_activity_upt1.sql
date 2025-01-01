@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 26, 2024 at 04:42 PM
+-- Generation Time: Jan 01, 2025 at 01:23 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.33
 
@@ -531,7 +531,8 @@ INSERT INTO `daily_siswa_approved` (`id`, `from_nip`, `nis_siswa`, `departemen`,
 (171, '2022097', '202402006', 'SD', 'Ju\'dul ARS\'YILA', '&lt;p&gt;Tes da&amp;#39;ta :&lt;/p&gt;\r\n\r\n&lt;ul&gt;\r\n	&lt;li&gt;dnasdasda&amp;#39;dasda&lt;/li&gt;\r\n	&lt;li&gt;djasdsada&amp;#39;da&lt;/li&gt;\r\n&lt;/ul&gt;\r\n', '676d1fc1b3e9c.jpeg', 0, '2024-12-26 16:20:01', NULL, '2024-12-26 16:20:01'),
 (172, '2022097', '201902001', 'SD', 'Ju\'dul NABI\'LAH ', '&lt;p&gt;kdmajdnajsdasdasd&amp;#39;asdasdasda&lt;/p&gt;\r\n', '676d359896fe8.jpg', 0, '2024-12-26 17:53:12', NULL, '2024-12-26 17:53:12'),
 (173, '2022097', '202402003', 'SD', 'BIMANTARA ju\'dul', '&lt;p&gt;dnasdasdas&amp;#39;dasda&lt;/p&gt;\r\n', '676d382357dcd.jpg', 0, '2024-12-26 18:04:03', NULL, '2024-12-26 18:04:03'),
-(174, '2022097', '202402007', 'SD', 'Ju\'dul KAM\'ILA', '&lt;p&gt;dasdas&amp;#39;dasdas&amp;#39;das&amp;#39;da&amp;#39;sda&lt;/p&gt;\r\n', '676d38707840d.jpg', 0, '2024-12-26 18:05:20', NULL, '2024-12-26 18:05:20');
+(174, '2022097', '202402007', 'SD', 'Ju\'dul KAM\'ILA', '&lt;p&gt;dasdas&amp;#39;dasdas&amp;#39;das&amp;#39;da&amp;#39;sda&lt;/p&gt;\r\n', '676d38707840d.jpg', 0, '2024-12-26 18:05:20', NULL, '2024-12-26 18:05:20'),
+(175, '2022097', '202202111', 'SD', 'Ju\'dul ADARA', '&lt;p&gt;LDMFKDSFDSF&lt;/p&gt;\r\n\r\n&lt;p&gt;SF&lt;/p&gt;\r\n\r\n&lt;p&gt;SDF&amp;#39;SDF&amp;#39;&lt;/p&gt;\r\n', '67727f8286963.jpeg', 1, '2024-12-30 18:09:54', '2024-12-30 18:13:17', '2024-12-30 18:13:17');
 
 -- --------------------------------------------------------
 
@@ -1306,7 +1307,9 @@ CREATE TABLE `group_siswa_approved` (
 INSERT INTO `group_siswa_approved` (`id`, `from_nip`, `group_kelas_id`, `departemen`, `title_daily`, `isi_daily`, `image`, `status_approve`, `tanggal_dibuat`, `tanggal_disetujui_atau_tidak`, `stamp`) VALUES
 ('groupkelas0002', '2022074', 9, 'PAUD', 'Judul Al-mursa\'lat', '&lt;p&gt;Tes&amp;#39;data untuk da&amp;#39;ily :&lt;/p&gt;\r\n\r\n&lt;ul&gt;\r\n	&lt;li&gt;adaodasd&amp;#39;asdas&lt;/li&gt;\r\n	&lt;li&gt;dasdasd&amp;#39;asdas&lt;/li&gt;\r\n	&lt;li&gt;dasdasd&amp;#39;asda&lt;/li&gt;\r\n&lt;/ul&gt;\r\n', '676d1ae5c7a43.jpeg', 0, '2024-12-26 15:59:17', NULL, '2024-12-26 15:59:17'),
 ('groupkelas0003', '2024118', 19, 'SD', 'Judul Untuk Group 3B', '&lt;p&gt;dnbsadhasdasd asdasd&amp;#39;asd&amp;#39;asd&amp;#39;adas&amp;#39;sadsa&lt;/p&gt;\r\n', '676d37d25895b.jpeg', 0, '2024-12-26 18:02:42', NULL, '2024-12-26 21:33:26'),
-('groupkelas0004', '2022070', 18, 'SD', 'Judul Untuk Group 3A', '&lt;p&gt;djasndasdasd&amp;#39;asdasdasd&lt;/p&gt;\r\n', '676d6ae95f285.jpg', 1, '2024-12-26 21:40:41', '2024-12-26 22:09:19', '2024-12-26 22:09:19');
+('groupkelas0004', '2022070', 18, 'SD', 'Judul Untuk Group 3A', '&lt;p&gt;djasndasdasd&amp;#39;asdasdasd&lt;/p&gt;\r\n', '676d6ae95f285.jpg', 1, '2024-12-26 21:40:41', '2024-12-26 22:09:19', '2024-12-26 22:09:19'),
+('groupkelas0005', '2022097', 19, 'SD', 'Judul Untuk Group 3B', '&lt;p&gt;skdnjasndjasdasdasd&amp;#39;sad&lt;/p&gt;\r\n', '677275f0b834d.jpeg', 0, '2024-12-30 17:29:04', NULL, '2024-12-30 17:29:04'),
+('groupkelas0006', '2022074', 5, 'PAUD', 'Judul Untuk Group Al-Buruuj', '&lt;p&gt;amkmakdmsdadaasd&amp;#39;a&lt;/p&gt;\r\n', '6772c4ff19966.jpeg', 1, '2024-12-30 23:06:23', '2024-12-30 23:07:37', '2024-12-30 23:07:37');
 
 -- --------------------------------------------------------
 
@@ -2049,7 +2052,7 @@ CREATE TABLE `penomoran_idgroupkelas` (
 --
 
 INSERT INTO `penomoran_idgroupkelas` (`kode`, `nourut`) VALUES
-('groupkelas', 4);
+('groupkelas', 6);
 
 -- --------------------------------------------------------
 
@@ -2153,7 +2156,9 @@ INSERT INTO `ruang_pesan` (`id`, `room_key`, `created_by`, `daily_id`, `room_ses
 (41, 'csWP3GaEj', '2022097', '166', 0, '2024-10-23 08:29:46'),
 (42, 'c867dWM4N', '2022097', '167', 0, '2024-12-23 08:53:28'),
 (43, 'S3DJ831AR', '2022097', '168', 0, '2024-12-24 08:23:06'),
-(45, 'yEaoJDVif', '2022070', 'groupkelas0004', 1, '2024-12-26 22:09:19');
+(45, 'yEaoJDVif', '2022070', 'groupkelas0004', 0, '2024-12-26 22:09:19'),
+(46, '6AsqZCyfG', '2022097', '175', 1, '2024-12-30 18:13:17'),
+(47, 'nXbjYyOI9', '2022074', 'groupkelas0006', 1, '2024-12-30 23:07:37');
 
 -- --------------------------------------------------------
 
@@ -4028,7 +4033,7 @@ ALTER TABLE `aplikasi`
 -- AUTO_INCREMENT for table `daily_siswa_approved`
 --
 ALTER TABLE `daily_siswa_approved`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=176;
 
 --
 -- AUTO_INCREMENT for table `data_murid_sd`
@@ -4088,7 +4093,7 @@ ALTER TABLE `reason`
 -- AUTO_INCREMENT for table `ruang_pesan`
 --
 ALTER TABLE `ruang_pesan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `tahun_ajaran`
