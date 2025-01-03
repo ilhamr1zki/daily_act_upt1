@@ -70,58 +70,140 @@
 
 	  		// echo $_POST['judul'];exit;
 			$queryWaitingApprovedDaily = mysqli_query($con, "
-			    SELECT
-			    daily_siswa_approved.from_nip as from_nip,
-			    daily_siswa_approved.id as daily_id,
-			    daily_siswa_approved.image as foto_upload,
-			    daily_siswa_approved.isi_daily as isi_daily,
-			    guru.nama as nama_guru,
-			    admin.username as nama_user,
-			    siswa.nama as nama_siswa,
-			    daily_siswa_approved.status_approve as status,
-			    daily_siswa_approved.title_daily as judul,
-			    daily_siswa_approved.tanggal_dibuat as created_date,
-			    daily_siswa_approved.tanggal_disetujui_atau_tidak as tanggal_disetujui_atau_tidak
-			    FROM 
-			    daily_siswa_approved 
-			    LEFT JOIN guru
-			    ON daily_siswa_approved.from_nip = guru.nip
-			    LEFT JOIN admin
-			    ON daily_siswa_approved.from_nip = admin.c_admin
-			    LEFT JOIN siswa
-			    ON daily_siswa_approved.nis_siswa = siswa.nis
-			    WHERE daily_siswa_approved.status_approve = 0
-			    AND daily_siswa_approved.departemen = 'SD'
-	  			ORDER BY daily_siswa_approved.tanggal_dibuat DESC
+			    SELECT *
+		        FROM (
+		          SELECT 
+		            daily_siswa_approved.id as daily_id,
+		            daily_siswa_approved.departemen as departemen,
+		            daily_siswa_approved.from_nip as from_nip,
+		            guru.username as username_guru,
+		            daily_siswa_approved.image as foto,
+		            daily_siswa_approved.isi_daily as isi_daily,
+		            daily_siswa_approved.nis_siswa as nis_or_id_group_kelas,
+		            daily_siswa_approved.title_daily as judul,
+		            daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		            daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		            daily_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+		            guru.nama as nama_guru,
+		            admin.username as nama_user,
+		            siswa.nama as nama_siswa_or_nama_group_kelas,
+		            ruang_pesan.room_key as room_key
+		          FROM daily_siswa_approved
+		          LEFT JOIN guru
+		            ON daily_siswa_approved.from_nip = guru.nip
+		            LEFT JOIN admin
+		            ON daily_siswa_approved.from_nip = admin.c_admin
+		            LEFT JOIN siswa
+		            ON daily_siswa_approved.nis_siswa = siswa.nis
+		            LEFT JOIN ruang_pesan
+		            ON ruang_pesan.daily_id = daily_siswa_approved.id
+		            LEFT JOIN reason
+		            ON reason.daily_siswa_id = daily_siswa_approved.id
+		          UNION
+		          SELECT 
+		            group_siswa_approved.id as group_daily_id,
+		            group_siswa_approved.departemen as departemen,
+		            group_siswa_approved.from_nip as from_nip,
+		            guru.username as username_guru,
+		            group_siswa_approved.image as foto,
+		            group_siswa_approved.isi_daily as isi_daily,
+		            group_siswa_approved.group_kelas_id as group_kelas_id,
+		            group_siswa_approved.title_daily as judul,
+		            group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		            group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		            group_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+		            guru.nama as nama_guru,
+		            admin.username as nama_user,
+		            group_kelas.nama_group_kelas as nama_group_kelas,
+		            ruang_pesan.room_key as room_key
+		          FROM group_siswa_approved
+		            LEFT JOIN guru
+		            ON group_siswa_approved.from_nip = guru.nip
+		            LEFT JOIN admin
+		            ON group_siswa_approved.from_nip = admin.c_admin
+		            LEFT JOIN group_kelas
+		            ON group_siswa_approved.group_kelas_id = group_kelas.id
+		            LEFT JOIN ruang_pesan
+		            ON ruang_pesan.daily_id = group_siswa_approved.id
+		            LEFT JOIN reason
+		            ON reason.daily_siswa_id = group_siswa_approved.id
+		         ) AS U
+		        WHERE 
+		          U.status_approve = 0
+		          AND U.departemen = 'SD'
+		          ORDER BY U.tgl_dibuat DESC
 	  		");
 
 	  	} else if ($foundDataPAUD == 1) {
 
 	  		// echo $_POST['judul'];exit;
 			$queryWaitingApprovedDaily = mysqli_query($con, "
-			    SELECT
-			    daily_siswa_approved.from_nip as from_nip,
-			    daily_siswa_approved.id as daily_id,
-			    daily_siswa_approved.image as foto_upload,
-			    daily_siswa_approved.isi_daily as isi_daily,
-			    guru.nama as nama_guru,
-			    admin.username as nama_user,
-			    siswa.nama as nama_siswa,
-			    daily_siswa_approved.status_approve as status,
-			    daily_siswa_approved.title_daily as judul,
-			    daily_siswa_approved.tanggal_dibuat as created_date,
-			    daily_siswa_approved.tanggal_disetujui_atau_tidak as tanggal_disetujui_atau_tidak
-			    FROM 
-			    daily_siswa_approved 
-			    LEFT JOIN guru
-			    ON daily_siswa_approved.from_nip = guru.nip
-			    LEFT JOIN admin
-			    ON daily_siswa_approved.from_nip = admin.c_admin
-			    LEFT JOIN siswa
-			    ON daily_siswa_approved.nis_siswa = siswa.nis
-			    WHERE daily_siswa_approved.status_approve = 0
-			    AND daily_siswa_approved.departemen = 'PAUD'
-	  			ORDER BY daily_siswa_approved.tanggal_dibuat DESC
+			    SELECT *
+		        FROM (
+		          SELECT 
+		            daily_siswa_approved.id as daily_id,
+		            daily_siswa_approved.departemen as departemen,
+		            daily_siswa_approved.from_nip as from_nip,
+		            guru.username as username_guru,
+		            daily_siswa_approved.image as foto,
+		            daily_siswa_approved.isi_daily as isi_daily,
+		            daily_siswa_approved.nis_siswa as nis_or_id_group_kelas,
+		            daily_siswa_approved.title_daily as judul,
+		            daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		            daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		            daily_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+		            guru.nama as nama_guru,
+		            admin.username as nama_user,
+		            siswa.nama as nama_siswa_or_nama_group_kelas,
+		            ruang_pesan.room_key as room_key
+		          FROM daily_siswa_approved
+		          LEFT JOIN guru
+		            ON daily_siswa_approved.from_nip = guru.nip
+		            LEFT JOIN admin
+		            ON daily_siswa_approved.from_nip = admin.c_admin
+		            LEFT JOIN siswa
+		            ON daily_siswa_approved.nis_siswa = siswa.nis
+		            LEFT JOIN ruang_pesan
+		            ON ruang_pesan.daily_id = daily_siswa_approved.id
+		            LEFT JOIN reason
+		            ON reason.daily_siswa_id = daily_siswa_approved.id
+		          UNION
+		          SELECT 
+		            group_siswa_approved.id as group_daily_id,
+		            group_siswa_approved.departemen as departemen,
+		            group_siswa_approved.from_nip as from_nip,
+		            guru.username as username_guru,
+		            group_siswa_approved.image as foto,
+		            group_siswa_approved.isi_daily as isi_daily,
+		            group_siswa_approved.group_kelas_id as group_kelas_id,
+		            group_siswa_approved.title_daily as judul,
+		            group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		            group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+		            group_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+		            guru.nama as nama_guru,
+		            admin.username as nama_user,
+		            group_kelas.nama_group_kelas as nama_group_kelas,
+		            ruang_pesan.room_key as room_key
+		          FROM group_siswa_approved
+		            LEFT JOIN guru
+		            ON group_siswa_approved.from_nip = guru.nip
+		            LEFT JOIN admin
+		            ON group_siswa_approved.from_nip = admin.c_admin
+		            LEFT JOIN group_kelas
+		            ON group_siswa_approved.group_kelas_id = group_kelas.id
+		            LEFT JOIN ruang_pesan
+		            ON ruang_pesan.daily_id = group_siswa_approved.id
+		            LEFT JOIN reason
+		            ON reason.daily_siswa_id = group_siswa_approved.id
+		         ) AS U
+		        WHERE 
+		          U.status_approve = 0
+		          AND U.departemen = 'PAUD'
+		          ORDER BY U.tgl_dibuat DESC
 	  		");
 
 	  	}
@@ -156,7 +238,7 @@
 		            <tr style="background-color: lightyellow;">
 		                <th style="text-align: center; border: 1px solid black;" width="5%">NO</th>
 			          	<th style="text-align: center; border: 1px solid black;"> CREATED BY </th>
-			          	<th style="text-align: center; border: 1px solid black;"> STUDENT </th>
+			          	<th style="text-align: center; border: 1px solid black;"> DAILY </th>
 			          	<th style="text-align: center; border: 1px solid black;"> DAILY TITLE </th>
 			          	<th style="text-align: center; border: 1px solid black;"> CREATED DATE </th>
 			          	<th style="text-align: center; border: 1px solid black;"> STATUS </th>
@@ -165,26 +247,77 @@
 		        <tbody>
 		        	
 		        	<?php foreach ($queryWaitingApprovedDaily as $waiting_appr): ?>
-					      	
-				      	<tr id="inpage_wtappr" style="background-color: aqua;" onclick="showDataWaitAppr(
-				      		`<?= $waiting_appr['daily_id']; ?>`,
-				      		`<?= $waiting_appr['status']; ?>`,
-				      		`<?= $waiting_appr['nama_guru']; ?>`,
-				      		`<?= $waiting_appr['created_date']; ?>`,
-				      		`<?= $waiting_appr['tanggal_disetujui_atau_tidak']; ?>`,
-				      		`<?= $waiting_appr['foto_upload']; ?>`,
-				      		`<?= strtoupper($waiting_appr['nama_siswa']); ?>`,
-				      		`<?= $waiting_appr['judul']; ?>`,
-				      		`<?= $waiting_appr['isi_daily']; ?>`
-				      	)">
-					        <td style="text-align: center;"> <?= $no++; ?> </td>
-					        <td style="text-align: center;"> <?= $waiting_appr['nama_guru'] ?> </td>
-					        <td style="text-align: center;"> <?= strtoupper($waiting_appr['nama_siswa']); ?> </td>
-					        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
-					        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['created_date']); ?> </td>
-				        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
 
-				      	</tr>
+		        		<?php  
+
+			      			$nisOrGroupID = $waiting_appr['nis_or_id_group_kelas'];
+			      			// echo $nisOrGroupID;exit;
+
+			      			// Check Group Id
+			      			$queryCheckDataIdGroup = mysqli_query($con, "
+			      				SELECT id FROM group_kelas WHERE id = '$nisOrGroupID'
+			      			");
+
+			      			// Check Nis
+			      			$queryCheckDataNIS = mysqli_query($con, "
+			      				SELECT nama FROM siswa WHERE nis = '$nisOrGroupID'
+			      			");
+
+			      			$countIdGroup 	= mysqli_num_rows($queryCheckDataIdGroup);
+
+			      			// echo $countIdGroup;exit;
+
+			      			$countNis 		= mysqli_num_rows($queryCheckDataNIS);
+
+			      		?>
+
+			      		<?php if ($countIdGroup == 1): ?>
+
+			      			<tr id="inpage_wtappr" style="background-color: aqua;" onclick="showDataWaitAppr(
+					      		`group`,
+					      		`<?= $waiting_appr['daily_id']; ?>`,
+					      		`<?= $waiting_appr['status_approve']; ?>`,
+					      		`<?= $waiting_appr['nama_guru']; ?>`,
+					      		`<?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?>`,
+					      		`<?= $waiting_appr['tgl_disetujui']; ?>`,
+					      		`<?= $waiting_appr['foto']; ?>`,
+					      		`<?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?>`,
+					      		`<?= $waiting_appr['judul']; ?>`,
+					      		`<?= $waiting_appr['isi_daily']; ?>`
+					      	)">
+						        <td style="text-align: center;"> <?= $no++; ?> </td>
+						        <td style="text-align: center;"> <?= $waiting_appr['nama_guru'] ?> </td>
+						        <td style="text-align: center;"> GROUP <?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?> </td>
+						        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
+						        <td style="text-align: center;"> <?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?> </td>
+					        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
+
+					      	</tr>
+
+			      		<?php elseif($countNis == 1): ?>
+
+			      			<tr id="inpage_wtappr" style="background-color: aqua;" onclick="showDataWaitAppr(
+					      		`std`,
+					      		`<?= $waiting_appr['daily_id']; ?>`,
+					      		`<?= $waiting_appr['status_approve']; ?>`,
+					      		`<?= $waiting_appr['nama_guru']; ?>`,
+					      		`<?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?>`,
+					      		`<?= $waiting_appr['tgl_disetujui']; ?>`,
+					      		`<?= $waiting_appr['foto']; ?>`,
+					      		`<?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?>`,
+					      		`<?= $waiting_appr['judul']; ?>`,
+					      		`<?= $waiting_appr['isi_daily']; ?>`
+					      	)">
+						        <td style="text-align: center;"> <?= $no++; ?> </td>
+						        <td style="text-align: center;"> <?= $waiting_appr['nama_guru'] ?> </td>
+						        <td style="text-align: center;"> <?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?> </td>
+						        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
+						        <td style="text-align: center;"> <?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?> </td>
+					        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
+
+					      	</tr>
+			      			
+			      		<?php endif ?>
 
 				      <?php endforeach ?>
 		            
@@ -203,7 +336,9 @@
 
 <script type="text/javascript">
 
-	function showDataWaitAppr(dailyID, stat, from, datePosted, dateAppr, imgUpload, siswa, title, main) {
+	function showDataWaitAppr(stdOrGroup, dailyID, stat, from, datePosted, dateAppr, imgUpload, siswa, title, main) {
+
+		grouporstd = stdOrGroup;
 
 		$("#inpage-wt-appr").modal('show');
 		let dataHgDailyId   = dailyID;
@@ -215,6 +350,12 @@
       	let dataHgDaily     = main;
 
       	let hgImage     = document.querySelector("img[id='inpage_foto_upload_wt_appr']");
+
+      	if (grouporstd == "group") {
+      		$("#lbl_std_or_gp_inpage_wtappr").text("GROUP");
+      	} else if (grouporstd == "std") {
+      		$("#lbl_std_or_gp_inpage_wtappr").text("STUDENT");
+      	}
 
       	$("#inpage_save_notappr_wt_appr").hide();
       	$(".inpage_reason").hide();

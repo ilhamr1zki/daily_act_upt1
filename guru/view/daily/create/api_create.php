@@ -119,11 +119,18 @@
 
 			  				$tglSkrng       = date("Y-m-d H:i:s");
 
-							move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
+							$fileBaruKepsek = $namaFileBaru;
+
+							// move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
+
+							if(move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru)){
+
+			  					// echo "KESINI";exit;
+							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
+							    //and so on...
+							}
 
 							if ($isDepartemenSD == 1) {
-
-								// echo "SD";exit;
 
 								$createRoomChatStd = mysqli_query($con, "
 									INSERT INTO daily_siswa_approved 
@@ -147,8 +154,6 @@
 								}
 
 							} else if ($isDepartemenPAUD == 1) {
-								
-								// echo "PAUD";exit;
 
 								$createRoomChatStd = mysqli_query($con, "
 									INSERT INTO daily_siswa_approved 
@@ -288,14 +293,25 @@
 							$namaFileBaru 	= uniqid();
 							$namaFileBaru  .= '.';
 							$namaFileBaru  .= $ekstensiGambar;
+							
+							$fileBaruKepsek = $namaFileBaru;
 
 							date_default_timezone_set("Asia/Jakarta");
 
 			  				$tglSkrng       = date("Y-m-d H:i:s");
 
-							move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
+							// move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
+
+			  				if(move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru)){
+
+			  					// echo "KESINI";exit;
+							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
+							    //and so on...
+							}
 
 							if ($isDepartemenSD == 1) {
+								
+								move_uploaded_file($tmpName, '../../../../kepala_sekolah/image_uploads/' . $namaFileBaru);
 
 								// echo "SD";exit;
 								$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoran_idgroupkelas where kode='groupkelas' limit 1 "));

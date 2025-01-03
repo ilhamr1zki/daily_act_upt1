@@ -100,10 +100,10 @@
         <?php foreach($dataAllTeacher as $tc) : ?>
           <tr>
             <td style="text-align: center;"> <?= $no++; ?> </td>
-            <td style="text-align: center;"> <?= strtoupper($tc['nama']); ?> </td>
+            <td style="text-align: center;"> <?= str_replace([", S.PD"], "", strtoupper($tc['nama'])); ?> </td>
             <td style="text-align: center;"> <?= str_replace(["_"], " ", strtoupper($tc['c_jabatan'])); ?> </td>
             <td style="text-align: center;"> 
-              <form action="createstudentdaily" method="post">
+              <form action="createdailybyteacher" method="post">
                 <input type="hidden" name="nama_guru" value="<?= strtoupper($tc['nama']); ?>">
                 <input type="hidden" name="nip" value="<?= $tc['nip']; ?>">
                 <button type="submit" name="send_data_student" class="btn btn-sm btn-primary"> LOOK </button>

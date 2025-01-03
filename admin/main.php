@@ -93,6 +93,8 @@
   <link rel="stylesheet" href="<?= $base; ?>theme/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?= $base; ?>theme/bower_components/font-awesome/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Ionicons -->
   <!-- <link rel="stylesheet" href="<?= $base; ?>theme/bower_components/Ionicons/css/ionicons.min.css"> -->
   <!-- Theme style -->
@@ -881,12 +883,12 @@ oncontextmenu="return false">
         </li>
 
         <li>
-          <a href="<?= $basead; ?>students" id="students"><i style="color: white;" class="glyphicon glyphicon-user"></i> <span id="addst"> STUDENTS </span> </a>
+          <a href="<?= $basead; ?>students" id="students"><i style="color: white;" class="fa-classic fa-solid fa-user-graduate fa-fw"></i> <span id="addst" style="margin-left: 2px;"> STUDENTS </span> </a>
         </li>
 
         <li>
           <a href="#" id="list_student">
-            <i class="glyphicon glyphicon-user"></i> <span> GROUP CLASS </span>
+            <i class="fa-solid fa-users"></i> <span style="margin-left: 2px;"> GROUP CLASS </span>
           </a>
           <ul class="treeview-menu">
             

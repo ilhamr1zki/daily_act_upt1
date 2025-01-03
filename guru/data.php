@@ -219,22 +219,22 @@
   $elementNotifWaiting      = '';
 
   // Array Penampung Data Sudah di Approve
-  $tampungDataTglUploadOri      = [];
-  $tampungDataRoomKey           = [];
-  $tampungDataID_sdhAppr        = [];
-  $tampungDataNIP_sdhAppr       = [];
-  $tampungDataSiswa_blmAppr     = [];
-  $tampungDataNis_siswa_sdhAppr = [];
-  $tampungDataSiswa_sdhAppr     = [];
-  $tampungDataPengirim_sdhAppr  = [];
-  $tampungDataTglDisetujui      = [];
-  $tampungDataTglDiUpload       = [];
-  $tampungDataJamDiUpload       = [];
-  $tampungDataJamDisetujui      = [];
-  $tampungDataImage_sdhAppr     = [];
-  $tampungDataJudul_sdhAppr     = [];
-  $tampungDataIsi_sdhAppr       = [];
-  $elementNotifAppr             = '';
+  $tampungDataTglUploadOri          = [];
+  $tampungDataRoomKey               = [];
+  $tampungDataID_sdhAppr            = [];
+  $tampungDataNIP_sdhAppr           = [];
+  $tampungDataSiswa_blmAppr         = [];
+  $tampungDataNisOrIdGroup_sdhAppr  = [];
+  $tampungDataSiswa_sdhAppr         = [];
+  $tampungDataPengirim_sdhAppr      = [];
+  $tampungDataTglDisetujui          = [];
+  $tampungDataTglDiUpload           = [];
+  $tampungDataJamDiUpload           = [];
+  $tampungDataJamDisetujui          = [];
+  $tampungDataImage_sdhAppr         = [];
+  $tampungDataJudul_sdhAppr         = [];
+  $tampungDataIsi_sdhAppr           = [];
+  $elementNotifAppr                 = '';
   // Akhir Array Penampung Data Sudah di Approve
 
   // Array Penampung Data Tidak di Approve
@@ -728,7 +728,7 @@
       $tampungDataRoomKey[]           = $data_appr['room_key'];
       $tampungDataID_sdhAppr[]        = $data_appr['daily_id'];
       $tampungDataNIP_sdhAppr[]       = $data_appr['from_nip'];
-      $tampungDataNis_siswa_sdhAppr[] = $data_appr['nis_or_id_group_kelas'];
+      $tampungDataNisOrIdGroup_sdhAppr[] = $data_appr['nis_or_id_group_kelas'];
       $tampungDataSiswa_sdhAppr[]     = strtoupper($data_appr['nama_siswa_or_nama_group_kelas']);
       $tampungDataPengirim_sdhAppr[]  = $data_appr['nama_guru'];
       $tampungDataTglDiUpload[]       = substr($data_appr['tgl_dibuat'], 0, 11);
@@ -752,11 +752,12 @@
         $isiPesanNamaSiswa      = "";
         $isiPesan               = "";
         
-        $semuaNamaSiswa = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
-        $semuaPesan = strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
+        $semuaNisOrIdGroup  = $tampungDataNisOrIdGroup_sdhAppr[$i];
+        $semuaNamaSiswa     = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
+        $semuaPesan         = strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
 
         $forIsiNotifSdhAppr .= '
-          <li class="apprlist" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDiUpload[$i]) . " " . $tampungDataJamDiUpload[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+          <li class="apprlist" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDiUpload[$i]) . " " . $tampungDataJamDiUpload[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
             <a href="#">
               <h4 style="font-size: 12px;">
                 <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -794,11 +795,26 @@
         $isiPesanNamaSiswa      = "";
         $isiPesan               = "";
         
-        $semuaNamaSiswa = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
-        $semuaPesan = strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
+        $semuaNisOrIdGroup  = $tampungDataNisOrIdGroup_sdhAppr[$i];
+        $semuaNamaSiswa     = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
+        $semuaPesan         = strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
+
+        // Check Nis Or Id Group
+        $queryCheckNis = mysqli_query($con, "
+          SELECT nama FROM siswa
+          WHERE nis = '$semuaNisOrIdGroup'
+        ");
+
+        $queryCheckIdGroup = mysqli_query($con, "
+          SELECT nama_group_kelas FROM group_kelas
+          WHERE id = '$semuaNisOrIdGroup'
+        ");
+
+        $countCheckNis      = mysqli_num_rows($queryCheckNis);
+        $countCheckIdGroup  = mysqli_num_rows($queryCheckIdGroup);
 
         $forIsiNotifSdhAppr .= '
-          <li class="apprlist" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDiUpload[$i]) . " " . $tampungDataJamDiUpload[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+          <li class="apprlist" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDiUpload[$i]) . " " . $tampungDataJamDiUpload[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
             <a href="#">
               <h4 style="font-size: 12px;">
                 <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>

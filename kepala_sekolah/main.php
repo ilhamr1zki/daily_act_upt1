@@ -877,8 +877,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="date_approved"> DATE APPROVE </label>
-                    <input type="text" id="hg_date_appr" name="date_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="hg_tanggal_upload_appr" name="hg_tanggal_upload_appr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -894,15 +894,15 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="hg_tanggal_upload_appr" name="hg_tanggal_upload_appr" class="form-control">
+                    <label for="date_approved"> DATE APPROVE </label>
+                    <input type="text" id="hg_date_appr" name="date_approved" readonly class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label for="hg_siswa_daily_appr"> STUDENT </label>
+                <label for="hg_siswa_daily_appr" id="lbl_std_or_gp_hg_appr"> STUDENT </label>
                 <input type="text" id="hg_siswa_daily_appr" name="hg_siswa_daily_appr" readonly class="form-control">
               </div>
 
@@ -937,7 +937,7 @@ oncontextmenu="return false">
           <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="hg_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily">
-          <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_lookdaily">
+          <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
           <input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="hg_tgl_posting_lookdaily" name="tgl_posting_lookdaily">
@@ -977,8 +977,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="hg_date_not_approved"> DATE NOT APPROVE </label>
-                    <input type="text" id="hg_date_not_approved" name="hg_date_not_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="hg_tanggal_upload_notappr" name="hg_tanggal_upload_notappr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -994,15 +994,15 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="hg_tanggal_upload_notappr" name="hg_tanggal_upload_notappr" class="form-control">
+                    <label for="hg_date_not_approved"> DATE NOT APPROVE </label>
+                    <input type="text" id="hg_date_not_approved" name="hg_date_not_approved" readonly class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label for="hg_siswa_daily_notappr">STUDENT</label>
+                <label for="hg_siswa_daily_notappr" id="lbl_std_or_gp_hg_noappr">STUDENT</label>
                 <input type="text" id="hg_siswa_daily_notappr" name="hg_siswa_daily_notappr" readonly class="form-control">
               </div>
 
@@ -1090,7 +1090,7 @@ oncontextmenu="return false">
               </div>
 
               <div class="form-group">
-                <label for="hightlight_siswa_daily">STUDENT</label>
+                <label for="hightlight_siswa_daily" id="lbl_std_or_gp_hg_wtappr">STUDENT</label>
                 <input type="text" id="hightlight_siswa_daily" name="hightlight_siswa_daily" readonly class="form-control">
               </div>
 
@@ -1180,7 +1180,7 @@ oncontextmenu="return false">
               </div>
 
               <div class="form-group">
-                <label for="inpage_siswa_daily_wt_appr">STUDENT</label>
+                <label for="inpage_siswa_daily_wt_appr" id="lbl_std_or_gp_inpage_wtappr">STUDENT</label>
                 <input type="text" id="inpage_siswa_daily_wt_appr" name="inpage_siswa_daily_wt_appr" readonly class="form-control">
               </div>
 
@@ -1251,8 +1251,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="inpage_date_approved"> DATE APPROVE </label>
-                    <input type="text" id="inpage_date_approved" name="inpage_date_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="inpage_tanggal_upload_appr" name="inpage_tanggal_upload_appr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -1268,15 +1268,15 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="inpage_tanggal_upload_appr" name="inpage_tanggal_upload_appr" class="form-control">
+                    <label for="inpage_date_approved"> DATE APPROVE </label>
+                    <input type="text" id="inpage_date_approved" name="inpage_date_approved" readonly class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label for="inpage_siswa_daily_appr">STUDENT</label>
+                <label for="inpage_siswa_daily_appr" id="lbl_std_or_gp_inpage_appr">STUDENT</label>
                 <input type="text" id="inpage_siswa_daily_appr" name="inpage_siswa_daily_appr" readonly class="form-control">
               </div>
 
@@ -1312,7 +1312,7 @@ oncontextmenu="return false">
           <input type="hidden" id="inpage_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="inpage_nama_guru_lookdaily" name="guru_lookdaily">
           <input type="hidden" id="inpage_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
-          <input type="hidden" id="inpage_nis_siswa_lookdaily" name="nis_lookdaily">
+          <input type="hidden" id="inpage_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="inpage_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="inpage_tgl_posting_lookdaily" name="tgl_posting_lookdaily">
           <input type="hidden" id="inpage_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
@@ -1350,8 +1350,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="inpage_date_not_approved"> DATE NOT APPROVE </label>
-                    <input type="text" id="inpage_date_not_approved" name="inpage_date_not_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="inpage_tanggal_upload_notappr" name="inpage_tanggal_upload_notappr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -1367,15 +1367,15 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="inpage_tanggal_upload_notappr" name="inpage_tanggal_upload_notappr" class="form-control">
+                    <label for="inpage_date_not_approved"> DATE NOT APPROVE </label>
+                    <input type="text" id="inpage_date_not_approved" name="inpage_date_not_approved" readonly class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label for="inpage_siswa_daily_notappr">STUDENT</label>
+                <label for="inpage_siswa_daily_notappr" id="lbl_std_or_gp_inpage_notappr">STUDENT</label>
                 <input type="text" id="inpage_siswa_daily_notappr" name="inpage_siswa_daily_notappr" readonly class="form-control">
               </div>
 
@@ -1543,8 +1543,8 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="date_not_approved"> DATE NOT APPROVE </label>
-                    <input type="text" id="date_not_approved" name="date_not_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="tanggal_upload_notappr" name="tanggal_upload_notappr" class="form-control">
                   </div>
                 </div>
               </div>
@@ -1560,15 +1560,15 @@ oncontextmenu="return false">
 
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label> DATE POSTED </label>
-                    <input type="text" readonly id="tanggal_upload_notappr" name="tanggal_upload_notappr" class="form-control">
+                    <label for="date_not_approved"> DATE NOT APPROVE </label>
+                    <input type="text" id="date_not_approved" name="date_not_approved" readonly class="form-control">
                   </div>
                 </div>
 
               </div>
 
               <div class="form-group">
-                <label for="siswa_daily_notappr">STUDENT</label>
+                <label for="siswa_daily_notappr" id="lbl_std_or_gp_df_notappr">STUDENT</label>
                 <input type="text" id="siswa_daily_notappr" name="siswa_daily_notappr" readonly class="form-control">
               </div>
 
@@ -1817,23 +1817,6 @@ oncontextmenu="return false">
               <a href="<?= $basekepsek; ?>listgroup" id="menulistgroup"><i class="fa-solid fa-list" style="color: #337ab7;"></i> <span id="listgp" style="margin-left: 7px;"> List Group </span> </a>
             </li>
 
-            <li>
-              <a href="#">
-                <i class="glyphicon glyphicon-check text-primary"></i> <span id="isiList3"> Status </span>
-              </a>
-              <ul class="treeview-menu">
-                <li> 
-                  <a href="<?= $basekepsek; ?>status_waiting_approval" id="stat_wait"><i class="glyphicon glyphicon-hourglass text-primary"></i> <span style="margin-left: 7px;"> </span> Waiting Approval </a>
-                </li>
-                <li> 
-                  <a href="<?= $basekepsek; ?>status_approved" id="stat_appr"><i class="glyphicon glyphicon-thumbs-up text-primary"></i> <span style="margin-left: 7px;"> </span> Approved </a>
-                </li>
-                <li> 
-                  <a href="<?= $basekepsek; ?>status_not_approved" id="stat_not_appr"><i class="glyphicon glyphicon-thumbs-down text-primary"></i> <span style="margin-left: 7px;"> </span> Not Approved </a>
-                </li>
-              </ul>
-            </li>
-
           </ul>
         </li>
 
@@ -1920,13 +1903,17 @@ oncontextmenu="return false">
       require 'view/daily/query/teachercreatedaily.php';
     } elseif($act == 'lookactivity') {
       require 'view/daily/query/lookactivity.php';
-    } elseif($act == 'createstudentdaily') {
-      require 'view/daily/query/createstudentdaily.php';
+    } elseif($act == 'createdailybyteacher') {
+      require 'view/daily/query/createdailybyteacher.php';
     }
 
     #region group
     elseif ($act == 'listgroup') {
       require 'view/group/list/index.php';
+    }
+
+    elseif($act == 'groupclass') {
+      require 'view/group/anggota/index.php';
     }
 
     #region form maintenance
@@ -2538,8 +2525,15 @@ oncontextmenu="return false">
               let dataTitleAppr         = $(this).data('judul');
               let dataIsiAppr           = $(this).data('isian');
               let dataReason            = $(this).data('reason_daily');
+              let grouporstd            = $(this).data('group_or_std'); 
 
               let imageNotAppr          = document.querySelector("img[id='foto_upload_notappr']"); 
+
+              if (grouporstd == 'group') {
+                $("#lbl_std_or_gp_df_notappr").text('GROUP');
+              } else {
+                $("#lbl_std_or_gp_df_notappr").text('STUDENT');
+              }
 
               $("#date_not_approved").val(dataTglNotAppr);
               $("#pengirim_notappr").val(dataSender);
@@ -2635,6 +2629,8 @@ oncontextmenu="return false">
 
     $('#list_siswa').DataTable();
 
+    $("#listgroup_kp").DataTable();
+
     $('#list_status').DataTable({
       "paging": true,
       "lengthChange": true,
@@ -2659,6 +2655,15 @@ oncontextmenu="return false">
       "searching": true,
       "ordering": true,
       "info": false,
+      "autoWidth": false
+    });
+
+    $("#hightlight_list_anggota").DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
       "autoWidth": false
     });
 

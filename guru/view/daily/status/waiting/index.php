@@ -193,9 +193,9 @@
 		            <tr style="background-color: lightyellow;">
 		                <th style="text-align: center;" width="5%">NO</th>
 			          	<th style="text-align: center;"> DAILY </th>
-			          	<th style="text-align: center;"> JUDUL </th>
+			          	<th style="text-align: center;"> TITLE </th>
 			          	<th style="text-align: center;"> STATUS </th>
-			          	<th style="text-align: center;"> TANGGAL DIBUAT </th>
+			          	<th style="text-align: center;"> CREATED DATE </th>
 		            </tr>
 		        </thead>
 		        <tbody>

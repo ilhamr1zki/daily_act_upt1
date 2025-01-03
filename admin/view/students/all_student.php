@@ -554,8 +554,10 @@
 		
     let newIcon = document.getElementById("addIcon");
     newIcon.classList.remove("fa");
-    newIcon.classList.add("glyphicon");
-    newIcon.classList.add("glyphicon-user");
+    newIcon.classList.add("fa-classic");
+    newIcon.classList.add("fa-solid");
+    newIcon.classList.add("fa-user-graduate");
+    newIcon.classList.add("fa-fw");
 
     let getTitleList2 = document.getElementById('addst').innerHTML;
 

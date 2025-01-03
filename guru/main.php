@@ -395,8 +395,7 @@
 
     #tanggal_upload,
     #date_not_approved,
-    #hg_date_appr,
-    #hg_date_not_approved {
+    #hg_date_appr {
       width: 213px;
     }
 
@@ -1123,15 +1122,15 @@ oncontextmenu="return false">
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="hg_date_not_approved"> DATE NOT APPROVE </label>
-                    <input type="text" id="hg_date_not_approved" name="hg_date_not_approved" readonly class="form-control">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="hg_tanggal_upload_notappr" name="hg_tanggal_upload_notappr" class="form-control">
                   </div>
                 </div>
               </div>
 
               <div class="form-group">
-                <label> DATE POSTED </label>
-                <input type="text" readonly id="hg_tanggal_upload_notappr" name="hg_tanggal_upload_notappr" class="form-control">
+                <label for="hg_date_not_approved"> DATE NOT APPROVE </label>
+                <input type="text" id="hg_date_not_approved" name="hg_date_not_approved" readonly class="form-control">
               </div>
 
               <div class="form-group">

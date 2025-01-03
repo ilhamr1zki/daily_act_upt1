@@ -524,7 +524,7 @@
 			        	</form>
 						<br>
 
-					<?php elseif($fromPage == "createstudentdaily"): ?>
+					<?php elseif($fromPage == "createdailybyteacher"): ?>
 
 						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama_guru" value="<?= $guru; ?>">
@@ -544,7 +544,7 @@
 
 					<?php else: ?>
 
-						<form action="teachercreatedaily" method="post">
+						<form action="createdailybyteacher" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
 							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
