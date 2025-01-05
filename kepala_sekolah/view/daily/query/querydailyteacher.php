@@ -84,14 +84,14 @@
 <div class="box box-info">
   <div class="box-body table-responsive">
 
-    <table id="list_siswa" class="table table-bordered table-hover">
+    <table id="list_tc" class="table table-bordered table-hover">
       <thead>
-        <tr>
-          <th style="text-align: center;" width="5%">NO</th>
+        <tr style="background-color: lightyellow; font-weight: bold;">
+          <th style="text-align: center; border: 1px solid black;" width="5%">NO</th>
           <!-- <th style="text-align: center;">NIS</th> -->
-          <th style="text-align: center;">NAME</th>
-          <th style="text-align: center;">TEACHER</th>
-          <th style="text-align: center;">ACTION</th>
+          <th style="text-align: center; border: 1px solid black;">NAME</th>
+          <th style="text-align: center; border: 1px solid black;">TEACHER</th>
+          <th style="text-align: center; border: 1px solid black;">ACTION</th>
         </tr>
       </thead>
 

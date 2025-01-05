@@ -115,6 +115,65 @@
 
 	  		$key_room   	= $roomKey;
 	  		
+	  	} else if (isset($_POST['krm_group'])) {
+
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nis_or_idgroup = htmlspecialchars($_POST['id_group_approved']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi        	= $_POST['isi'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
+	  		$users      	= $nipKepsek;
+
+	  		date_default_timezone_set("Asia/Jakarta");
+			  
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
+
+	  		$sesi 		= 1;
+
+	  		if ($tglOri < $tglSkrngAwal) {
+		  		$sesiKomen = 0;
+		  	} else {
+		  		$sesiKomen = 1;
+		  	}
+
+		  	$getDataKomenOther = mysqli_query($con, "
+		      	SELECT 
+		      	tbl_komentar.room_id as r_id,
+		      	tbl_komentar.code_user as fromnip,
+		      	guru.nama as nama_guru,
+		      	kepala_sekolah.nama as nama_kepsek,
+		      	siswa.nama as nama_siswa,
+		      	tbl_komentar.stamp as tanggal_kirim,
+		      	tbl_komentar.isi_komentar as pesan
+		      	FROM 
+		      	tbl_komentar 
+		      	LEFT JOIN ruang_pesan
+		      	ON tbl_komentar.room_id = ruang_pesan.room_key
+		      	LEFT JOIN guru
+		      	ON tbl_komentar.code_user = guru.nip
+		      	LEFT JOIN kepala_sekolah
+		      	ON tbl_komentar.code_user = kepala_sekolah.nip
+		      	LEFT JOIN akses_otm
+		      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+		      	LEFT JOIN siswa
+		      	ON akses_otm.nis_siswa = siswa.nis
+		      	WHERE 
+		      	ruang_pesan.room_key LIKE '%$roomKey%'
+		      	ORDER BY tbl_komentar.id
+		    ");
+
+		    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+		  	$fromPage   	= $_POST['frompage'];
+
+	  		$key_room   	= $roomKey;
+	  		
 	  	} else if (isset($_POST['redirectLookDaily'])) {
 
 	  		$roomKey    	= $_POST['roomkey_lookdaily'];
@@ -506,6 +565,7 @@
 			<div class="row">
 				
 				<div class="col-md-3">
+
 					<?php if ($fromPage == "status_approved"): ?>
 						
 						<form action="<?= $fromPage; ?>" method="post">
@@ -536,6 +596,15 @@
 					<?php elseif($fromPage == "homepage"): ?>
 
 						<form action="<?= $basegu; ?>" method="post">
+							<input type="hidden" name="nama" value="<?= $nama; ?>">
+							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
+			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
+			        	</form>
+						<br>
+
+					<?php elseif($fromPage == "querydailygroup"): ?>
+
+						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
 							<input type="hidden" name="nis" value="<?= $nis_or_idgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
@@ -675,7 +744,7 @@
 
 	    if (`<?= $nis_or_idgroup; ?>` == 0) {
 			setTimeout(() => {
-				location.href = `<?= $basegu; ?>querydailystudent`
+				location.href = `<?= $basekepsek; ?>querydailygroup`
 			}, 1000);
 		} else {
 

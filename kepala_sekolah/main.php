@@ -1778,10 +1778,13 @@ oncontextmenu="return false">
               </a>
               <ul class="treeview-menu">
                 <li> 
-                  <a href="<?= $basekepsek; ?>querydailystudent" id="query_data_siswa"><i class="glyphicon glyphicon-zoom-in text-primary"></i> <span style="margin-left: 7px;"> </span> Student </a>
+                  <a href="<?= $basekepsek; ?>querydailystudent" id="query_data_siswa"><i class="fa fa-user text-primary" style="margin-left: 2.1px;"></i> <span style="margin-left: 4px;"> </span> Student </a>
                 </li>
                 <li> 
-                  <a href="<?= $basekepsek; ?>querydailyteacher" id="query_data_guru"><i class="glyphicon glyphicon-zoom-in text-primary"></i> <span style="margin-left: 7px;"> </span> Teacher </a>
+                  <a href="<?= $basekepsek; ?>querydailygroup" id="query_data_group"><i class="fa fa-users text-primary" style="margin-left: -1px;"></i> <span style="margin-left: 7px;"> </span> Group </a>
+                </li>
+                <li> 
+                  <a href="<?= $basekepsek; ?>querydailyteacher" id="query_data_guru"><i class="glyphicon glyphicon-zoom-in text-primary" style="margin-left: 1px;"></i> <span style="margin-left: 5px;"> </span> Teacher </a>
                 </li>
               </ul>
             </li>
@@ -1895,6 +1898,8 @@ oncontextmenu="return false">
       require 'view/daily/create/index.php';
     } elseif($act == 'querydailystudent') {
       require 'view/daily/query/querydailysiswa.php';
+    } elseif($act == 'querydailygroup') {
+      require 'view/daily/query/querydailygroup.php';
     } elseif($act == 'querydailyteacher') {
       require 'view/daily/query/querydailyteacher.php';
     } elseif($act == 'listdaily') {
@@ -1905,6 +1910,8 @@ oncontextmenu="return false">
       require 'view/daily/query/lookactivity.php';
     } elseif($act == 'createdailybyteacher') {
       require 'view/daily/query/createdailybyteacher.php';
+    } elseif($act == 'teachercreategroupdaily') {
+      require 'view/daily/query/teachercreategroupdaily.php';
     }
 
     #region group
@@ -2655,6 +2662,24 @@ oncontextmenu="return false">
       "searching": true,
       "ordering": true,
       "info": false,
+      "autoWidth": false
+    });
+
+    $("#list_group").DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false
+    });
+
+    $("#list_tc").DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
       "autoWidth": false
     });
 
