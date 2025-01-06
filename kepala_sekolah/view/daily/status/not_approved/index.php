@@ -288,7 +288,7 @@
 				        <td style="text-align: center;"> <?= $not_appr['nama_guru'] ?> </td>
 				        <td style="text-align: center;"> GROUP <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
 				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
-				        <td style="text-align: center;"> NOT APPROVE </td>
+				        <td style="text-align: center;"> NOT APPROVE <i class="glyphicon glyphicon-remove-sign"></i> </td>
 				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_dibuat']); ?> </td>
 				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
 
@@ -312,7 +312,7 @@
 				        <td style="text-align: center;"> <?= $not_appr['nama_guru'] ?> </td>
 				        <td style="text-align: center;"> <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
 				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
-				        <td style="text-align: center;"> NOT APPROVE </td>
+				        <td style="text-align: center;"> NOT APPROVE <i class="glyphicon glyphicon-remove-sign"></i> </td>
 				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_dibuat']); ?> </td>
 				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
 
