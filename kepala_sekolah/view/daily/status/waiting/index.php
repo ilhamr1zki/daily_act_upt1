@@ -289,8 +289,8 @@
 						        <td style="text-align: center;"> <?= $waiting_appr['nama_guru'] ?> </td>
 						        <td style="text-align: center;"> GROUP <?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?> </td>
 						        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
-						        <td style="text-align: center;"> <?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?> </td>
-					        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
+						        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['tgl_dibuat']); ?> </td>
+					        	<td style="text-align: center;"> WAITING <i class="glyphicon glyphicon-hourglass"></i> </td>
 
 					      	</tr>
 
@@ -312,8 +312,8 @@
 						        <td style="text-align: center;"> <?= $waiting_appr['nama_guru'] ?> </td>
 						        <td style="text-align: center;"> <?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?> </td>
 						        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
-						        <td style="text-align: center;"> <?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?> </td>
-					        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
+						        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['tgl_dibuat']); ?> </td>
+					        	<td style="text-align: center;"> WAITING <i class="glyphicon glyphicon-hourglass"></i> </td>
 
 					      	</tr>
 			      			

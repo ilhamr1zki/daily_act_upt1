@@ -12,7 +12,7 @@
 	function formatDateEnglish($date){  
 	  $tanggal_indo = date_create($date);
 	  date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
-	  $array_bulan = array(1=>'January','February','March', 'April', 'May', 'June','July','August','September','October', 'November','Desember');
+	  $array_bulan = array(1=>'January','February','March', 'April', 'May', 'June','July','August','September','October', 'November','December');
 	  $date = strtotime($date);
 	  $tanggal = date ('d', $date);
 	  $bulan = $array_bulan[date('n',$date)];
@@ -289,8 +289,8 @@
 				        <td style="text-align: center;"> GROUP <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
 				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
 				        <td style="text-align: center;"> NOT APPROVE </td>
-				        <td style="text-align: center;"> <?= format_tgl_indo_appr($not_appr['tgl_dibuat']); ?> </td>
-				        <td style="text-align: center;"> <?= format_tgl_indo_appr($not_appr['tgl_disetujui']); ?> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_dibuat']); ?> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
 
 			      	</tr>
 
@@ -313,8 +313,8 @@
 				        <td style="text-align: center;"> <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
 				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
 				        <td style="text-align: center;"> NOT APPROVE </td>
-				        <td style="text-align: center;"> <?= format_tgl_indo_appr($not_appr['tgl_dibuat']); ?> </td>
-				        <td style="text-align: center;"> <?= format_tgl_indo_appr($not_appr['tgl_disetujui']); ?> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_dibuat']); ?> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
 
 			      	</tr>
 	      			

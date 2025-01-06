@@ -88,8 +88,8 @@
 
   let newIcon = document.getElementById("addIcon");
   newIcon.classList.remove("fa");
-  newIcon.classList.add("glyphicon");
-  newIcon.classList.add("glyphicon-zoom-in");
+  newIcon.classList.add("fa");
+  newIcon.classList.add("fa-user");
 
   let getTitleList1 = document.getElementById('isiList2').innerHTML;
 

@@ -212,7 +212,7 @@
 
     <center> 
     	<h4 id="judul_daily">
-    		<strong> <u> TODAY'S DAILY ACTIVITIES </u> </strong> 
+    		<strong> <u> TODAY'S ACTIVITIES </u> </strong> 
     	</h4> 
     </center>
 
@@ -295,7 +295,7 @@
 
 				        	</td>
 				        	<td> <?= $appr['judul']; ?> </td>
-				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
+				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
 				        	<?php elseif($appr['status_approve'] == 0): ?>
@@ -337,7 +337,7 @@
 
 				        	</td>
 				        	<td> <?= $appr['judul']; ?> </td>
-				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
+				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 			        		<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
 
@@ -420,7 +420,7 @@
 
 				        	</td>
 				        	<td> <?= $appr['judul']; ?> </td>
-				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
+				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
 				        	<?php elseif($appr['status_approve'] == 0): ?>
@@ -462,7 +462,7 @@
 
 				        	</td>
 				        	<td> <?= $appr['judul']; ?> </td>
-				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
+				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 			        		<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
 
@@ -527,12 +527,6 @@
 	function showData(stdOrGroup, roomKey, dailyID, stat, from, dateOri, datePosted, dateAppr, imgUpload, nip, nis, siswa, title, main, reason='ksg') {
 
 		grouporstd = stdOrGroup;
-
-		if (grouporstd == "std") {
-			grouporstd = "std";
-		} else if (grouporstd == "group") {
-			grouporstd = "group";
-		}
 
 		if (stat == 0) {
 			// alert('Belum Di Approve');

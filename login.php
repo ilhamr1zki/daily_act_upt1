@@ -2,6 +2,8 @@
 
   require 'php/config.php'; 
 
+  $tes = "ada";
+
   // Cek status login user jika ada session
   if ($user->isLoggedInAdmin()) {
       header("location: $basead"); //redirect ke index
@@ -11,6 +13,13 @@
       header("location: $basegu"); //redirect ke index
   } elseif ($user->isLoggedInOTM()) {
       header("location: $basewam"); //redirect ke index
+  }
+
+  if (!empty($_GET['on'])) {
+
+    $tes = $_GET['on'];
+    echo $tes;exit;
+
   }
 
   $error = "no_session_error";
@@ -135,7 +144,7 @@ no-repeat center center fixed; background-size: cover;
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="form-group">
-        <label>*Login Sebagai</label>
+        <label>*Login Sebagai </label>
         <select name="sebagai" class="form-control form-select" id="select2">
           <option value="admin"> ADMINISTRATOR </option> 
           <option value="kepsek"> HEAD MASTER </option>

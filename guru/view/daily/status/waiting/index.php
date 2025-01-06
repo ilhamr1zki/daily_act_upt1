@@ -27,6 +27,25 @@
 	  return($result);  
 	}
 
+	function format_tgl_indo($date){  
+	    $tanggal_indo = date_create($date);
+	    date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
+	    $array_bulan = array(1=>'Januari','Februari','Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober', 'November','Desember');
+	    $date = strtotime($date);
+	    $tanggal = date ('d', $date);
+	    $bulan = $array_bulan[date('n',$date)];
+	    $tahun = date('Y',$date); 
+
+	    $H     = date_format($tanggal_indo, "H");
+	    $i     = date_format($tanggal_indo, "i");
+	    $s     = date_format($tanggal_indo, "s");
+	    // $jamIndo = date("h:i:s", $date);
+	    $jamIndo = date_format($tanggal_indo, "H:i:s");
+	    // echo $jamIndo;
+	    $result = $tanggal ." ". $bulan ." ". $tahun . " " . $jamIndo;       
+	    return($result);  
+	}
+
 	if ($timeRunningOut == $timeOut || $timeRunningOut > $timeOut) {
 
 		$_SESSION['form_success'] = "session_time_out";
@@ -234,7 +253,7 @@
 				      		`<?= $groupOrStd; ?>`,
 					      	`<?= $waiting_appr['daily_id']; ?>`, 
 					      	`<?= strtoupper($waiting_appr['nama_guru']); ?>`, 
-					      	`<?= $waiting_appr['tgl_dibuat']; ?>`, 
+					      	`<?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?>`, 
 					      	`<?= strtoupper($waiting_appr['nama_siswa_or_nama_group_kelas']); ?>`,
 					      	`<?= $waiting_appr['foto']; ?>`,
 					      	`<?= $waiting_appr['judul']; ?>`,
@@ -249,8 +268,8 @@
 					        	<?php endif ?>
 					        </td>
 					        <td style="text-align: center;"> <?= $waiting_appr['judul'] ?> </td>
-				        	<td style="text-align: center;"> Waiting <i class="glyphicon glyphicon-hourglass"></i> </td>
-					        <td style="text-align: center;"> <?= formatDateEnglish($waiting_appr['tgl_dibuat']); ?> </td>
+				        	<td style="text-align: center;"> WAITING <i class="glyphicon glyphicon-hourglass"></i> </td>
+					        <td style="text-align: center;"> <?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?> </td>
 
 				      	</tr>
 

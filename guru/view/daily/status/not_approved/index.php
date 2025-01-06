@@ -57,32 +57,66 @@
 	} else {
 
 	  	$queryNotApprovedDaily         = mysqli_query($con, "
-		    SELECT
-		    daily_siswa_approved.from_nip as from_nip,
-		    daily_siswa_approved.id as daily_id,
-		    daily_siswa_approved.title_daily as judul,
-		    daily_siswa_approved.isi_daily as isi_daily,
-		    guru.nama as nama_guru,
-		    admin.username as nama_user,
-		    siswa.nama as nama_siswa,
-		    daily_siswa_approved.status_approve as status,
-		    daily_siswa_approved.tanggal_dibuat as created_date,
-		    daily_siswa_approved.image as foto_upload,
-		    daily_siswa_approved.tanggal_disetujui_atau_tidak as tanggal_disetujui_atau_tidak,
-		    reason.is_reason as isi_alasan
-		    FROM 
-		    daily_siswa_approved 
-		    LEFT JOIN guru
-		    ON daily_siswa_approved.from_nip = guru.nip
-		    LEFT JOIN admin
-		    ON daily_siswa_approved.from_nip = admin.c_admin
-		    LEFT JOIN siswa
-		    ON daily_siswa_approved.nis_siswa = siswa.nis
-		    LEFT JOIN reason
-		    ON daily_siswa_approved.id = reason.daily_siswa_id
-		    WHERE daily_siswa_approved.status_approve = 2
-		    AND daily_siswa_approved.from_nip = '$_SESSION[nip_guru]'
-		    ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+		    SELECT *
+		  	FROM (
+		  		SELECT 
+		  			daily_siswa_approved.id as daily_id,
+			      	daily_siswa_approved.from_nip as from_nip,
+			      	daily_siswa_approved.image as foto,
+			      	daily_siswa_approved.isi_daily as isi_daily,
+			      	daily_siswa_approved.nis_siswa as nis_or_id_group_kelas,
+			      	daily_siswa_approved.title_daily as judul,
+			      	daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+			      	daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+					daily_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+					guru.nama as nama_guru,
+			      	admin.username as nama_user,
+			      	siswa.nama as nama_siswa_or_nama_group_kelas,
+			      	ruang_pesan.room_key as room_key
+				FROM daily_siswa_approved
+				LEFT JOIN guru
+			      	ON daily_siswa_approved.from_nip = guru.nip
+		      	LEFT JOIN admin
+			      	ON daily_siswa_approved.from_nip = admin.c_admin
+		      	LEFT JOIN siswa
+			      	ON daily_siswa_approved.nis_siswa = siswa.nis
+		      	LEFT JOIN ruang_pesan
+			      	ON ruang_pesan.daily_id = daily_siswa_approved.id
+		      	LEFT JOIN reason
+		            ON reason.daily_siswa_id = daily_siswa_approved.id
+        		UNION
+		      	SELECT 
+				  	group_siswa_approved.id as group_daily_id,
+		      		group_siswa_approved.from_nip as from_nip,
+		      		group_siswa_approved.image as foto,
+		      		group_siswa_approved.isi_daily as isi_daily,
+		      		group_siswa_approved.group_kelas_id as group_kelas_id,
+		      		group_siswa_approved.title_daily as judul,
+		      		group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+		      		group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
+					group_siswa_approved.status_approve AS status_approve,
+		            reason.is_reason AS isi_alasan,
+					guru.nama as nama_guru,
+			      	admin.username as nama_user,
+			      	group_kelas.nama_group_kelas as nama_group_kelas,
+			      	ruang_pesan.room_key as room_key
+				FROM group_siswa_approved
+        		LEFT JOIN guru
+		      		ON group_siswa_approved.from_nip = guru.nip
+	      		LEFT JOIN admin
+		      		ON group_siswa_approved.from_nip = admin.c_admin
+	      		LEFT JOIN group_kelas
+		      		ON group_siswa_approved.group_kelas_id = group_kelas.id
+	      		LEFT JOIN ruang_pesan
+		      		ON ruang_pesan.daily_id = group_siswa_approved.id
+	      		LEFT JOIN reason
+		            ON reason.daily_siswa_id = group_siswa_approved.id
+		       ) AS U
+		 	WHERE 
+			 	U.status_approve = 2
+			 	AND U.from_nip = '$_SESSION[nip_guru]'
+		     	ORDER BY U.tgl_dibuat DESC
 		");
 
 	  	$no = 1;
@@ -114,36 +148,84 @@
         <thead style="background-color: lightyellow;">
             <tr>
                 <th style="text-align: center;" width="5%">NO</th>
-		        <th style="text-align: center;"> SISWA </th>
-		        <th style="text-align: center;"> JUDUL </th>
+		        <th style="text-align: center;"> DAILY </th>
+		        <th style="text-align: center;"> TITLE </th>
 		        <th style="text-align: center;"> STATUS </th>
-	          	<th style="text-align: center;"> TANGGAL DIBUAT </th>
-	          	<th style="text-align: center;"> TANGGAL TIDAK DI APPROVE </th>
+	          	<th style="text-align: center;"> DATE NOT APPROVED </th>
             </tr>
         </thead>
         <tbody>
         	
         	<?php foreach ($queryNotApprovedDaily as $not_appr): ?>
-			      	
-		      	<tr id="tr_dashboard" style="background-color: red; color: yellow; font-weight: bold;" data-id="<?= $not_appr['daily_id']; ?>" onclick="showDataNotApproved(
-		      		`<?= $not_appr['daily_id']; ?>`,
-		      		`<?= format_tgl_indo_appr($not_appr['tanggal_disetujui_atau_tidak']); ?>`,
-		      		`<?= strtoupper($not_appr['nama_guru']); ?>`,
-		      		`<?= format_tgl_indo_appr($not_appr['created_date']); ?>`,
-		      		`<?= strtoupper($not_appr['nama_siswa']); ?>`,
-		      		`<?= $not_appr['foto_upload']; ?>`,
-		      		`<?= $not_appr['judul']; ?>`,
-		      		`<?= $not_appr['isi_daily']; ?>`,
-		      		`<?= $not_appr['isi_alasan']; ?>`
-		      	)">
-			        <td style="text-align: center;">  <?= $no++; ?> </td>
-			        <td style="text-align: center;">  <?= strtoupper($not_appr['nama_siswa']) ?> </td>
-			        <td style="text-align: center;">  <?= $not_appr['judul'] ?> </td>
-			        <td style="text-align: center;"> Not Approved </td>
-			        <td style="text-align: center;">  <?= formatDateEnglish($not_appr['created_date']); ?> </td>
-			        <td style="text-align: center;">  <?= formatDateEnglish($not_appr['tanggal_disetujui_atau_tidak']); ?> </td>
 
-			      </tr>
+        		<?php  
+
+	      			$nisOrGroupID = $not_appr['nis_or_id_group_kelas'];
+	      			// echo $nisOrGroupID;exit;
+
+	      			// Check Group Id
+	      			$queryCheckDataIdGroup = mysqli_query($con, "
+	      				SELECT id FROM group_kelas WHERE id = '$nisOrGroupID'
+	      			");
+
+	      			// Check Nis
+	      			$queryCheckDataNIS = mysqli_query($con, "
+	      				SELECT nama FROM siswa WHERE nis = '$nisOrGroupID'
+	      			");
+
+	      			$countIdGroup 	= mysqli_num_rows($queryCheckDataIdGroup);
+
+	      			// echo $countIdGroup;exit;
+
+	      			$countNis 		= mysqli_num_rows($queryCheckDataNIS);
+
+	      		?>
+
+	      		<?php if ($countIdGroup == 1): ?>
+
+	      			<tr id="tr_dashboard" style="background-color: red; color: yellow; font-weight: bold;" data-id="<?= $not_appr['daily_id']; ?>" onclick="showDataNotApproved(
+	      				`group`,
+			      		`<?= $not_appr['daily_id']; ?>`,
+			      		`<?= format_tgl_indo_appr($not_appr['tgl_disetujui']); ?>`,
+			      		`<?= strtoupper($not_appr['nama_guru']); ?>`,
+			      		`<?= format_tgl_indo_appr($not_appr['tgl_dibuat']); ?>`,
+			      		`<?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']); ?>`,
+			      		`<?= $not_appr['foto']; ?>`,
+			      		`<?= $not_appr['judul']; ?>`,
+			      		`<?= $not_appr['isi_daily']; ?>`,
+			      		`<?= $not_appr['isi_alasan']; ?>`
+			      	)">
+				        <td style="text-align: center;"> <?= $no++; ?> </td>
+				        <td style="text-align: center;"> GROUP <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
+				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
+				        <td style="text-align: center;"> <?= strtoupper('Not Approved'); ?> <i class="glyphicon glyphicon-remove-sign"></i> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
+
+		      		</tr>
+
+	      		<?php elseif($countNis == 1): ?>
+
+	      			<tr id="tr_dashboard" style="background-color: red; color: yellow; font-weight: bold;" data-id="<?= $not_appr['daily_id']; ?>" onclick="showDataNotApproved(
+	      				`std`,
+			      		`<?= $not_appr['daily_id']; ?>`,
+			      		`<?= format_tgl_indo_appr($not_appr['tgl_disetujui']); ?>`,
+			      		`<?= strtoupper($not_appr['nama_guru']); ?>`,
+			      		`<?= format_tgl_indo_appr($not_appr['tgl_dibuat']); ?>`,
+			      		`<?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']); ?>`,
+			      		`<?= $not_appr['foto']; ?>`,
+			      		`<?= $not_appr['judul']; ?>`,
+			      		`<?= $not_appr['isi_daily']; ?>`,
+			      		`<?= $not_appr['isi_alasan']; ?>`
+			      	)">
+				        <td style="text-align: center;"> <?= $no++; ?> </td>
+				        <td style="text-align: center;"> <?= strtoupper($not_appr['nama_siswa_or_nama_group_kelas']) ?> </td>
+				        <td style="text-align: center;"> <?= $not_appr['judul'] ?> </td>
+				        <td style="text-align: center;"> <?= strtoupper('Not Approved'); ?> <i class="glyphicon glyphicon-remove-sign"></i> </td>
+				        <td style="text-align: center;"> <?= formatDateEnglish($not_appr['tgl_disetujui']); ?> </td>
+
+		      		</tr>
+	      			
+	      		<?php endif ?>
 
 		      <?php endforeach ?>
             
@@ -169,7 +251,7 @@
 		DataTable.ext.search.push(function (settings, data, dataIndex) {
 			var min = minDate.val();
 		    var max = maxDate.val();
-		    var date = new Date(data[5]);
+		    var date = new Date(data[4]);
 
 		    if (
 		        (min === null && max === null) ||
@@ -202,6 +284,8 @@
 
 <script type="text/javascript">
 
+	let grouporstd = "";
+
 	$(document).ready(function() {
 
 		$("#aList1").click();
@@ -229,7 +313,9 @@
 
 	})
 	
-	function showDataNotApproved(daily_id, dateNotApproved, sender, datePosted, nm, photo, title, main, reason='ksg') {
+	function showDataNotApproved(stdOrGroup, daily_id, dateNotApproved, sender, datePosted, nm, photo, title, main, reason='ksg') {
+
+		grouporstd = stdOrGroup;
 
 		$("#inpage-not-approved").modal('show');
 
@@ -240,6 +326,13 @@
 		let imageInPage     	= document.querySelector("img[id='inpage_foto_upload_notappr']");
 		imageInPage.setAttribute("src", `../image_uploads/${photo}`);
 		$("#inpage_title_daily_notappr").val(title);
+
+		if (grouporstd == "std") {
+        	$("#lbl_std_or_gp_inpage_noappr").text('STUDENT');
+		} else if (grouporstd == "group") {
+			$("#lbl_std_or_gp_inpage_noappr").text('GROUP');
+		}
+
 		$("#inpage_main_daily_notappr").html(main);
 
 		if (reason != 'ksg') {

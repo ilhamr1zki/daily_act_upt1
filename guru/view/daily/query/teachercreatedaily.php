@@ -239,7 +239,7 @@
 	    setTimeout(clickSubMenu, 500);
 
 	    function clickSubMenu() {
-	      $("#isiList2").click();
+	      $("#isiListQuery").click();
 	      $("#query_data_siswa").css({
 	          "background-color" : "#ccc",
 	          "color" : "black"

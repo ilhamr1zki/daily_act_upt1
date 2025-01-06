@@ -12,6 +12,9 @@
 	$key_room  			= "";
 	$users     			= "";
 	$sesiKomen 			= 1;
+	$isGroup 			= false;
+
+	$getDataGroupKelasID = "";
 
 	$tglSkrngAwal 	= "";
 	$tglSkrngAkhir 	= "";
@@ -61,6 +64,7 @@
 	  		$roomKey    	= $_POST['roomkey'];
 	  		$nama 			= htmlspecialchars($_POST['nama']);
 	  		$nis_or_idgroup = htmlspecialchars($_POST['nis']);
+	  		// echo $nis_or_idgroup;exit;
 	  		$guru 			= htmlspecialchars($_POST['guru']);
 	  		$foto 			= htmlspecialchars($_POST['foto']);
 	  		$tglPosting 	= $_POST['tglpost'];
@@ -108,6 +112,20 @@
 		      	ruang_pesan.room_key LIKE '%$roomKey%'
 		      	ORDER BY tbl_komentar.id
 		    ");
+
+		  	// Check Nis Or ID Group
+		  	$queryCheckGroupKelasID = mysqli_query($con, "
+		  		SELECT id FROM group_kelas WHERE id = '$nis_or_idgroup'
+		  	");
+
+		  	$countCheckGroupKelasID = mysqli_num_rows($queryCheckGroupKelasID);
+
+		  	if ($countCheckGroupKelasID == 1) {
+
+		  		$isGroup = true;
+		  		// echo $getDataGroupKelasID;exit;
+
+		  	}
 
 		    $countDataChat = mysqli_num_rows($getDataKomenOther);
 
@@ -120,6 +138,7 @@
 	  		$roomKey    	= $_POST['roomkey'];
 	  		$nama 			= htmlspecialchars($_POST['nama']);
 	  		$nis_or_idgroup = htmlspecialchars($_POST['id_group_approved']);
+	  		// echo $nis_or_idgroup;exit;
 	  		$guru 			= htmlspecialchars($_POST['guru']);
 	  		$foto 			= htmlspecialchars($_POST['foto']);
 	  		$tglPosting 	= $_POST['tglpost'];
@@ -167,6 +186,22 @@
 		      	ruang_pesan.room_key LIKE '%$roomKey%'
 		      	ORDER BY tbl_komentar.id
 		    ");
+
+		  	// Check Nis Or ID Group
+		  	$queryCheckGroupKelasID = mysqli_query($con, "
+		  		SELECT group_kelas_id FROM group_siswa_approved WHERE id = '$nis_or_idgroup'
+		  	");
+
+		  	$countCheckGroupKelasID = mysqli_num_rows($queryCheckGroupKelasID);
+
+		  	if ($countCheckGroupKelasID == 1) {
+
+		  		$nama = 'GROUP ' . $nama;
+		  		$isGroup = true;
+		  		$getDataGroupKelasID = mysqli_fetch_assoc($queryCheckGroupKelasID)['group_kelas_id'];
+		  		// echo $getDataGroupKelasID;exit;
+
+		  	}
 
 		    $countDataChat = mysqli_num_rows($getDataKomenOther);
 
@@ -195,7 +230,8 @@
 
 	  		if ($countCheckIDGroup == 1) {
 
-	  			$nama = 'GROUP ' . $nama;
+	  			$nama 		= 'GROUP ' . $nama;
+	  			$isGroup 	= true;
 
 	  		}
 
@@ -593,6 +629,15 @@
 			        	</form>
 						<br>
 
+					<?php elseif($fromPage == "teachercreategroupdaily"): ?>
+
+						<form action="<?= $fromPage; ?>" method="post">
+							<input type="hidden" name="id_group" value="<?= $getDataGroupKelasID; ?>">
+							<input type="hidden" name="nama_group_kelas" value="<?= str_replace(["GROUP", ], "", $nama); ?>">
+			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_group"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
+			        	</form>
+						<br>
+
 					<?php elseif($fromPage == "homepage"): ?>
 
 						<form action="<?= $basegu; ?>" method="post">
@@ -791,10 +836,23 @@
 
 	    function clickSubMenu() {
 	      	$("#isiList2").click();
-	      	$("#query_data_siswa").css({
-	          	"background-color" : "#ccc",
-	          	"color" : "black"
-	      	});
+
+	      	if (`<?= $isGroup; ?>` == true) {
+
+		      	$("#query_data_group").css({
+		          	"background-color" : "#ccc",
+		          	"color" : "black"
+		      	});
+
+	      	} else {
+
+	      		$("#query_data_siswa").css({
+		          	"background-color" : "#ccc",
+		          	"color" : "black"
+		      	});
+
+	      	}
+
 	    }
 
 	    // $('#send-btn').click(function(e){

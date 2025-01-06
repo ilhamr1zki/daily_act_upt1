@@ -4,15 +4,17 @@
     
 	$timeRunningOut = time() + 5;
 
-	$timeIsOut = 0;
-	$sesi      = 0;
-	$nama      = "";
-	$guru      = "";
-	$key_room  = "";
-	$users     = "";
-	$sesiKomen = 1;
-	$nipKepsek = "";
-	$nis       = 0;
+	$timeIsOut 		= 0;
+	$sesi      		= 0;
+	$nama      		= "";
+	$guru      		= "";
+	$key_room  		= "";
+	$users     		= "";
+	$sesiKomen 		= 1;
+	$nipKepsek 		= "";
+	$nisOrIdGroup 	= 0;
+
+	$isGroup 		= false;
 
 	$tglSkrngAwal  = "";
 	$tglSkrngAkhir = "";
@@ -88,22 +90,22 @@
 
   		if (isset($_POST['krm'])) {
 	  		// echo $_POST['nis'];
-	  		$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi        = $_POST['isi'];
-	  		$users      = $nipGuru;
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisOrIdGroup 	= htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi        	= $_POST['isi'];
+	  		$users      	= $nipGuru;
 
 	  		date_default_timezone_set("Asia/Jakarta");
 		  	$arrTgl               = [];
 			  
-		  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-		  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
 
 		  	// echo $tglOri;exit;
 		  	$fromPage   = $_POST['frompage'];
@@ -154,19 +156,96 @@
 
 	  		$key_room   = $roomKey;
 	  		
+	  	} else if (isset($_POST['krm_group'])) {
+
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisOrIdGroup 	= htmlspecialchars($_POST['id_group_approved']);
+	  		// echo $nis_or_idgroup;exit;
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi        	= $_POST['isi'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
+	  		$users      	= $nipKepsek;
+
+	  		date_default_timezone_set("Asia/Jakarta");
+			  
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
+
+	  		$sesi 		= 1;
+
+	  		if ($tglOri < $tglSkrngAwal) {
+		  		$sesiKomen = 0;
+		  	} else {
+		  		$sesiKomen = 1;
+		  	}
+
+		  	$getDataKomenOther = mysqli_query($con, "
+		      	SELECT 
+		      	tbl_komentar.room_id as r_id,
+		      	tbl_komentar.code_user as fromnip,
+		      	guru.nama as nama_guru,
+		      	kepala_sekolah.nama as nama_kepsek,
+		      	siswa.nama as nama_siswa,
+		      	tbl_komentar.stamp as tanggal_kirim,
+		      	tbl_komentar.isi_komentar as pesan
+		      	FROM 
+		      	tbl_komentar 
+		      	LEFT JOIN ruang_pesan
+		      	ON tbl_komentar.room_id = ruang_pesan.room_key
+		      	LEFT JOIN guru
+		      	ON tbl_komentar.code_user = guru.nip
+		      	LEFT JOIN kepala_sekolah
+		      	ON tbl_komentar.code_user = kepala_sekolah.nip
+		      	LEFT JOIN akses_otm
+		      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+		      	LEFT JOIN siswa
+		      	ON akses_otm.nis_siswa = siswa.nis
+		      	WHERE 
+		      	ruang_pesan.room_key LIKE '%$roomKey%'
+		      	ORDER BY tbl_komentar.id
+		    ");
+
+		  	// Check Nis Or ID Group
+		  	$queryCheckGroupKelasID = mysqli_query($con, "
+		  		SELECT group_kelas_id FROM group_siswa_approved WHERE id = '$nisOrIdGroup'
+		  	");
+
+		  	$countCheckGroupKelasID = mysqli_num_rows($queryCheckGroupKelasID);
+
+		  	if ($countCheckGroupKelasID == 1) {
+
+		  		$nama = 'GROUP ' . $nama;
+		  		$isGroup = true;
+		  		$getDataGroupKelasID = mysqli_fetch_assoc($queryCheckGroupKelasID)['group_kelas_id'];
+		  		// echo $getDataGroupKelasID;exit;
+
+		  	}
+
+		    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+		  	$fromPage   	= $_POST['frompage'];
+
+	  		$key_room   	= $roomKey;
+	  		
 	  	} else if (isset($_POST['roomkey_lookdaily'])) {
 
 	  		$roomKey    = $_POST['roomkey_lookdaily'];
 	  		// echo $roomKey;exit;
-	  		$nama 		= htmlspecialchars($_POST['nama_siswa_lookdaily']);
-	  		$nis        = htmlspecialchars($_POST['nis_lookdaily']);
-	  		$guru 		= htmlspecialchars($_POST['guru_lookdaily']);
-	  		$foto 		= $_POST['foto_upload_lookdaily'];
-	  		$tglPosting = $_POST['tgl_posting_lookdaily'];
-	  		$tglOri     = $_POST['tglori_posting_lookdaily'];
-	  		$judul      = htmlspecialchars($_POST['jdl_posting_lookdaily']);
-	  		$isi 		= $_POST['isi_posting_lookdaily'];
-	  		$users      = $nipGuru;
+	  		$nama 			= htmlspecialchars($_POST['nama_siswa_or_groupkelas_lookdaily']);
+	  		$nisOrIdGroup   = htmlspecialchars($_POST['nis_or_idgroup_lookdaily']);
+
+	  		$guru 			= htmlspecialchars($_POST['guru_lookdaily']);
+	  		$foto 			= $_POST['foto_upload_lookdaily'];
+	  		$tglPosting 	= $_POST['tgl_posting_lookdaily'];
+	  		$tglOri     	= $_POST['tglori_posting_lookdaily'];
+	  		$judul      	= htmlspecialchars($_POST['jdl_posting_lookdaily']);
+	  		$isi 			= $_POST['isi_posting_lookdaily'];
+	  		$users      	= $nipGuru;
 
 	  		$countDataChat = 0;
 
@@ -201,6 +280,25 @@
 		      ORDER BY tbl_komentar.id
 		    ");
 
+		    // Check Nis Or ID Group
+	  		$queryCheckNis = mysqli_query($con, "
+	  			SELECT nis FROM siswa WHERE nis = '$nisOrIdGroup'
+	  		");
+
+	  		$queryCheckIdGroup = mysqli_query($con, "
+	  			SELECT id FROM group_kelas WHERE id = '$nisOrIdGroup'
+	  		");
+
+	  		$countCheckNis 		= mysqli_num_rows($queryCheckNis);
+	  		$countCheckIDGroup 	= mysqli_num_rows($queryCheckIdGroup);
+
+	  		if ($countCheckIDGroup == 1) {
+
+	  			$nama = 'GROUP ' . $nama;
+	  			$isGroup = true;
+
+	  		}
+
 	  		$countDataChat = mysqli_num_rows($getDataKomenOther);
 
 	  		date_default_timezone_set("Asia/Jakarta");
@@ -227,19 +325,19 @@
 
 	  	} elseif (isset($_POST['send_mssg'])) {
 
-	  		$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi   		= $_POST['isi'];
-	  		$users      = $nipGuru;
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisOrIdGroup	= htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi   			= $_POST['isi'];
+	  		$users      	= $nipGuru;
 
-	  		$isKomen    = mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
-	  		$fromPage   = $_POST['frompage'];
+	  		$isKomen    	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
+	  		$fromPage   	= $_POST['frompage'];
 	  		// echo $isKomen;exit;
 
 	  		if ($isKomen == NULL) {
@@ -464,7 +562,7 @@
 			    	<form action="lookactivity" method="post">
 			    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
 			    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-			        	<input type="hidden" name="nis" value="<?= $nis; ?>">
+			        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 			        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
 			        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
 			        	<input type="hidden" name="foto" value="<?= $foto; ?>">
@@ -564,7 +662,7 @@
 			            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
 			            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
 			            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-				        	<input type="hidden" name="nis" value="<?= $nis; ?>">
+				        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 				        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
 				        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
 				        	<input type="hidden" name="foto" value="<?= $foto; ?>">
@@ -595,7 +693,7 @@
 						
 						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -604,8 +702,17 @@
 
 						<form action="<?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
+			        	</form>
+						<br>
+
+					<?php elseif($fromPage == "teachercreategroupdaily"): ?>
+
+						<form action="<?= $fromPage; ?>" method="post">
+							<input type="hidden" name="id_group" value="<?= $getDataGroupKelasID; ?>">
+							<input type="hidden" name="nama_group_kelas" value="<?= str_replace(["GROUP", ], "", $nama); ?>">
+			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_group"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
 
@@ -613,7 +720,7 @@
 
 						<form action="<?= $basegu; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -622,7 +729,7 @@
 
 						<form action="teachercreatedaily" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -678,7 +785,7 @@
 	            room_id 	: rmId,
 	            usr_guru   	: `<?= $users; ?>`,
 	            usr_kepsek  : `<?= $nipKepsek; ?>`,
-	            nisotm      : `<?= $nis; ?>`
+	            nisotm      : `<?= $nisOrIdGroup; ?>`
 	        },
 	        success:function(data) {
 	          	$('#comments-box').scrollTop($('#comments-box')[0].scrollHeight);
@@ -748,7 +855,7 @@
 
 		}
 
-		if (`<?= $nis; ?>` == 0) {
+		if (`<?= $nisOrIdGroup; ?>` == 0) {
 			setTimeout(() => {
 				location.href = `<?= $basegu; ?>querydailystudent`
 			}, 1000);
@@ -797,10 +904,23 @@
 
 	    function clickSubMenu() {
 	      $("#isiListQuery").click();
-	      $("#query_data_siswa").css({
+
+	      if(`<?= $isGroup; ?>` == true) {
+
+	      	$("#query_data_group").css({
 	          "background-color" : "#ccc",
 	          "color" : "black"
-	      });
+	      	});	
+
+	      } else {
+
+		      $("#query_data_siswa").css({
+		          "background-color" : "#ccc",
+		          "color" : "black"
+		      });
+
+	      }
+
 	    }
 
 	    // Send button click event
@@ -858,8 +978,7 @@
 		document.getElementById('isiMenu').innerHTML = `<span style="font-weight: bold;"> QUERY </span>` + `<span style="font-weight: bold;"> ${titleLists1} </span> ` + ' -'
 
 		function linkRedirect() {
-			location.href = `<?= $basegu; ?>querydailystu
-			dent`
+			location.href = `<?= $basegu; ?>querydailystudent`
     	}
 
 	});
@@ -884,7 +1003,7 @@
 	                    room_id 	: JSON.parse(res).room,
 	                    usr_guru   	: `<?= $users; ?>`,
 	                    nip_kepsek 	: `<?= $nipKepsek; ?>`,
-	                    nisotm      : `<?= $nis; ?>`
+	                    nisotm      : `<?= $nisOrIdGroup; ?>`
 	                },
 	                success:function(respon) {
 

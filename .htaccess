@@ -8,5 +8,8 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.*)$ $1.html
 
+RewriteRule ^([a-zA-Z0-9_-]+)$ login.php?on=$1
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ login.php?on=$1&q=$2
+
 DirectoryIndex login.php
 </IfModule>

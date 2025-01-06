@@ -12,7 +12,7 @@
 	function formatDateEnglish($date){  
 	  $tanggal_indo = date_create($date);
 	  date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
-	  $array_bulan = array(1=>'January','February','March', 'April', 'May', 'June','July','August','September','October', 'November','Desember');
+	  $array_bulan = array(1=>'January','February','March', 'April', 'May', 'June','July','August','September','October', 'November','December');
 	  $date = strtotime($date);
 	  $tanggal = date ('d', $date);
 	  $bulan = $array_bulan[date('n',$date)];
