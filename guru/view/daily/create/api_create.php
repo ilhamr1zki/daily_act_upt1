@@ -148,6 +148,41 @@
 								if ($createRoomChatStd) {
 									$_SESSION['create_room_std'] = "berhasil";
 									header("Location:". "$basegu" ."createdailystudent");
+									// $curl = curl_init();
+
+									// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+									// // Nomer HP Kepsek SD
+									// $target = "6282110992502, 6289515998565";
+									// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+
+									// curl_setopt_array($curl, array(
+									//   CURLOPT_URL => 'https://api.fonnte.com/send',
+									//   CURLOPT_RETURNTRANSFER => true,
+									//   CURLOPT_ENCODING => '',
+									//   CURLOPT_MAXREDIRS => 10,
+									//   CURLOPT_TIMEOUT => 0,
+									//   CURLOPT_FOLLOWLOCATION => true,
+									//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+									//   CURLOPT_CUSTOMREQUEST => 'POST',
+									//   CURLOPT_POSTFIELDS => array(
+									//     'target' => $target,
+									//     'message' => $pesan,
+									//     'delay' => '3-5'
+									//   ),
+									//   CURLOPT_HTTPHEADER => array(
+									//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+									//   ),
+									// ));
+
+									// $response = curl_exec($curl);
+
+									// curl_close($curl);
+
+									// if ($response == true) {
+										// header("Location:". "$basegu" ."createdailystudent");
+									// }
+
 								} else {
 									$_SESSION['create_room_std'] = "gagal";
 									header("Location:". "$basegu" ."createdailystudent");
@@ -171,6 +206,41 @@
 								if ($createRoomChatStd) {
 									$_SESSION['create_room_std'] = "berhasil";
 									header("Location:". "$basegu" ."createdailystudent");
+									// $curl = curl_init();
+
+									// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+									// // Nomer HP Kepsek SD
+									// $target = "6282110992502, 6289515998565";
+									// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+
+									// curl_setopt_array($curl, array(
+									//   CURLOPT_URL => 'https://api.fonnte.com/send',
+									//   CURLOPT_RETURNTRANSFER => true,
+									//   CURLOPT_ENCODING => '',
+									//   CURLOPT_MAXREDIRS => 10,
+									//   CURLOPT_TIMEOUT => 0,
+									//   CURLOPT_FOLLOWLOCATION => true,
+									//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+									//   CURLOPT_CUSTOMREQUEST => 'POST',
+									//   CURLOPT_POSTFIELDS => array(
+									//     'target' => $target,
+									//     'message' => $pesan,
+									//     'delay' => '3-5'
+									//   ),
+									//   CURLOPT_HTTPHEADER => array(
+									//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+									//   ),
+									// ));
+
+									// $response = curl_exec($curl);
+
+									// curl_close($curl);
+
+									// if ($response == true) {
+										// header("Location:". "$basegu" ."createdailystudent");
+									// }
+
 								} else {
 									$_SESSION['create_room_std'] = "gagal";
 									header("Location:". "$basegu" ."createdailystudent");
