@@ -17,11 +17,11 @@ $con=mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
 /* css.plugin.hancon <?php echo $base; ?> */
 
 $base='http://localhost/daily_act_upt1/';
-$base1='https://192.168.0.197/daily_act_upt1/';
+$base1='http://localhost/daily_act_upt1/';
 $basead='http://localhost/daily_act_upt1/admin/';
 $basegu='http://localhost/daily_act_upt1/guru/';
 $basekepsek='http://localhost/daily_act_upt1/kepala_sekolah/';
-$basekepsek1='https://192.168.0.197/daily_act_upt1/kepala_sekolah/';
+$basekepsek1='http://localhost/daily_act_upt1/kepala_sekolah/';
 $basewam='http://localhost/daily_act_upt1/walimurid/';
 
 $aplikasi=mysqli_fetch_array(mysqli_query($con,"SELECT * FROM aplikasi limit 1"));

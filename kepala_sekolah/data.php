@@ -53,6 +53,8 @@
 
   $dataFound            = '';
 
+  $tampungNomerHP = [];
+
   // Array Penampung Data Belum di Approve
   $tampungDataID_blmAppr            = [];
   $tampungDataNIP_blmAppr           = [];
@@ -315,7 +317,7 @@
   else if (isset($_POST['daily_id']) ) {
 
     $dailyId = $_POST['daily_id'];
-
+    // echo $dailyId;exit;
     $nip     = $_POST['nip_guru'];
     date_default_timezone_set("Asia/Jakarta");
 
@@ -363,30 +365,205 @@
 
     } else if ($countDailyIdGroup == 1) {
 
-      $execQueryAppr      = mysqli_query($con, "
-        UPDATE group_siswa_approved 
-        SET 
-        status_approve    = '1',
-        tanggal_disetujui_atau_tidak = '$tglSkrng'
-        WHERE group_siswa_approved.id = '$dailyId'
+      // Query Get Group Kelas ID
+      $queryGetGroupKelasID = mysqli_query($con, "
+        SELECT group_kelas_id 
+        FROM group_siswa_approved
+        WHERE id = '$dailyId'
       ");
 
-      $randomString = random(9);
+      $getNumberPhone = mysqli_fetch_assoc($queryGetGroupKelasID)['group_kelas_id'];
+      // echo $getNumberPhone;exit;
 
-      $createRoomChat = mysqli_query($con, "
-        INSERT INTO ruang_pesan
-        SET
-        room_key          = '$randomString',
-        created_by        = '$nip',
-        room_session      = 1,
-        daily_id          = '$dailyId',
-        created_date_room = '$tglSkrng'
+      // Query Get Number Phone
+      $queryGetNumberPhone = mysqli_query($con, "
+        SELECT nama, hp
+        FROM siswa
+        WHERE group_kelas = '$getNumberPhone'
       ");
 
-      if ($execQueryAppr == true) {
-        $arr['status_approve'] = true;
+      $tampungNoHP = [];
+
+      // findNameGroupForNotif
+      $queryFindNameGroup = mysqli_query($con, "
+        SELECT nama_group_kelas FROM group_kelas 
+        WHERE id IN (
+          SELECT group_kelas_id FROM group_siswa_approved WHERE id = '$dailyId'
+        )
+      ");
+
+      $getNameGroup = mysqli_fetch_assoc($queryFindNameGroup)['nama_group_kelas'];
+      // echo $getNameGroup;exit;
+
+      $getNameForNotif = mysqli_fetch_assoc($queryGetNumberPhone)['nama'];
+
+      foreach ($queryGetNumberPhone as $data) {
+        $tampungNoHP[] = $data['hp'];
+      }
+
+      $tampungFormatNoHP = [];
+
+      for ($i=0; $i < count($tampungNoHP); $i++) {
+        
+          $check = substr($tampungNoHP[$i], 0, 1);
+          
+          if($check == 8) {
+          
+           $changeFormat = "62" . str_replace(["/08"], ",628", $tampungNoHP[$i]);    
+           $tampungFormatNoHP[] = $changeFormat;
+        
+          } else {
+
+            $changeFormat = str_replace(["08"], "628", $tampungNoHP[$i]);    
+            $tampungFormatNoHP[] = $changeFormat;
+
+          }
+
+      }
+
+      $curl = curl_init();
+
+      // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+      $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+      // var_dump($tampungFormatNoHP);exit;
+      $destination_array = implode(',', $tampungFormatNoHP);
+      // echo $destination_array;exit;
+
+      // Yang akan di kirimkan notif group, nomer Group Kelas OTM
+      $target = $destination_array;
+      $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.fonnte.com/send',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array(
+          'target' => $target,
+          'message' => $pesan,
+          'delay' => '3-5'
+        ),
+        CURLOPT_HTTPHEADER => array(
+          'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+        ),
+      ));
+
+      $response = curl_exec($curl);
+
+      curl_close($curl);
+
+      // echo $response;exit;
+
+      // $execQueryAppr      = mysqli_query($con, "
+      //   UPDATE group_siswa_approved 
+      //   SET 
+      //   status_approve    = '1',
+      //   tanggal_disetujui_atau_tidak = '$tglSkrng'
+      //   WHERE group_siswa_approved.id = '$dailyId'
+      // ");
+
+      // $randomString = random(9);
+
+      // $createRoomChat = mysqli_query($con, "
+      //   INSERT INTO ruang_pesan
+      //   SET
+      //   room_key          = '$randomString',
+      //   created_by        = '$nip',
+      //   room_session      = 1,
+      //   daily_id          = '$dailyId',
+      //   created_date_room = '$tglSkrng'
+      // ");
+
+      // if ($execQueryAppr == true) {
+      //   $arr['status_approve'] = true;
+      // } else {
+      //   $arr['status_approve'] = false;
+      // }
+
+      if ($response == true) {
+
+        // echo $response;exit;
+
+        // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+        $curl_ke_guru = curl_init();
+
+        $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+        // var_dump($tampungFormatNoHP);exit;
+        $destination_array = implode(',', $tampungFormatNoHP);
+        // echo $destination_array;exit;
+
+        // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
+        $target = "6282110992502";
+        $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "DAILY GROUP ". $getNameGroup ." SUDAH DI APPROVE 👍 ";
+
+        curl_setopt_array($curl_ke_guru, array(
+          CURLOPT_URL => 'https://api.fonnte.com/send',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => '',
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 0,
+          CURLOPT_FOLLOWLOCATION => true,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => 'POST',
+          CURLOPT_POSTFIELDS => array(
+            'target' => $target,
+            'message' => $pesan,
+            'delay' => '3-5'
+          ),
+          CURLOPT_HTTPHEADER => array(
+            'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+          ),
+        ));
+
+        $response_ke_guru = curl_exec($curl_ke_guru);
+
+        curl_close($curl_ke_guru);
+
+        if ($response_ke_guru) {
+          
+          $execQueryAppr      = mysqli_query($con, "
+            UPDATE group_siswa_approved 
+            SET 
+            status_approve    = '1',
+            tanggal_disetujui_atau_tidak = '$tglSkrng'
+            WHERE group_siswa_approved.id = '$dailyId'
+          ");
+
+          $randomString = random(9);
+
+          $createRoomChat = mysqli_query($con, "
+            INSERT INTO ruang_pesan
+            SET
+            room_key          = '$randomString',
+            created_by        = '$nip',
+            room_session      = 1,
+            daily_id          = '$dailyId',
+            created_date_room = '$tglSkrng'
+          ");
+
+          if ($execQueryAppr == true) {
+            $arr['status_approve'] = true;
+          } else {
+            $arr['status_approve'] = false;
+          }
+
+        } else {
+
+          echo "Gagal Kirim Notif Ke Guru";
+
+        }
+
       } else {
-        $arr['status_approve'] = false;
+
+        // $arr['status_approve'] = false;
+        echo "Gagal";exit;
+
       }
 
     }
@@ -2327,6 +2504,7 @@
   $arr['dari_chat']               = $fromAll;
   $arr['isi_chatx']               = $arrMe;
   $arr['dari_chatx']              = $fromMe;
+  $arr['nomer_hp']                = $tampungNomerHP;
   // End Message Chat
 
   echo json_encode($arr);

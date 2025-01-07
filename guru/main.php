@@ -511,6 +511,15 @@
         text-align: end;
       }
 
+      #cdastd {
+        font-size: 13px;
+        margin-left: -4px;
+      }
+
+      #cdagrp {
+        font-size: 12px;
+      }
+
       #boxTitle {
         font-size: 12px;
       }
@@ -718,6 +727,15 @@
         background-color: lightblue;
         border: 2px solid black;
         width: 127%;
+      }
+
+    }
+
+    @media only screen and (min-width: 375px) {
+
+      #cdastd {
+        font-size: 13px;
+        margin-left: -4px;
       }
 
     }
@@ -1078,7 +1096,7 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="hg_close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" id="form_hg_appr" method="post">
+        <form id="formHgAppr" method="post">
           <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily">

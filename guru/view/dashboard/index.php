@@ -412,6 +412,7 @@
 		} else if (stat == 1) {
 			// alert("Sudah Di Approve");
 			$("#modal-hightlight-appr").modal('show');
+			$('#formHgAppr').attr('action', `lookactivity/${roomKey}`);
 			let dataHgRoomKey   = $(this).data('daily_id');
 	      	let dataHgSender    = from;
 	      	let dataHgTglAppr 	= dateAppr;

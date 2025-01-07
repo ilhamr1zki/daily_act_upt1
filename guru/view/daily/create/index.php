@@ -20,11 +20,13 @@
   $patternPAUD        = "/PAUD/i";
   $matchPAUD          = preg_match($patternPAUD, $getDataGuru);
 
-  $patternALL         = "/SEMUA/i";
+  $patternALL         = "/Kepala_Unit/i";
   $matchALL           = preg_match($patternALL, $getDataGuru);
 
   $jenjangPendidikan  = "";
   $sesi               = 0;
+
+  // echo $_SESSION['c_guru'];exit;
 
   if ($matchSD == 1) {
 
@@ -156,9 +158,9 @@
       
       <div class="box box-info">
         <div class="box-header with-border">
-          <h3 class="box-title"> <i class="fa-solid fa-user" style="margin-right: 10px;"></i> <strong> CREATE DAILY ACTIVITY - STUDENT </strong> </h3>
+          <h3 class="box-title"> <i class="fa-solid fa-user" style="margin-right: 10px;"></i> <strong id="cdastd"> CREATE DAILY ACTIVITY - STUDENT </strong> </h3>
           <span style="float:right;">
-            <a class="btn btn-primary" onclick="openModalSiswa()">
+            <a class="btn btn-primary" id="btncarisiswa" onclick="openModalSiswa()">
               <i class="glyphicon glyphicon-plus"></i> Cari Siswa
             </a>
           </span>
@@ -271,16 +273,26 @@
                     } else {
 
                         if ($jenjangPendidikan == 'SD') {
-                            $queryGetAllDataSiswa      = "SELECT * FROM siswa WHERE c_kelas LIKE '%SD%' ORDER BY c_kelas asc ";
-                            $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
+
+                          $queryGetAllDataSiswa      = "SELECT * FROM siswa WHERE c_kelas LIKE '%SD%' ORDER BY c_kelas asc ";
+                          $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
+
                         } else if ($jenjangPendidikan == "PAUD") {
-                            $queryGetAllDataSiswa      = "
-                              SELECT * FROM siswa 
-                              WHERE 
-                              c_kelas != 'TKBLULUS'
-                              AND c_kelas NOT LIKE '%SD%'
-                            ";
-                            $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
+
+                          $queryGetAllDataSiswa      = "
+                            SELECT * FROM siswa 
+                            WHERE 
+                            c_kelas != 'TKBLULUS'
+                            AND c_kelas NOT LIKE '%SD%'
+                          ";
+
+                          $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
+
+                        } else if ($jenjangPendidikan == "SEMUA") {
+
+                          $queryGetAllDataSiswa = "SELECT * FROM siswa WHERE c_kelas <> 'TKBLULUS' ";
+                          $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
+                          $countDatax = mysqli_num_rows($execqueryGetAllDataSiswa);
                         }
 
                     }
@@ -301,6 +313,8 @@
                               <td style="text-align: center;"> <?= str_replace(["SD"], " SD", $data['c_kelas']); ?> </td>
                             <?php elseif($jenjangPendidikan == "PAUD"): ?>
                               <td style="text-align: center;"> <?= $data['c_kelas']; ?> </td>
+                            <?php else: ?>
+                              <td style="text-align: center;"> <?= str_replace(["SD"], " SD", $data['c_kelas']); ?> </td>
                             <?php endif ?>
                             <td style="text-align: center;"> <?= $data['nis']; ?> </td>
                             <td style="text-align: center;"> <?= strtoupper($data['nama']); ?> </td>

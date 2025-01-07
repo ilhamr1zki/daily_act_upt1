@@ -26,6 +26,7 @@
 
 	  	$findDepartemenSD   = "/SD/i";
 	  	$findDepartemenPAUD = "/PAUD/i";
+	  	$allDepartement     = "/Kepala_Unit/i";
 
 	  	$foundThreat        = preg_match($patternXSS, $isData);
 	  	$foundThreat2       = preg_match($patternXSS2, $isData);
@@ -35,6 +36,7 @@
 
 	  	$isDepartemenSD  	= preg_match($findDepartemenSD, $_SESSION['c_guru']);
 	  	$isDepartemenPAUD  	= preg_match($findDepartemenPAUD, $_SESSION['c_guru']);
+	  	$isAllDepartement   = preg_match($allDepartement, $_SESSION['c_guru']);
 
 	  	if ($dataNIS == '') {
 
@@ -150,10 +152,34 @@
 									header("Location:". "$basegu" ."createdailystudent");
 									// $curl = curl_init();
 
+
+        							// Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Guru beserta Account token nya yang ada di menu setting di wwebsite fonnte
 									// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
-									// // Nomer HP Kepsek SD
+      								// Yang akan di kirimkan notif personal, nomer Kepsek Fonnte
 									// $target = "6282110992502, 6289515998565";
+									// $txt = [];
+
+									// $original_array = ['895334303884', '82110992502/089515998565'];
+
+									// for ($i=0; $i < count($original_array); $i++) {
+										
+									//     $check = substr($original_array[$i], 0, 1);
+									    
+									//     if($check == 8) {
+									    
+									//     	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+									//     	$txt[] = $changeFormat;
+										
+									//     } 
+
+											
+									// }
+
+									// $destination_array = implode(',', $txt);
+									// // echo $destination_array;exit;
+
+									// $target = $destination_array;
 									// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
 
 									// curl_setopt_array($curl, array(
@@ -180,7 +206,7 @@
 									// curl_close($curl);
 
 									// if ($response == true) {
-										// header("Location:". "$basegu" ."createdailystudent");
+									// 	header("Location:". "$basegu" ."createdailystudent");
 									// }
 
 								} else {
@@ -245,6 +271,76 @@
 									$_SESSION['create_room_std'] = "gagal";
 									header("Location:". "$basegu" ."createdailystudent");
 								}
+
+							} else if ($isAllDepartement == 1) {
+
+								// echo "Ke sini " . $dataNIS;exit;
+
+								// Cari NIS apakah dia SD atau PAUD
+								$queryFindDepartementByNis = mysqli_query($con, "
+									SELECT c_kelas FROM siswa WHERE nis = '$dataNIS'
+								");
+
+								$getCodeKelas = mysqli_fetch_assoc($queryFindDepartementByNis)['c_kelas'];
+
+								$isDepartSD   = preg_match($findDepartemenSD, $getCodeKelas);
+
+								if ($isDepartSD == 1) {
+									$getKelas = substr($getCodeKelas, 0, 1);
+									// echo $getKelas;exit;
+
+									$createRoomChatStd = mysqli_query($con, "
+										INSERT INTO daily_siswa_approved 
+										SET 
+										departemen 		= 'SD',
+										from_nip 		= '$dataNIP',
+										nis_siswa 		= '$dataNIS',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
+
+									if ($createRoomChatStd) {
+
+										$_SESSION['create_room_std'] = "berhasil";
+										header("Location:". "$basegu" ."createdailystudent");
+
+									} else {
+										$_SESSION['create_room_std'] = "gagal";
+										header("Location:". "$basegu" ."createdailystudent");
+									}
+
+								} else {
+
+									$createRoomChatStd = mysqli_query($con, "
+										INSERT INTO daily_siswa_approved 
+										SET 
+										departemen 		= 'PAUD',
+										from_nip 		= '$dataNIP',
+										nis_siswa 		= '$dataNIS',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
+
+									if ($createRoomChatStd) {
+
+										$_SESSION['create_room_std'] = "berhasil";
+										header("Location:". "$basegu" ."createdailystudent");
+
+									} else {
+
+										$_SESSION['create_room_std'] = "gagal";
+										header("Location:". "$basegu" ."createdailystudent");
+
+									}
+
+								}
+								
 
 							}
 
@@ -365,6 +461,7 @@
 							$namaFileBaru  .= $ekstensiGambar;
 							
 							$fileBaruKepsek = $namaFileBaru;
+							$fileBaruGuru 	= $namaFileBaru;
 
 							date_default_timezone_set("Asia/Jakarta");
 
@@ -376,6 +473,7 @@
 
 			  					// echo "KESINI";exit;
 							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
+							    copy('../../../../image_uploads/' . $fileBaruGuru, '../../../../guru/image_uploads/' . $fileBaruGuru);
 							    //and so on...
 							}
 
@@ -390,6 +488,63 @@
 						      	$invID = str_pad($nomorurut, 4, '0', STR_PAD_LEFT);
 
 						      	$kodseq = "groupkelas".$invID;
+
+						      	// $curl = curl_init();
+
+								// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+								// Nomer HP Kepsek SD
+								// $target = "6282110992502, 6289515998565";
+								// $txt = [];
+
+								// $original_array = ['895334303884', '82110992502/089515998565'];
+
+								// for ($i=0; $i < count($original_array); $i++) {
+									
+								//     $check = substr($original_array[$i], 0, 1);
+								    
+								//     if($check == 8) {
+								    
+								//     	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+								//     	$txt[] = $changeFormat;
+									
+								//     } 
+
+										
+								// }
+
+								// $destination_array = implode(',', $txt);
+								// echo $destination_array;exit;
+
+								// $target = $destination_array;
+								// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+
+								// curl_setopt_array($curl, array(
+								//   CURLOPT_URL => 'https://api.fonnte.com/send',
+								//   CURLOPT_RETURNTRANSFER => true,
+								//   CURLOPT_ENCODING => '',
+								//   CURLOPT_MAXREDIRS => 10,
+								//   CURLOPT_TIMEOUT => 0,
+								//   CURLOPT_FOLLOWLOCATION => true,
+								//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+								//   CURLOPT_CUSTOMREQUEST => 'POST',
+								//   CURLOPT_POSTFIELDS => array(
+								//     'target' => $target,
+								//     'message' => $pesan,
+								//     'delay' => '3-5'
+								//   ),
+								//   CURLOPT_HTTPHEADER => array(
+								//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+								//   ),
+								// ));
+
+								// $response = curl_exec($curl);
+
+								// curl_close($curl);
+
+								// if ($response == true) {
+								// 	header("Location:". "$basegu" ."createdailystudent");
+								// }
 						      	// echo $kodseq;exit;
 
 								$createRoomChatGroup = mysqli_query($con, "

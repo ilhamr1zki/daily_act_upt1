@@ -608,7 +608,7 @@
 
 			        		<?php foreach ($getDataKomenOther as $data): ?>
 
-							    <?php if ($data['fromnip'] == $nis): ?>
+							    <?php if ($data['fromnip'] == $nisOrIdGroup): ?>
 
 							    	<div class="direct-chat-msg">
 							            <div class="direct-chat-info clearfix">

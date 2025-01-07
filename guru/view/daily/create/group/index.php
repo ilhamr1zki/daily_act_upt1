@@ -176,7 +176,7 @@
       
       <div class="box box-info">
         <div class="box-header with-border">
-          <h3 class="box-title"> <i class="fa-solid fa-users" style="margin-right: 10px;"></i> <strong> CREATE DAILY ACTIVITY - GROUP CLASS </strong> </h3>
+          <h3 class="box-title"> <i class="fa-solid fa-users" style="margin-right: 10px;"></i> <strong id="cdagrp"> CREATE DAILY ACTIVITY - GROUP CLASS </strong> </h3>
           <span style="float:right;">
             <a class="btn btn-primary" onclick="openModalSiswa()">
               <i class="fas fa-search"></i> Find Group
