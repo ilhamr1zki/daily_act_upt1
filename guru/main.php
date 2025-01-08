@@ -2092,6 +2092,14 @@ oncontextmenu="return false">
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
 
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_not_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changepassword`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
               } else if (`<?= $thisPage; ?>` != `<?= $basegu; ?>`) {
 
                 $('#formDfAppr').attr('action', `${dataRoomKey}`);
