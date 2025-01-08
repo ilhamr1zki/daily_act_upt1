@@ -145,7 +145,7 @@
 				        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
 				        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 				        <td style="text-align: center;">
-					        <form action="lookactivity" method="post">
+					        <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
 					        	<input type="hidden" name="frompage" value="<?= $diMenu; ?>">
 					        	<input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
 					        	<input type="hidden" name="nis" value="<?= strtoupper($data['nis_siswa']); ?>">

@@ -154,6 +154,58 @@ class Auth {
 
     }
 
+    public function loginNotifHeadMaster($username, $password, $rkey) {
+
+        try {
+            // Ambil data dari database
+            // echo $password;exit;
+            $login = $this->db->prepare("
+                SELECT 
+                `kepala_sekolah`.id as id_kepsek, `guru`.c_jabatan as c_jabatan, `kepala_sekolah`.nip as nip_kepsek, `kepala_sekolah`.nama as nama_kepsek, `kepala_sekolah`.username as username, `kepala_sekolah`.password as password
+                FROM kepala_sekolah
+                LEFT JOIN guru
+                ON kepala_sekolah.nip = guru.nip
+                WHERE kepala_sekolah.username = :username  
+            ");
+            $login->bindParam(":username", $username);
+            $login->execute();
+            $data = $login->fetch();
+            // Jika jumlah baris > 0
+            if ($login->rowCount() > 0) {
+                // jika password yang dimasukkan sesuai dengan yg ada di database
+                if (password_verify($password, $data['password'])) {
+                    $_SESSION['id_kepsek']          = $data['id_kepsek'];
+                    $_SESSION['name_kepsek']        = $data['nama_kepsek'];
+                    $_SESSION['nip_kepsek']         = $data['nip_kepsek'];
+                    $_SESSION['c_kepsek']           = $data['c_jabatan'];
+                    $_SESSION['username_kepsek']    = $data['username'];
+                    $_SESSION['roomkeys']           = $rkey;
+                    $_SESSION['start_sess']         = time();
+                    // Session Will Be Expired after 30 Minute
+                    $_SESSION['expire']     = $_SESSION['start_sess'] + (30 * 60);
+                    return true;
+                } else {    
+                    // echo "Salah";exit;
+                    $this->error = "Wrong Password !";
+                    $this->kode = 2;
+
+                    return false;
+                }
+
+            } else {
+
+                $this->error = "fail_login!";
+                return false;
+            }
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+    }
+
     public function loginGuru($username, $password) {
 
         try {
@@ -179,6 +231,58 @@ class Auth {
                     $_SESSION['jabatan']        = "guru";
                     $_SESSION['username_guru']  = $data['username'];
                     $_SESSION['key_guru']       = $data['c_guru'];
+                    $_SESSION['start_sess']     = time();
+                    // Session Will Be Expired after 30 Minute
+                    $_SESSION['expire']         = $_SESSION['start_sess'] + (30 * 60);
+                    return true;
+                } else {    
+                    // echo "Salah";exit;
+                    $this->error = "Wrong Password !";
+                    $this->kode = 2;
+
+                    return false;
+                }
+
+            } else {
+
+                $this->error = "fail_login!";
+                return false;
+            }
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+    }
+
+    public function loginNotifGuru($username, $password, $rkey) {
+
+        try {
+            // Ambil data dari database
+            // echo $password;exit;
+            $login = $this->db->prepare("
+                SELECT 
+                `guru`.nip as nip_guru, `guru`.c_guru as c_guru, `guru`.username as username, `guru`.c_jabatan as c_jabatan, `guru`.password as password,
+                `guru`.nama as nama
+                FROM guru
+                WHERE username = :username  
+            ");
+            $login->bindParam(":username", $username);
+            $login->execute();
+            $data = $login->fetch();
+            // Jika jumlah baris > 0
+            if ($login->rowCount() > 0) {
+                // jika password yang dimasukkan sesuai dengan yg ada di database
+                if (password_verify($password, $data['password'])) {
+                    $_SESSION['c_guru']         = $data['c_jabatan'];
+                    $_SESSION['nama_guru']      = $data['nama'];
+                    $_SESSION['nip_guru']       = $data['nip_guru'];
+                    $_SESSION['jabatan']        = "guru";
+                    $_SESSION['username_guru']  = $data['username'];
+                    $_SESSION['key_guru']       = $data['c_guru'];
+                    $_SESSION['roomkeys']       = $rkey;
                     $_SESSION['start_sess']     = time();
                     // Session Will Be Expired after 30 Minute
                     $_SESSION['expire']         = $_SESSION['start_sess'] + (30 * 60);

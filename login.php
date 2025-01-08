@@ -2,7 +2,8 @@
 
   require 'php/config.php'; 
 
-  $tes = "ada";
+  $sesiLogin  = 0;
+  $isGroup    = 0;
 
   // Cek status login user jika ada session
   if ($user->isLoggedInAdmin()) {
@@ -17,16 +18,58 @@
 
   if (!empty($_GET['on'])) {
 
-    $tes = $_GET['on'];
-    echo $tes;exit;
+    $roomkey = $_GET['on'];
+
+    // Cari Room Key Apakah Ada
+    $queryFindRoomKey = mysqli_query($con, "
+
+      SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkey'
+
+    ");
+
+    $countRoomKey = mysqli_num_rows($queryFindRoomKey);
+
+    if ($countRoomKey == 1) {
+
+      $sesiLogin = 1;
+      
+      $queryDailyStd = mysqli_query($con, "
+        SELECT id FROM daily_siswa_approved WHERE id IN (
+          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkey'
+        )
+      ");
+
+      $queryDailyGroup = mysqli_query($con, "
+        SELECT id FROM group_siswa_approved WHERE id IN (
+          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkey'
+        )
+      ");
+
+      $countDailyStd    = mysqli_num_rows($queryDailyStd);
+      $countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+      if ($countDailyStd == 1) {
+        $isGroup = 0;
+      } else if ($countDailyGroup) {
+        $isGroup = 1;
+      }
+
+    } else {
+
+      header("Location: $base");
+
+    }
 
   }
 
   $error = "no_session_error";
 
   if(isset($_POST['username']) and isset($_POST['password']) ){
-    $username   = htmlspecialchars($_POST['username']);
-    $password   = mysqli_real_escape_string($con, htmlspecialchars($_POST['password']));
+    $username         = htmlspecialchars($_POST['username']);
+    $password         = mysqli_real_escape_string($con, htmlspecialchars($_POST['password']));
+    $isFromNotif      = htmlspecialchars($_POST['fromnotif']);
+    $isRoomKey        = htmlspecialchars($_POST['room_key']);
+    $personalorgroup  = htmlspecialchars($_POST['isgroup']);
     // echo $password;exit;
 
     $role = $_POST['sebagai'];
@@ -43,25 +86,57 @@
 
     } else if ($role == 'kepsek') {
 
-      // echo "kepsek";exit;
+      if ($isFromNotif == "no") {
 
-      if ($user->loginHeadMaster($username, $password)) {
-        header("location: $basekepsek");
-      } else {
-        
-        $error      = $user->getLastError();
+        if ($user->loginHeadMaster($username, $password)) {
+          header("location: $basekepsek");
+        } else {
+          
+          $error      = $user->getLastError();
+
+        }
+
+      } else if ($isFromNotif == "yes") {
+
+        $hash = password_hash($role, PASSWORD_DEFAULT);
+
+        if ($user->loginNotifHeadMaster($username, $password, $isRoomKey)) {
+          header("location: fromnotif?role=$hash&roomkey=$isRoomKey&stdorgroup=$personalorgroup");
+        } else {
+          
+          $error      = $user->getLastError();
+
+        }
+
 
       }
 
     } else if ($role == 'guru') {
 
-      if ($user->loginGuru($username, $password)) {
-        header("location: $basegu");
-      } else {
-        
-        $error      = $user->getLastError();
+      if ($isFromNotif == "no") {
+
+        if ($user->loginGuru($username, $password)) {
+          header("location: $basegu");
+        } else {
+          
+          $error      = $user->getLastError();
+
+        }
+
+      } else if ($isFromNotif == "yes") {
+
+        $hash = password_hash($role, PASSWORD_DEFAULT);
+
+        if ($user->loginNotifGuru($username, $password, $isRoomKey)) {
+          header("location: fromnotif?role=$hash&roomkey=$isRoomKey&stdorgroup=$personalorgroup");
+        } else {
+          
+          $error      = $user->getLastError();
+
+        }
 
       }
+
 
     } else if ($role == 'otm') {
 
@@ -134,27 +209,88 @@ no-repeat center center fixed; background-size: cover;
     <?php 
       }
     ?>
-    <form action="#" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" name="username" class="form-control" placeholder="Username/NIS" required="" autocomplete="" autofocus="">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="form-group">
-        <label>*Login Sebagai </label>
-        <select name="sebagai" class="form-control form-select" id="select2">
-          <option value="admin"> ADMINISTRATOR </option> 
-          <option value="kepsek"> HEAD MASTER </option>
-          <option value="guru"> TEACHER </option>
-          <option value="otm"> PARENTS </option>
-        </select>
-      </div>
-        <button type="submit" name="submit" class="btn btn-primary btn-block btn-flat" style="font-size: 15px;">Login <i class="glyphicon glyphicon-log-in"></i></button>
 
-    </form>
+    <?php if ($sesiLogin == 1 && $isGroup == 1): ?>
+
+      <form action="#" method="post">
+        <div class="form-group has-feedback">
+          <input type="hidden" name="fromnotif" value="yes">
+          <input type="hidden" name="room_key" value="<?= $roomkey; ?>">
+          <input type="hidden" name="isgroup" value="<?= $isGroup; ?>">
+          <input type="text" name="username" class="form-control" placeholder="Username/NIS" required="" autocomplete="" autofocus="">
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group">
+          <label>*Login Sebagai </label>
+          <select name="sebagai" class="form-control form-select" id="select2">
+            <option value="kepsek"> HEAD MASTER </option>
+            <option value="guru"> TEACHER </option>
+            <option value="otm"> PARENTS </option>
+          </select>
+        </div>
+          <button type="submit" name="submit" class="btn btn-primary btn-block btn-flat" style="font-size: 15px;">Login <i class="glyphicon glyphicon-log-in"></i></button>
+
+      </form> 
+
+    <?php elseif($sesiLogin == 1 && $isGroup == 0): ?>
+
+      <form action="#" method="post">
+        <div class="form-group has-feedback">
+          <input type="hidden" name="fromnotif" value="yes">
+          <input type="hidden" name="room_key" value="<?= $roomkey; ?>">
+          <input type="hidden" name="isgroup" value="<?= $isGroup; ?>">
+          <input type="text" name="username" class="form-control" placeholder="Username/NIS" required="" autocomplete="" autofocus="">
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group">
+          <label>*Login Sebagai </label>
+          <select name="sebagai" class="form-control form-select" id="select2">
+            <option value="kepsek"> HEAD MASTER </option>
+            <option value="guru"> TEACHER </option>
+            <option value="otm"> PARENTS </option>
+          </select>
+        </div>
+          <button type="submit" name="submit" class="btn btn-primary btn-block btn-flat" style="font-size: 15px;">Login <i class="glyphicon glyphicon-log-in"></i></button>
+
+      </form> 
+
+    <?php elseif($sesiLogin == 0): ?>
+
+      <form action="#" method="post">
+        <div class="form-group has-feedback">
+          <input type="hidden" name="fromnotif" value="no">
+          <input type="hidden" name="room_key" value="kosong">
+          <input type="hidden" name="isgroup" value="kosong">
+          <input type="text" name="username" class="form-control" placeholder="Username/NIS" required="" autocomplete="" autofocus="">
+          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group">
+          <label>*Login Sebagai </label>
+          <select name="sebagai" class="form-control form-select" id="select2">
+            <option value="admin"> ADMINISTRATOR </option> 
+            <option value="kepsek"> HEAD MASTER </option>
+            <option value="guru"> TEACHER </option>
+            <option value="otm"> PARENTS </option>
+          </select>
+        </div>
+          <button type="submit" name="submit" class="btn btn-primary btn-block btn-flat" style="font-size: 15px;">Login <i class="glyphicon glyphicon-log-in"></i></button>
+
+      </form>  
+      
+    <?php endif ?>
+    
   </div>
   <!-- /.login-box-body -->
 </div>

@@ -138,7 +138,6 @@
 	        <thead style="background-color: lightyellow;">
 	            <tr>
 	                <th style="text-align: center;" width="5%">NO</th>
-		          	<th style="text-align: center;"> CREATED BY </th>
 			        <th style="text-align: center;"> GROUP CLASS </th>
 			        <th style="text-align: center;"> TITLE </th>
 		          	<th style="text-align: center;"> DATE POSTED </th>
@@ -152,7 +151,6 @@
 			      	
 			      	<tr style="background-color: limegreen; color: white; font-weight: bold;">
 				        <td style="text-align: center;">  <?= $no++; ?> </td>
-				        <td style="text-align: center;">  <?= $data['nama_guru'] ?> </td>
 				        <td style="text-align: center;">  <?= strtoupper($data['nama_group_kelas']) ?> </td>
 				        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
 				        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>

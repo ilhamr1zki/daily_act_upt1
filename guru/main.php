@@ -17,6 +17,11 @@
   
   $nama_role = $_SESSION['key_guru'];
 
+  $thisPage =  (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+  $endUrl   = substr($thisPage, strpos($thisPage, "/lookactivity") + 13);
+  // echo $endUrl;exit;
+  // echo $thisPage;exit;
+
   $is_SD      = "/SD/i";
   $is_PAUD    = "/PAUD/i";
   $is_All     = "/Kepala_Unit/i";
@@ -927,7 +932,7 @@ oncontextmenu="return false">
       <div class="modal-footer">
         
         <button type="button" id="close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="<?= $basegu; ?>lookactivity" method="POST">
+        <form id="formDfAppr" method="POST">
           <input type="hidden" id="df_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="df_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="df_nis_lookdaily" name="nis_or_idgroup_lookdaily"> 
@@ -1404,7 +1409,7 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="inpage_close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="inpg_appr" method="post">
           <input type="hidden" id="inpage_frompage_lookdaily" name="frompage_lookdaily" value="status_approved">
           <input type="hidden" id="inpage_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="inpage_nama_guru_lookdaily" name="guru_lookdaily">
@@ -2064,6 +2069,38 @@ oncontextmenu="return false">
               let dataDfTglOri      = $(this).data('tgl_ori');
               let grouporstd        = $(this).data('group_or_std');
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']");
+
+              // alert(`<?= $thisPage; ?>`)
+
+              if (`<?= $thisPage; ?>` == `<?= $basegu; ?>lookactivity/${dataRoomKey}`) {
+
+                $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailystudent`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailygroup`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_waiting_approval`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` != `<?= $basegu; ?>`) {
+
+                $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              } else {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              }
 
               if (grouporstd == 'group') {
                 $("#lbl_std_or_gp_df_appr").text('GROUP');

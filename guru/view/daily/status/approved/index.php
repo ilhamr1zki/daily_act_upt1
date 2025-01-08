@@ -287,6 +287,7 @@
 		grouporstd = stdOrGroup;
 
 		$("#inpage-approved").modal('show');
+		$('#inpg_appr').attr('action', `lookactivity/${roomKey}`);
 
 		$("#inpage_date_approved").val(dateApproved);
 		$("#inpage_pengirim_appr").val(sender);

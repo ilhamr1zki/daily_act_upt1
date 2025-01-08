@@ -122,6 +122,7 @@
 			  				$tglSkrng       = date("Y-m-d H:i:s");
 
 							$fileBaruKepsek = $namaFileBaru;
+							$fileBaruGuru 	= $namaFileBaru;
 
 							// move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
 
@@ -129,6 +130,7 @@
 
 			  					// echo "KESINI";exit;
 							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
+							    copy('../../../../image_uploads/' . $fileBaruGuru, '../../../../guru/image_uploads/' . $fileBaruGuru);
 							    //and so on...
 							}
 
