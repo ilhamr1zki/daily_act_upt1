@@ -4,14 +4,14 @@
     
   	$timeRunningOut = time() + 5;
 
-	$timeIsOut = 0;
-	$sesi      = 0;
-	$nama      = "";
-	$nis       = 0;
-	$guru      = "";
-	$key_room  = "";
-	$users     = "";
-	$sesiKomen = 1;
+	$timeIsOut 		= 0;
+	$sesi      		= 0;
+	$nama      		= "";
+	$nisoridgroup   = 0;
+	$guru      		= "";
+	$key_room  		= "";
+	$users     		= "";
+	$sesiKomen 		= 1;
 
 	$nipGuru   		= "";
 	$nipKepsek      = "";
@@ -80,6 +80,8 @@
 	$empty 			= "";
 	$countDataChat  = 0;
 
+	$isGroup 		= false;
+
 	$nisotm   = $_SESSION['c_otm'];
 
 	// echo "Waktu Habis : " . $timeOut . " Waktu Berjalan : " . $timeRunningOut;
@@ -95,22 +97,22 @@
 
   		if (isset($_POST['krm'])) {
 
-  			$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi        = $_POST['isi'];
-	  		$nipGuru    = $_POST['nipguru_lookdaily'];
-	  		$users      = $nisotm;
+  			$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisoridgroup 	= htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi        	= $_POST['isi'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
+	  		$users      	= $nisotm;
 
 	  		date_default_timezone_set("Asia/Jakarta");
 			  
-		  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-		  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		  	$tglSkrngAwal   = date("Y-m-d") . " 00:00:00";
+		  	$tglSkrngAkhir  = date("Y-m-d") . " 23:59:59";
 
 	  		$sesi 		= 1;
 
@@ -160,20 +162,21 @@
 	  		
 	  	} else if (isset($_POST['redirectLookDaily'])) {
 
-	  		$roomKey    = $_POST['roomkey_lookdaily'];
-	  		$nama 		= htmlspecialchars($_POST['nama_siswa_lookdaily']);
-	  		$nis        = htmlspecialchars($_POST['nis_lookdaily']);
-	  		$nipGuru 	= $_POST['nipguru_lookdaily'];
-	  		$guru 		= htmlspecialchars($_POST['guru_lookdaily']);
-	  		$foto 		= $_POST['foto_upload_lookdaily'];
-	  		$tglPosting = $_POST['tgl_posting_lookdaily'];
-	  		$tglOri     = $_POST['tglori_posting_lookdaily'];
-	  		$judul      = htmlspecialchars($_POST['jdl_posting_lookdaily']);
-	  		$isi 		= $_POST['isi_posting_lookdaily'];
-	  		$users      = $nisotm;
-	  		$nipKepsek  = $_POST['nipkepsek_lookdaily'];
+	  		$roomKey    	= $_POST['roomkey_lookdaily'];
+	  		$nama 			= htmlspecialchars($_POST['nama_siswa_or_groupkelas_lookdaily']);
+	  		$nisoridgroup   = htmlspecialchars($_POST['nis_or_idgroup_lookdaily']);
+	  		// echo $nisoridgroup;exit;
+	  		$nipGuru 		= $_POST['nipguru_lookdaily'];
+	  		$guru 			= htmlspecialchars($_POST['guru_lookdaily']);
+	  		$foto 			= $_POST['foto_upload_lookdaily'];
+	  		$tglPosting 	= $_POST['tgl_posting_lookdaily'];
+	  		$tglOri     	= $_POST['tglori_posting_lookdaily'];
+	  		$judul      	= htmlspecialchars($_POST['jdl_posting_lookdaily']);
+	  		$isi 			= $_POST['isi_posting_lookdaily'];
+	  		$users      	= $nisotm;
+	  		$nipKepsek  	= $_POST['nipkepsek_lookdaily'];
 
-	  		$sesi 		= 1;
+	  		$sesi 			= 1;
 
 	  		$getDataKomenOther = mysqli_query($con, "
 		      SELECT 
@@ -203,41 +206,130 @@
 		      ORDER BY tbl_komentar.id
 		    ");
 
-	  		$countDataChat = mysqli_num_rows($getDataKomenOther);
+	  		// Check Nis Or ID Group
+	  		$queryCheckNis = mysqli_query($con, "
+	  			SELECT nis FROM siswa WHERE nis = '$nisoridgroup'
+	  		");
 
-	  		date_default_timezone_set("Asia/Jakarta");
-			  
-		  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-		  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+	  		$queryCheckIdGroup = mysqli_query($con, "
+	  			SELECT id FROM group_kelas WHERE id = '$nisoridgroup'
+	  		");
 
-		  	if ($tglOri < $tglSkrngAwal) {
-		  		$sesiKomen = 0;
-		  	} else {
-		  		$sesiKomen = 1;
-		  	}
+	  		$countCheckNis 		= mysqli_num_rows($queryCheckNis);
+	  		$countCheckIDGroup 	= mysqli_num_rows($queryCheckIdGroup);
 
-		  	$fromPage   = $_POST['frompage_lookdaily'];
-	  		$key_room   = $roomKey;
+	  		if ($countCheckIDGroup == 1) {
+	  			$isGroup = true;
+
+	  			if (!empty(isset($_GET['q']))) {
+
+	  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+
+			  		date_default_timezone_set("Asia/Jakarta");
+				  	$arrTgl               = [];
+					  
+				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+				  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+
+				  	if ($tglOri < $tglSkrngAwal) {
+				  		$sesiKomen = 0;
+				  	} else {
+				  		$sesiKomen = 1;
+				  	}
+
+				  	if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
+
+			  		$key_room   = $roomKey;
+
+		  		} else {
+
+		  			$sesi = 0;
+		  			$isGroup = "noparams";
+	  				$_SESSION['data'] = 'nodata';
+
+		  		}
+
+	  		} else if ($countCheckNis == 1) {
+
+	  			if (!empty(isset($_GET['q']))) {
+
+	  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+
+			  		date_default_timezone_set("Asia/Jakarta");
+				  	$arrTgl               = [];
+					  
+				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+				  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+
+				  	if ($tglOri < $tglSkrngAwal) {
+				  		$sesiKomen = 0;
+				  	} else {
+				  		$sesiKomen = 1;
+				  	}
+
+				  	if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
+
+			  		$key_room   = $roomKey;
+
+		  		} else {
+
+		  			$sesi = 0;
+		  			$isGroup = "noparams";
+	  				$_SESSION['data'] = 'nodata';
+
+		  		}
+
+	  		}
 
 	  	} elseif (isset($_POST['send_mssg'])) {
 
-	  		$roomKey    = $_POST['roomkey'];
-	  		$nama 		= htmlspecialchars($_POST['nama']);
-	  		$nis 		= htmlspecialchars($_POST['nis']);
-	  		$guru 		= htmlspecialchars($_POST['guru']);
-	  		$foto 		= htmlspecialchars($_POST['foto']);
-	  		$tglPosting = $_POST['tglpost'];
-	  		$tglOri     = $_POST['tglori'];
-	  		$judul      = htmlspecialchars($_POST['judul']);
-	  		$isi   		= $_POST['isi'];
+	  		$roomKey    	= $_POST['roomkey'];
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisoridgroup 	= htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= $_POST['tglpost'];
+	  		$tglOri     	= $_POST['tglori'];
+	  		$judul      	= htmlspecialchars($_POST['judul']);
+	  		$isi   			= $_POST['isi'];
 
-	  		$nipGuru    = $_POST['nipguru_lookdaily'];
+	  		$nipGuru    	= $_POST['nipguru_lookdaily'];
 
-	  		$isKomen    = mysqli_real_escape_string($con, htmlspecialchars($_POST['message'])) . "istextempty";
-	  		$fromPage   = $_POST['frompage'];
+	  		$isKomen   	 	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message'])) . "istextempty";
+	  		$fromPage   	= $_POST['frompage'];
 
-	  		$foo = preg_replace('/\s+/', '  ', $isKomen);
-	  		// echo $isKomen . " " . $foo;exit;
+	  		$queryDailyStd = mysqli_query($con, "
+		        SELECT id FROM daily_siswa_approved WHERE id IN (
+		          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+		        )
+	      	");
+
+	      	$queryDailyGroup = mysqli_query($con, "
+		        SELECT id FROM group_siswa_approved WHERE id IN (
+		          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+		        )
+	      	");
+
+	      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+	      	$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+	      	if ($countDailyGroup == 1) {
+	      		$isGroup = true;
+	      	} elseif ($countDailyStd == 1) {
+	      		$isGroup = false;
+	      	}
 
 	  		if ($isKomen == "istextempty") {
 	  			// echo "Atas " . $isKomen;exit;
@@ -253,6 +345,58 @@
 			  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
 
 		  		$sesi 		= 1;
+
+		  		if (!empty(isset($_GET['q']))) {
+
+				  	$getDataKomenOther = mysqli_query($con, "
+				      	SELECT 
+				      	tbl_komentar.room_id as r_id,
+				      	tbl_komentar.code_user as fromnip,
+				      	guru.nama as nama_guru,
+				      	kepala_sekolah.nama as nama_kepsek,
+				      	siswa.nama as nama_siswa,
+				      	tbl_komentar.stamp as tanggal_kirim,
+				      	tbl_komentar.isi_komentar as pesan
+				      	FROM 
+				      	tbl_komentar 
+				      	LEFT JOIN ruang_pesan
+				      	ON tbl_komentar.room_id = ruang_pesan.room_key
+				      	LEFT JOIN guru
+				      	ON tbl_komentar.code_user = guru.nip
+				      	LEFT JOIN kepala_sekolah
+				      	ON tbl_komentar.code_user = kepala_sekolah.nip
+				      	LEFT JOIN akses_otm
+				      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+				      	LEFT JOIN siswa
+				      	ON akses_otm.nis_siswa = siswa.nis
+				      	WHERE 
+				      	ruang_pesan.room_key LIKE '%$roomKey%'
+				      	ORDER BY tbl_komentar.id
+				    ");
+
+				  	// Check Nis Or ID Group
+				  	$queryCheckGroupKelasID = mysqli_query($con, "
+				  		SELECT group_kelas_id FROM group_siswa_approved WHERE id = '$nisoridgroup'
+				  	");
+
+				  	$countCheckGroupKelasID = mysqli_num_rows($queryCheckGroupKelasID);
+
+				  	if ($countCheckGroupKelasID == 1) {
+
+				  		$nama = 'GROUP ' . $nama;
+				  		$isGroup = true;
+				  		$getDataGroupKelasID = mysqli_fetch_assoc($queryCheckGroupKelasID)['group_kelas_id'];
+				  		// echo $getDataGroupKelasID;exit;
+
+				  	}
+
+				    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				  	$fromPage   	= htmlspecialchars($_POST['frompage']);
+
+			  		$key_room   	= $roomKey;
+
+		  		}
 
 		  		$getDataKomenOther = mysqli_query($con, "
 			      SELECT 
@@ -314,6 +458,58 @@
 
 			  		$sesi 		= 1;
 
+			  		if (!empty(isset($_GET['q']))) {
+
+					  	$getDataKomenOther = mysqli_query($con, "
+					      	SELECT 
+					      	tbl_komentar.room_id as r_id,
+					      	tbl_komentar.code_user as fromnip,
+					      	guru.nama as nama_guru,
+					      	kepala_sekolah.nama as nama_kepsek,
+					      	siswa.nama as nama_siswa,
+					      	tbl_komentar.stamp as tanggal_kirim,
+					      	tbl_komentar.isi_komentar as pesan
+					      	FROM 
+					      	tbl_komentar 
+					      	LEFT JOIN ruang_pesan
+					      	ON tbl_komentar.room_id = ruang_pesan.room_key
+					      	LEFT JOIN guru
+					      	ON tbl_komentar.code_user = guru.nip
+					      	LEFT JOIN kepala_sekolah
+					      	ON tbl_komentar.code_user = kepala_sekolah.nip
+					      	LEFT JOIN akses_otm
+					      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+					      	LEFT JOIN siswa
+					      	ON akses_otm.nis_siswa = siswa.nis
+					      	WHERE 
+					      	ruang_pesan.room_key LIKE '%$roomKey%'
+					      	ORDER BY tbl_komentar.id
+					    ");
+
+					  	// Check Nis Or ID Group
+					  	$queryCheckGroupKelasID = mysqli_query($con, "
+					  		SELECT group_kelas_id FROM group_siswa_approved WHERE id = '$nisoridgroup'
+					  	");
+
+					  	$countCheckGroupKelasID = mysqli_num_rows($queryCheckGroupKelasID);
+
+					  	if ($countCheckGroupKelasID == 1) {
+
+					  		$nama = 'GROUP ' . $nama;
+					  		$isGroup = true;
+					  		$getDataGroupKelasID = mysqli_fetch_assoc($queryCheckGroupKelasID)['group_kelas_id'];
+					  		// echo $getDataGroupKelasID;exit;
+
+					  	}
+
+					    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+					  	$fromPage   	= htmlspecialchars($_POST['frompage']);
+
+				  		$key_room   	= $roomKey;
+
+			  		}
+
 			  		$getDataKomenOther = mysqli_query($con, "
 				      SELECT 
 				      tbl_komentar.room_id as r_id,
@@ -373,7 +569,7 @@
 			  		$sqlInsertChat  = mysqli_query($con, "
 						INSERT INTO tbl_komentar 
 						SET 
-						code_user 		= '$nis', 
+						code_user 		= '$nisotm', 
 						isi_komentar  	= '$isi_komen', 
 						room_id   		= '$roomKey'
 					");
@@ -494,31 +690,216 @@
 			      </div>
 			      <!-- /.box-header -->
 			      <div class="box-body">
-			        <h4 style="color: black;"> TITLE : <?= $judul; ?>  </h4>
+			        <h4 style="color: black;"> <strong> TITLE : </strong> <?= $judul; ?>  </h4>
 			        <img class="img-responsive pad" src="<?= $base; ?>image_uploads/<?= $foto; ?>" alt="Photo" style="width: auto; height: 300px;">
 			        <?= $isi; ?>
 			      </div>
 
 			    </div>
 
-			    <div class="tombol-hide" style="display: none;">
-			    	<form action="lookactivity" method="post">
-			    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
-			    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-			        	<input type="hidden" name="nis" value="<?= $nis; ?>">
-			        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
-			        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
-			        	<input type="hidden" name="foto" value="<?= $foto; ?>">
-			        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
-			        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
-			        	<input type="hidden" name="judul" value="<?= $judul; ?>">
-			    		<input type="hidden" name="isi" value="<?= $isi; ?>">
-			    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
-			    		<button type="hidden" name="krm" id="try"> send hide </button>
-			    	</form>
-			    </div>
+			    <?php if (!empty(isset($_GET['q']) ) && isset($_POST['roomkey_lookdaily']) ): ?>
 
-			    <!-- /.box -->
+			    	<?php  
+
+			    		$queryDailyStd = mysqli_query($con, "
+					        SELECT id FROM daily_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+					        )
+				      	");
+
+			    		$queryDailyGroup = mysqli_query($con, "
+					        SELECT id FROM group_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+					        )
+				      	");
+
+				      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+      					$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+			    	?>
+
+			    	<?php  
+
+		    			$getDataGroupKelasID = $nisoridgroup;
+
+		    		?>
+
+			    	<?php if ($countDailyGroup == 1): ?>
+
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_group"> send hide </button>
+					    	</form>
+					    </div>
+
+			    	<?php elseif($countDailyStd == 1): ?>
+			    		
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_std"> send hide </button>
+					    	</form>
+					    </div>
+
+			    	<?php endif ?>
+			    	
+			    <?php elseif(!empty(isset($_GET['q']) ) && isset($_POST['krm'])): ?>
+
+			    	<?php  
+
+			    		$queryDailyStd = mysqli_query($con, "
+					        SELECT id FROM daily_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$_GET[q]'
+					        )
+				      	");
+
+			    		$queryDailyGroup = mysqli_query($con, "
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$_GET[q]'
+					        )
+				      	");
+
+				      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+      					$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+			    	?>
+
+			    	<?php if ($countDailyGroup == 1): ?>
+
+			    		<?php  
+
+			    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+			    		?>
+
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_group"> send hide </button>
+					    	</form>
+					    </div>
+
+			    	<?php elseif($countDailyStd == 1): ?>
+
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_std"> send hide </button>
+					    	</form>
+					    </div>
+			    		
+			    	<?php endif ?>
+
+			    <?php else: ?>
+
+			    	<?php  
+
+			    		$queryDailyStd = mysqli_query($con, "
+					        SELECT id FROM daily_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+					        )
+				      	");
+
+			    		$queryDailyGroup = mysqli_query($con, "
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+					        )
+				      	");
+
+				      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+      					$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+			    	?>
+
+			    	<?php if ($countDailyGroup == 1): ?>
+
+			    		<?php  
+
+			    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+			    		?>
+
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_group"> send hide </button>
+					    	</form>
+					    </div>
+
+			    	<?php elseif($countDailyStd == 1): ?>
+
+			    		<div class="tombol-hide" style="display: none;">
+					    	<form action="<?= $roomKey; ?>" method="post">
+					    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+					        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+					        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+					        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+					        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+					        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+					        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+					        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+					    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+					    		<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+					    		<button type="hidden" name="krm" id="try_std"> send hide </button>
+					    	</form>
+					    </div>
+			    		
+			    	<?php endif ?>
+
+			    <?php endif ?>
+
 			</div>
 		 	
 		 	<div class="col-md-5">
@@ -598,28 +979,211 @@
 			      <!-- /.box-body -->
 			      <div class="box-footer">
 			        <span class="input-group-btn">
-	                  <button id="refresh_btn" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+
+			        	<?php if (isset($_POST['redirectLookDaily'])): ?>
+
+			        		<?php 
+
+		        				$query_DailyGroup = mysqli_query($con, "
+							        SELECT id FROM group_siswa_approved WHERE id IN (
+							          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+							        )
+						      	");
+
+						      	$count_DailyGroup  = mysqli_num_rows($query_DailyGroup);
+
+	        			 	?>
+
+	        			 	<?php if ($count_DailyGroup == 1): ?>
+
+	        			 		<button id="refresh_btn_group" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $_GET['q']; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+
+						    <?php elseif($count_DailyGroup == 0): ?>
+
+						    	<button id="refresh_btn_std" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $_GET['q']; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+	        			 		
+	        			 	<?php endif ?>
+			        		
+		        		<?php elseif(isset($_POST['send_mssg'])): ?>
+
+		        			<?php 
+
+		        				$query_DailyGroup = mysqli_query($con, "
+							        SELECT id FROM group_siswa_approved WHERE id IN (
+							          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+							        )
+						      	");
+
+						      	$count_DailyGroup  = mysqli_num_rows($query_DailyGroup);
+
+	        			 	?>
+
+	        			 	<?php if ($count_DailyGroup == 1): ?>
+
+	        			 		<button id="refresh_btn_group" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $_GET['q']; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+
+	        			 	<?php elseif($count_DailyGroup == 0): ?>
+
+	        			 		<button id="refresh_btn_std" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $_GET['q']; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+	        			 		
+	        			 	<?php endif ?>
+
+			        	<?php else: ?>
+
+			        		<?php  
+
+	        					$queryDailyStd = mysqli_query($con, "
+							        SELECT id FROM daily_siswa_approved WHERE id IN (
+							          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+							        )
+						      	");
+
+					    		$queryDailyGroup = mysqli_query($con, "
+							        SELECT id FROM group_siswa_approved WHERE id IN (
+							          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+							        )
+						      	");
+
+						      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+		      					$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+	        				?>
+
+	        				<?php if ($countDailyGroup == 1): ?>
+
+	        					<button id="refresh_btn_group" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $roomKey; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+
+	        				<?php elseif($countDailyStd == 1): ?>
+
+	        					<button id="refresh_btn_std" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+
+	        			 		<form action="<?= $roomKey; ?>" method="post">
+						          	<div class="input-group" id="tombolComment">
+						            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+						            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+						            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+							        	<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
+							        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+							        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+							        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+							        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+							        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+							        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+							        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
+						                <span class="input-group-btn">
+						                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
+						                </span>
+						          	</div>
+						        </form>
+	        					
+	        				<?php endif ?>
+
+			        	<?php endif ?>
+
 	                </span>
 
-			        <form action="lookactivity" method="post">
-			          <div class="input-group" id="tombolComment">
-			            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
-			            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
-			            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
-				        	<input type="hidden" name="nis" value="<?= $nis; ?>">
-				        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
-				        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
-				        	<input type="hidden" name="foto" value="<?= $foto; ?>">
-				        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
-				        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
-				        	<input type="hidden" name="judul" value="<?= $judul; ?>">
-				        	<input type="hidden" name="isi" value="<?= $isi; ?>">
-				        	<input type="hidden" name="nipguru_lookdaily" value="<?= $nipGuru; ?>">
-			                <span class="input-group-btn">
-			                  <button type="submit" name="send_mssg" id="send-btn" class="btn btn-success btn-flat">Send</button>
-			                </span>
-			          </div>
-			        </form>
 			      </div>
 			      <!-- /.box-footer-->
 			    </div>
@@ -638,16 +1202,16 @@
 
 						<form action="<?= $basewam; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
 
-					<?php else: ?>
+					<?php elseif($fromPage == "querydailystudent"): ?>
 
-						<form action="querydailystudent" method="post">
+						<form action="<?= $basewam; ?><?= $fromPage; ?>" method="post">
 							<input type="hidden" name="nama" value="<?= $nama; ?>">
-							<input type="hidden" name="nis" value="<?= $nis; ?>">
+							<input type="hidden" name="nis" value="<?= $nisoridgroup; ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_student"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -807,18 +1371,28 @@
 
 		}
 
-    	if (`<?= $nis; ?>` == 0) {
-			setTimeout(() => {
-				location.href = `<?= $basegu; ?>querydailystudent`
-			}, 1000);
+    	if (`<?= $nisoridgroup; ?>` == 0) {
+			if (`<?= $isGroup; ?>` == "noparams") {
+				setTimeout(() => {
+					location.href = `<?= $basewam; ?>querydailygroup`
+				}, 1000);	
+			} else {
+				setTimeout(() => {
+					location.href = `<?= $basewam; ?>querydailystudent`
+				}, 1000);
+			}
 		} else {
 
 			$('#comments-box').scrollTop($('#comments-box')[0].scrollHeight);
 
 			if (komenSes != 0) {
 				
-				$("#refresh_btn").click(function(){
-					$("#try").click();
+				$("#refresh_btn_group").click(function(){
+					$("#try_group").click();
+				});
+
+				$("#refresh_btn_std").click(function(){
+					$("#try_std").click();
 				});
 
 			}
@@ -856,10 +1430,23 @@
 
 	    function clickSubMenu() {
 	      $("#isiList2").click();
-	      $("#query_data_siswa").css({
+
+	      if (`<?= $isGroup; ?>`) {
+
+	      	$("#query_data_group").css({
 	          "background-color" : "#ccc",
 	          "color" : "black"
-	      });
+	      	});
+
+	      } else {
+
+	      	$("#query_data_siswa").css({
+	          "background-color" : "#ccc",
+	          "color" : "black"
+	      	});
+
+	      }
+	      
 	    }
 
 	    // // Send button click event
@@ -885,8 +1472,18 @@
 
 		let newIcon = document.getElementById("addIcon");
 		newIcon.classList.remove("fa");
-		newIcon.classList.add("glyphicon");
-		newIcon.classList.add("glyphicon-zoom-in");
+
+		if (`<?= $isGroup; ?>`) {
+
+			newIcon.classList.add("fa");
+			newIcon.classList.add("fa-users");
+
+		} else {
+
+			newIcon.classList.add("fa");
+			newIcon.classList.add("fa-user");
+
+		}
 
 		let getTitleList1 = document.getElementById('isiList2').innerHTML;
 		$("#isiMenu").css({
@@ -895,7 +1492,12 @@
 
 		let createElementSpanNama = document.createElement('span')
 		createElementSpanNama.id  = 'spanIsiNama'
-		createElementSpanNama.textContent += `<?= $nama; ?>`
+
+		if (`<?= $isGroup; ?>`) {
+			createElementSpanNama.textContent += "GROUP " + `<?= $nama; ?>`
+		} else {
+			createElementSpanNama.textContent += `<?= $nama; ?>`
+		}
 
 		elementWrap.appendChild(createElementSpanNama)
 

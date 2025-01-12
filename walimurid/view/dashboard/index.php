@@ -17,8 +17,21 @@
   	$siswa_sd      	= "/SD/i";
 
     $foundDataSD    = preg_match($siswa_sd, $kelas_siswa);
+    $isGroup 		= false;
 
     $nipkepsek      = "";
+
+    $getIdGroup 	= "";
+
+    $dataTypeDaily 		= [];
+    $dataRoomKey 		= [];
+    $dataNipGuru    	= [];
+    $dataNamaGuru 		= [];
+    $dataIdGroupOrNis 	= [];
+    $dataFotoUpload 	= [];
+    $dataJudulDaily 	= [];
+    $dataIsiDaily 		= [];
+    $dataTglDaily 		= [];
 
     if ($foundDataSD == 1) {
     	$nipkepsek = "2019032";
@@ -55,7 +68,7 @@
 	    error_reporting(1);
 	      // exit;
 
-	 } else {
+ 	} else {
 
 	 	date_default_timezone_set("Asia/Jakarta");
 	  	$arrTgl               = [];
@@ -63,16 +76,24 @@
 	  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
 	  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
 
+	  	// Cari Id Group Kelas berdasarkan Nis Siswa
+	 	$queryFindIdGroup = mysqli_query($con, "
+	 		SELECT group_kelas FROM siswa
+	 		WHERE nis = '$nis'
+	 	");
+
+	 	$idGroup = mysqli_fetch_assoc($queryFindIdGroup)['group_kelas'];
+
 	 	$queryGetDataActSiswa = mysqli_query($con, "
-	 		SELECT 
+ 			SELECT 
 	 		guru.nip as nip_guru,
 	 		guru.nama as nama_guru,
-	 		siswa.nis as nis_siswa,
-	 		siswa.nama as nama_siswa,
+	 		siswa.nis AS nis_or_id_group_kelas,
+	 		siswa.nama as nama_siswa_or_group,
 	 		ruang_pesan.room_key as room_key,
 	 		daily_siswa_approved.title_daily as judul_daily,
 	 		daily_siswa_approved.isi_daily as isi_daily,
-	 		daily_siswa_approved.tanggal_disetujui_atau_tidak as tanggal_disetujui_atau_tidak,
+	 		daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
 	 		daily_siswa_approved.image as foto_upload
 	 		FROM daily_siswa_approved
 	 		LEFT JOIN guru
@@ -82,17 +103,33 @@
 	 		LEFT JOIN ruang_pesan
 	 		ON daily_siswa_approved.id = ruang_pesan.daily_id
 	 		WHERE daily_siswa_approved.nis_siswa = '$nis'
-	 		AND daily_siswa_approved.stamp >= '$tglSkrngAwal' AND daily_siswa_approved.stamp <= '$tglSkrngAkhir'
+	 		AND daily_siswa_approved.tanggal_dibuat >= '$tglSkrngAwal' 
+			AND daily_siswa_approved.tanggal_dibuat <= '$tglSkrngAkhir'
 	 		AND daily_siswa_approved.status_approve = 1
-	 		ORDER BY daily_siswa_approved.tanggal_dibuat DESC
+	 		UNION
+	 		SELECT 
+	 		group_siswa_approved.from_nip as nip_guru,
+	 		guru.nama as nama_guru,
+	 		group_kelas.id AS id_group,
+	 		group_kelas.nama_group_kelas as nama_group,
+	 		ruang_pesan.room_key as room_key,
+	 		group_siswa_approved.title_daily as judul_daily,
+	 		group_siswa_approved.isi_daily as isi_daily,
+	 		group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+	 		group_siswa_approved.image as foto_upload
+	 		FROM group_siswa_approved
+	 		LEFT JOIN guru
+	 		ON group_siswa_approved.from_nip = guru.nip
+	 		LEFT JOIN ruang_pesan
+	 		ON group_siswa_approved.id = ruang_pesan.daily_id
+	 		LEFT JOIN group_kelas
+	 		ON group_kelas.id = group_siswa_approved.group_kelas_id
+	 		WHERE group_siswa_approved.group_kelas_id = '$idGroup'
+	 		AND group_siswa_approved.tanggal_dibuat >= '$tglSkrngAwal' 
+			AND group_siswa_approved.tanggal_dibuat <= '$tglSkrngAkhir'
+	 		AND group_siswa_approved.status_approve = 1	
+	 		ORDER BY tgl_posted DESC
 	 	");
-
-	 // 	foreach ($queryGetDataActSiswa as $data) {
-		//  	$tampungDataNis[] = $data['nis_siswa'];
-		//  	$tampungDataPw[]  = $data['password'];
-		// }
-
-	 // 	$queryGetGuru = mysqli_query($con, "SELECT nama FROM guru ");
 
 	 }
 
@@ -114,7 +151,7 @@
 
 	    <table id="list_siswa" class="table table-bordered table-hover">
 	      <thead>
-	        <tr style="background-color: lightyellow;">
+	        <tr style="background-color: grey; color: white;">
 	          <th style="text-align: center;" width="5%">NO</th>
 	          <th style="text-align: center;"> FROM TEACHER </th>
 	          <th style="text-align: center;"> ACTIVITY TITLE </th>
@@ -125,25 +162,76 @@
 	      <tbody>
 
 	      	<?php foreach ($queryGetDataActSiswa as $act_siswa): ?>
+
+	      		<?php  
+
+	      			$nisOrGroupID = $act_siswa['nis_or_id_group_kelas'];
+	      			// echo $nisOrGroupID;exit;
+
+	      			// Check Group Id
+	      			$queryCheckDataIdGroup = mysqli_query($con, "
+	      				SELECT id FROM group_kelas WHERE id = '$nisOrGroupID'
+	      			");
+
+	      			// Check Nis
+	      			$queryCheckDataNIS = mysqli_query($con, "
+	      				SELECT nama FROM siswa WHERE nis = '$nisOrGroupID'
+	      			");
+
+	      			$countIdGroup 	= mysqli_num_rows($queryCheckDataIdGroup);
+
+	      			// echo $countIdGroup;exit;
+
+	      			$countNis 		= mysqli_num_rows($queryCheckDataNIS);
+
+	      		?>
+
+	      		<?php if ($countIdGroup == 1): ?>
+
+	      			<tr id="tr_dashboard" style="text-align: center; background-color: greenyellow;" onclick="showDataOTM(
+	      				`group`,
+		      			`<?= $act_siswa['room_key']; ?>`,
+		      			`<?= $act_siswa['tgl_posted']; ?>`,
+		      			`<?= format_tgl_indo($act_siswa['tgl_posted']); ?>`,
+		      			`<?= $act_siswa['nip_guru']; ?>`,
+		      			`<?= strtoupper($act_siswa['nama_guru']); ?>`,
+		      			`<?= strtoupper($act_siswa['nama_siswa_or_group']); ?>`,
+		      			`<?= $act_siswa['nis_or_id_group_kelas']; ?>`,
+		      			`<?= $act_siswa['foto_upload']; ?>`,
+		      			`<?= $act_siswa['judul_daily']; ?>`,
+		      			`<?= $act_siswa['isi_daily']; ?>`,
+		      			`<?= $nipkepsek; ?>`
+		      		)">
+			        	<td> <?= $no++; ?> </td>
+			        	<td> <?= strtoupper($act_siswa['nama_guru']); ?> </td>
+			        	<td> <?= $act_siswa['judul_daily']; ?> </td>
+			        	<td> <?= format_tgl_indo($act_siswa['tgl_posted']); ?> </td>
+			        </tr>
+
+	      		<?php elseif($countNis == 1): ?>
+
+	      			<tr id="tr_dashboard" style="text-align: center; background-color: aqua;" onclick="showDataOTM(
+	      				`std`,
+		      			`<?= $act_siswa['room_key']; ?>`,
+		      			`<?= $act_siswa['tgl_posted']; ?>`,
+		      			`<?= format_tgl_indo($act_siswa['tgl_posted']); ?>`,
+		      			`<?= $act_siswa['nip_guru']; ?>`,
+		      			`<?= strtoupper($act_siswa['nama_guru']); ?>`,
+		      			`<?= strtoupper($act_siswa['nama_siswa_or_group']); ?>`,
+		      			`<?= $act_siswa['nis_or_id_group_kelas']; ?>`,
+		      			`<?= $act_siswa['foto_upload']; ?>`,
+		      			`<?= $act_siswa['judul_daily']; ?>`,
+		      			`<?= $act_siswa['isi_daily']; ?>`,
+		      			`<?= $nipkepsek; ?>`
+		      		)">
+			        	<td> <?= $no++; ?> </td>
+			        	<td> <?= strtoupper($act_siswa['nama_guru']); ?> </td>
+			        	<td> <?= $act_siswa['judul_daily']; ?> </td>
+			        	<td> <?= format_tgl_indo($act_siswa['tgl_posted']); ?> </td>
+			        </tr>
+	      			
+	      		<?php endif ?>
 	      		
-	      		<tr id="tr_dashboard" style="text-align: center; background-color: aliceblue;" onclick="showDataOTM(
-	      			`<?= $act_siswa['room_key']; ?>`,
-	      			`<?= $act_siswa['tanggal_disetujui_atau_tidak']; ?>`,
-	      			`<?= format_tgl_indo($act_siswa['tanggal_disetujui_atau_tidak']); ?>`,
-	      			`<?= $act_siswa['nip_guru']; ?>`,
-	      			`<?= strtoupper($act_siswa['nama_guru']); ?>`,
-	      			`<?= strtoupper($act_siswa['nama_siswa']); ?>`,
-	      			`<?= $act_siswa['nis_siswa']; ?>`,
-	      			`<?= $act_siswa['foto_upload']; ?>`,
-	      			`<?= $act_siswa['judul_daily']; ?>`,
-	      			`<?= $act_siswa['isi_daily']; ?>`,
-	      			`<?= $nipkepsek; ?>`
-	      		)">
-		        	<td> <?= $no++; ?> </td>
-		        	<td> <?= strtoupper($act_siswa['nama_guru']); ?> </td>
-		        	<td> <?= $act_siswa['judul_daily']; ?> </td>
-		        	<td> <?= format_tgl_indo($act_siswa['tanggal_disetujui_atau_tidak']); ?> </td>
-		        </tr>
 
 	      	<?php endforeach ?>
 		        
@@ -156,7 +244,7 @@
 
 <script type="text/javascript">
 	
-	function showDataOTM(roomKey, dateOri, datePosted, nipguru, guru, siswa, nis, photo, title, desc, kepsek) {
+	function showDataOTM(stdOrGroup, roomKey, dateOri, datePosted, nipguru, guru, siswa, nis, photo, title, desc, kepsek) {
 
 		$("#modal-hg-appr").modal('show');
 
@@ -165,6 +253,14 @@
 		$("#hg_siswa_daily_appr").val(siswa)
 		$("#thg_itle_daily_appr").val(title);
 		$("#hg_main_daily_appr").html(desc)
+
+		if (stdOrGroup == "std") {
+			$("#lbl_std_or_group").text("STUDENT");
+		} else if (stdOrGroup == "group") {
+			$("#lbl_std_or_group").text("GROUP");
+		}
+
+		$('#formHgAppr').attr('action', `lookactivity/${roomKey}`);
 
 		let image     = document.querySelector("img[id='hg_foto_upload_appr']");
 		image.setAttribute("src", `../image_uploads/${photo}`);

@@ -2661,7 +2661,7 @@ oncontextmenu="return false">
       "lengthChange": true,
       "searching": true,
       "ordering": true,
-      "info": false,
+      "info": true,
       "autoWidth": false
     });
 

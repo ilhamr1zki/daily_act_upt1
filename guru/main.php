@@ -1556,7 +1556,7 @@ oncontextmenu="return false">
                   
                 </ul>
               </li>
-              <li class="footer"><a href="status_approved" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Status Approved </a> </li>
+              <li class="footer"><a href="<?= $basegu; ?>status_approved" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Status Approved </a> </li>
             </ul>
           </li>
 
@@ -2107,6 +2107,8 @@ oncontextmenu="return false">
               } else {
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+                $("#lookdaily_appr").attr('name', 'daily_group');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
 
               }
 
@@ -2303,7 +2305,7 @@ oncontextmenu="return false">
       "lengthChange": true,
       "searching": true,
       "ordering": false,
-      "info": false,
+      "info": true,
       "autoWidth": false
     });
 

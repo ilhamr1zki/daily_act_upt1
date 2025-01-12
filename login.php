@@ -181,6 +181,12 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+
+    <style type="text/css">
+      #sh_pw {
+        cursor: pointer;
+      }
+    </style>
   
 </head>
 
@@ -221,8 +227,12 @@ no-repeat center center fixed; background-size: cover;
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
+          <input type="password" name="password" id="pw" class="form-control" placeholder="Password" required="" autocomplete="off">
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <label> SHOW PASSWORD </label>
+          <i class="glyphicon glyphicon-eye-close" id="sh_pw"></i>
         </div>
         <div class="form-group">
           <label>*Login Sebagai </label>
@@ -247,8 +257,8 @@ no-repeat center center fixed; background-size: cover;
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          <input type="password" name="password" id="pw" class="form-control eye_paswd2" placeholder="Password" required="" autocomplete="off">
+          <span class="glyphicon glyphicon-eye-close form-control-feedback openeye2"></span>
         </div>
         <div class="form-group">
           <label>*Login Sebagai </label>
@@ -273,8 +283,12 @@ no-repeat center center fixed; background-size: cover;
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off">
-          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          <input type="password" name="password" id="pw" class="form-control eye_paswd3" placeholder="Password" required="" autocomplete="off">
+          <span id="myCheck" class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <label> SHOW PASSWORD </label>
+          <i class="glyphicon glyphicon-eye-close" id="sh_pw"></i>
         </div>
         <div class="form-group">
           <label>*Login Sebagai </label>
@@ -304,6 +318,24 @@ no-repeat center center fixed; background-size: cover;
 <!-- Select2 -->
 <script src="theme/plugins/select2/select2.full.min.js"></script>
 <script>
+
+  function myFunction() {
+    document.getElementById("myCheck").click();
+  } 
+
+  $("#sh_pw").click(function(){
+    let x = document.getElementById("pw");
+      if (x.type === "password") {
+        x.type = "text";
+        $(this).removeClass("glyphicon-eye-close")
+        $(this).addClass("glyphicon-eye-open")
+      } else {
+        x.type = "password";
+        $(this).removeClass("glyphicon-eye-open")
+        $(this).addClass("glyphicon-eye-close")
+    }
+  })
+
   $(function () {
     //Initialize Select2 Elements
     $("#select2").select2();

@@ -155,19 +155,20 @@
 				        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
 				        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 				        <td style="text-align: center;">
-					        <form action="lookactivity" method="post">
-					        	<input type="hidden" name="frompage" value="<?= $diMenu; ?>">
-					        	<input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
+					        <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
+					        	<input type="hidden" name="frompage_lookdaily" value="<?= $diMenu; ?>">
+					        	<input type="hidden" name="roomkey_group_lookdaily" value="<?= $data['room_key']; ?>">
 					        	<input type="hidden" name="id_group_approved" value="<?= $data['id_group_approved']; ?>">
-					        	<input type="hidden" name="nama" value="<?= strtoupper($data['nama_group_kelas']); ?>">
-					        	<input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
-					        	<input type="hidden" name="foto" value="<?= strtoupper($data['foto_upload']); ?>">
-					        	<input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
+					        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>"> 
+					        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
+					        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
+					        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+					        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
 					        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
-					        	<input type="hidden" name="tglori" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
-					        	<input type="hidden" name="judul" value="<?= $data['judul_daily']; ?>">
-					        	<input type="hidden" name="isi" value="<?= $data['isi_daily']; ?>">
-					        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="krm_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
+					        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
+					        	<input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul_daily']; ?>">
+					        	<input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+					        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
 					        </form>
 					    </td>
 			      	</tr>

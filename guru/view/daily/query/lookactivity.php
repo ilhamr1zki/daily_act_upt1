@@ -29,6 +29,7 @@
 
 	$is_SD      = "/SD/i";
   	$is_PAUD    = "/PAUD/i";
+  	$dbGroup    = [];
 
   	function tgl_indo($date){  
 	    $tanggal_indo = date_create($date);
@@ -190,10 +191,10 @@
 	  		$foto 			= htmlspecialchars($_POST['foto']);
 	  		$tglPosting 	= htmlspecialchars($_POST['tglpost']);
 	  		$tglOri     	= htmlspecialchars($_POST['tglori']);
-	  		$judul      	= htmlspecialchars($_POST['judul']);
-	  		$isi        	= htmlspecialchars($_POST['isi']);
+	  		$judul      	= $_POST['judul'];
+	  		$isi        	= $_POST['isi'];
 	  		$nipGuru    	= htmlspecialchars($_POST['nipguru_lookdaily']);
-	  		$users      	= $nipKepsek;
+	  		$users      	= $nipGuru;
 
 	  		date_default_timezone_set("Asia/Jakarta");
 			  
@@ -245,14 +246,20 @@
 
 			  	if ($countCheckGroupKelasID == 1) {
 
-			  		$nama = 'GROUP ' . $nama;
 			  		$isGroup = true;
 			  		$getDataGroupKelasID = mysqli_fetch_assoc($queryCheckGroupKelasID)['group_kelas_id'];
 			  		// echo $getDataGroupKelasID;exit;
 
 			  	}
 
+			  	if ($foundDataSD == 1) {
+			  		$nipKepsek = "2019032";
+			  	} else if ($foundDataPAUD == 1) {
+			  		$nipKepsek = "2019034";
+			  	}
+
 			    $countDataChat = mysqli_num_rows($getDataKomenOther);
+			    // echo $countDataChat;exit;
 
 			  	$fromPage   	= htmlspecialchars($_POST['frompage']);
 
@@ -327,7 +334,6 @@
 
 	  		if ($countCheckIDGroup == 1) {
 
-	  			$nama = 'GROUP ' . $nama;
 	  			$isGroup = true;
 
 	  			if (!empty(isset($_GET['q']))) {
@@ -426,7 +432,7 @@
 
 	  		$key_room   = $roomKey;
 
-	  	} elseif (isset($_POST['send_mssg'])) {
+	  	} else if (isset($_POST['send_mssg'])) {
 
 	  		$roomKey    	= htmlspecialchars($_POST['roomkey']);
 	  		$nama 			= htmlspecialchars($_POST['nama']);
@@ -641,6 +647,323 @@
 
 		  		} 
 
+	  	} else if (isset($_POST['send_mssg_grp'])) {
+
+	  		$roomKey    	= htmlspecialchars($_POST['roomkey']);
+	  		$nama 			= htmlspecialchars($_POST['nama']);
+	  		$nisOrIdGroup	= htmlspecialchars($_POST['nis']);
+	  		$guru 			= htmlspecialchars($_POST['guru']);
+	  		$foto 			= htmlspecialchars($_POST['foto']);
+	  		$tglPosting 	= htmlspecialchars($_POST['tglpost']);
+	  		$tglOri     	= htmlspecialchars($_POST['tglori']);
+	  		$judul      	= $_POST['judul'];
+	  		$isi   			= $_POST['isi'];
+	  		$users      	= $nipGuru;
+
+	  		$isKomen    	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
+	  		$fromPage   	= htmlspecialchars($_POST['frompage']);
+
+	  		$queryDailyStd = mysqli_query($con, "
+		        SELECT id FROM daily_siswa_approved WHERE id IN (
+		          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+		        )
+	      	");
+
+	      	$queryDailyGroup = mysqli_query($con, "
+		        SELECT id FROM group_siswa_approved WHERE id IN (
+		          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+		        )
+	      	");
+
+	      	$countDailyStd    = mysqli_num_rows($queryDailyStd);
+	      	$countDailyGroup  = mysqli_num_rows($queryDailyGroup);
+
+	      	if ($countDailyGroup == 1) {
+	      		$isGroup = true;
+	      	} elseif ($countDailyStd == 1) {
+	      		$isGroup = false;
+	      	}
+
+	      	if ($isKomen == NULL) {
+
+	  			$empty = "empty_comment";
+
+	  			date_default_timezone_set("Asia/Jakarta");
+			  	$arrTgl               = [];
+				
+			  	$countDataChat = 0;
+
+			  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+			  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+		  		$sesi 		= 1;
+
+		  		if (!empty(isset($_GET['q']))) {
+
+				  	$getDataKomenOther = mysqli_query($con, "
+				      	SELECT 
+				      	tbl_komentar.room_id as r_id,
+				      	tbl_komentar.code_user as fromnip,
+				      	guru.nama as nama_guru,
+				      	kepala_sekolah.nama as nama_kepsek,
+				      	siswa.nama as nama_siswa,
+				      	tbl_komentar.stamp as tanggal_kirim,
+				      	tbl_komentar.isi_komentar as pesan
+				      	FROM 
+				      	tbl_komentar 
+				      	LEFT JOIN ruang_pesan
+				      	ON tbl_komentar.room_id = ruang_pesan.room_key
+				      	LEFT JOIN guru
+				      	ON tbl_komentar.code_user = guru.nip
+				      	LEFT JOIN kepala_sekolah
+				      	ON tbl_komentar.code_user = kepala_sekolah.nip
+				      	LEFT JOIN akses_otm
+				      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+				      	LEFT JOIN siswa
+				      	ON akses_otm.nis_siswa = siswa.nis
+				      	WHERE 
+				      	ruang_pesan.room_key LIKE '%$roomKey%'
+				      	ORDER BY tbl_komentar.id
+				    ");
+
+				  	$nama = 'GROUP ' . $nama;
+
+				    $countDataChat 	= mysqli_num_rows($getDataKomenOther);
+
+				  	$fromPage   	= htmlspecialchars($_POST['frompage']);
+
+			  		$key_room   	= $roomKey;
+
+			  		if ($tglOri < $tglSkrngAwal) {
+				  		$sesiKomen = 0;
+				  	} else {
+				  		$sesiKomen = 1;
+				  	}
+
+				  	if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
+
+		  		} else {
+
+		  			$sesi = 0;
+	  				$_SESSION['data'] = 'nodata';
+
+		  		}
+
+	  		} else {
+
+	  			date_default_timezone_set("Asia/Jakarta");
+			  	$arrTgl               = [];
+				
+			  	$countDataChat = 0;
+
+			  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+			  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+		  		$sesi 		= 1;
+
+		  		if ($isKomen != "kosongx") {
+
+		  			$sqlInsertChat  = mysqli_query($con, "
+						INSERT INTO tbl_komentar 
+						SET 
+						code_user 		= '$users', 
+						isi_komentar  	= '$isKomen', 
+						room_id   		= '$roomKey'
+					");
+
+					if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
+					    
+						$getDataKomenOther = mysqli_query($con, "
+					      SELECT 
+					      tbl_komentar.room_id as r_id,
+					      tbl_komentar.code_user as fromnip,
+					      guru.nama as nama_guru,
+					      siswa.nama as nama_siswa,
+					      kepala_sekolah.nama as nama_kepsek,
+					      tbl_komentar.stamp as tanggal_kirim,
+					      tbl_komentar.isi_komentar as pesan
+					      FROM 
+					      tbl_komentar 
+					      LEFT JOIN ruang_pesan
+					      ON tbl_komentar.room_id = ruang_pesan.room_key
+					      LEFT JOIN guru
+					      ON tbl_komentar.code_user = guru.nip
+					      LEFT JOIN daily_siswa_approved
+					      ON ruang_pesan.daily_id = daily_siswa_approved.id
+					      LEFT JOIN akses_otm
+					      ON tbl_komentar.code_user = akses_otm.nis_siswa
+					      LEFT JOIN siswa
+					      ON akses_otm.nis_siswa = siswa.nis
+					      LEFT JOIN kepala_sekolah
+					      ON tbl_komentar.code_user = kepala_sekolah.nip
+					      WHERE
+					      ruang_pesan.room_key LIKE '%$roomKey%'
+					      ORDER BY tbl_komentar.id
+					    ");
+
+					    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+					    if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
+
+					  	if ($foundDataSD == 1) {
+					  		$nipKepsek = "2019032";
+					  	} else if ($foundDataPAUD == 1) {
+					  		$nipKepsek = "2019034";
+					  	}
+
+					} else {
+
+						$sesi = 0;
+		  				$_SESSION['data'] = 'nodata';
+
+					}
+
+		  		} else {
+
+		  			$getDataKomenOther = mysqli_query($con, "
+				      SELECT 
+				      tbl_komentar.room_id as r_id,
+				      tbl_komentar.code_user as fromnip,
+				      guru.nama as nama_guru,
+				      siswa.nama as nama_siswa,
+				      kepala_sekolah.nama as nama_kepsek,
+				      tbl_komentar.stamp as tanggal_kirim,
+				      tbl_komentar.isi_komentar as pesan
+				      FROM 
+				      tbl_komentar 
+				      LEFT JOIN ruang_pesan
+				      ON tbl_komentar.room_id = ruang_pesan.room_key
+				      LEFT JOIN guru
+				      ON tbl_komentar.code_user = guru.nip
+				      LEFT JOIN daily_siswa_approved
+				      ON ruang_pesan.daily_id = daily_siswa_approved.id
+				      LEFT JOIN akses_otm
+				      ON tbl_komentar.code_user = akses_otm.nis_siswa
+				      LEFT JOIN siswa
+				      ON akses_otm.nis_siswa = siswa.nis
+				      LEFT JOIN kepala_sekolah
+				      ON tbl_komentar.code_user = kepala_sekolah.nip
+				      WHERE
+				      ruang_pesan.room_key LIKE '%$roomKey%'
+				      ORDER BY tbl_komentar.id
+				    ");
+
+				    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				    if ($tglOri < $tglSkrngAwal) {
+				  		$sesiKomen = 0;
+				  	} else {
+				  		$sesiKomen = 1;
+				  	}
+
+				  	if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
+
+		  		}
+
+	  		} 
+
+	  	} else if (isset($_POST['daily_group'])) {
+
+	  		$roomKey    	= htmlspecialchars($_POST['roomkey_group_lookdaily']);
+	  		$nama 			= htmlspecialchars($_POST['nama_siswa_or_groupkelas_lookdaily']);
+	  		$nisOrIdGroup   = htmlspecialchars($_POST['nis_or_idgroup_lookdaily']);
+
+	  		$groupByIdGroup = mysqli_query($con, "
+	  			SELECT nis, nama FROM siswa WHERE group_kelas = '$nisOrIdGroup'
+	  		");
+
+	  		foreach ($groupByIdGroup as $data) {
+	  			$dbGroup[] = $data['nis'];
+	  		}
+
+	  		$guru 			= htmlspecialchars($_POST['guru_lookdaily']);
+	  		$foto 			= htmlspecialchars($_POST['foto_upload_lookdaily']);
+	  		$tglPosting 	= htmlspecialchars($_POST['tgl_posting_lookdaily']);
+	  		$tglOri     	= htmlspecialchars($_POST['tglori_posting_lookdaily']);
+	  		$judul      	= htmlspecialchars($_POST['jdl_posting_lookdaily']);
+	  		$isi 			= $_POST['isi_posting_lookdaily'];
+	  		$users      	= $nipGuru;
+
+	  		$countDataChat 	= 0;
+
+	  		$sesi 			= 1;
+
+	  		$getDataKomenOther = mysqli_query($con, "
+		      SELECT 
+		      tbl_komentar.room_id as r_id,
+		      tbl_komentar.code_user as fromnip,
+		      guru.nama as nama_guru,
+		      siswa.nama as nama_siswa,
+		      kepala_sekolah.nama as nama_kepsek,
+		      tbl_komentar.stamp as tanggal_kirim,
+		      tbl_komentar.isi_komentar as pesan
+		      FROM 
+		      tbl_komentar 
+		      LEFT JOIN ruang_pesan
+		      ON tbl_komentar.room_id = ruang_pesan.room_key
+		      LEFT JOIN guru
+		      ON tbl_komentar.code_user = guru.nip
+		      LEFT JOIN daily_siswa_approved
+		      ON ruang_pesan.daily_id = daily_siswa_approved.id
+		      LEFT JOIN akses_otm
+		      ON tbl_komentar.code_user = akses_otm.nis_siswa
+		      LEFT JOIN siswa
+		      ON akses_otm.nis_siswa = siswa.nis
+		      LEFT JOIN kepala_sekolah
+		      ON tbl_komentar.code_user = kepala_sekolah.nip
+		      WHERE
+		      ruang_pesan.room_key LIKE '%$roomKey%'
+		      ORDER BY tbl_komentar.id
+		    ");
+
+		    $isGroup = true;
+
+		    if (!empty(isset($_GET['q']))) {
+
+  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+
+		  		date_default_timezone_set("Asia/Jakarta");
+			  	$arrTgl               = [];
+				  
+			  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+			  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+			  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+
+			  	if ($tglOri < $tglSkrngAwal) {
+			  		$sesiKomen = 0;
+			  	} else {
+			  		$sesiKomen = 1;
+			  	}
+
+			  	if ($foundDataSD == 1) {
+			  		$nipKepsek = "2019032";
+			  	} else if ($foundDataPAUD == 1) {
+			  		$nipKepsek = "2019034";
+			  	}
+
+		  		$key_room   = $roomKey;
+
+	  		} else {
+
+	  			$sesi = 0;
+	  			$isGroup = "noparams";
+  				$_SESSION['data'] = 'nodata';
+
+	  		}
+
 	  	} else if (isset($_GET['q'])) {
 
 	  		$sesi = 0;
@@ -727,7 +1050,7 @@
 			      </div>
 			      <!-- /.box-header -->
 			      <div class="box-body">
-			        <h4 style="color: black;"> TITLE : <?= $judul; ?> </h4>
+			        <h4 style="color: black;"> <strong> TITLE : </strong> <?= $judul; ?> </h4>
 			        <img class="img-responsive pad" src="<?= $base; ?>image_uploads/<?= $foto; ?>" alt="Photo" style="width: auto; height: 300px;">
 
 			        <?= $isi; ?>
@@ -759,13 +1082,19 @@
 
 			    	<?php if ($countDailyGroup == 1): ?>
 
+			    		<?php  
+
+			    			$getDataGroupKelasID = $nisOrIdGroup;
+
+			    		?>
+
 			    		<div class="tombol-hide" style="display: none;">
 					    	<form action="<?= $_GET['q']; ?>" method="post">
 						      	
 						      	<input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="<?= $fromPage; ?>">
 						      	<input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily" value="<?= $roomKey; ?>">
 						      	<input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily" value="<?= $guru; ?>">
-						      	<input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily" value="<?= $nama; ?>">
+						      	<input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily" value="<?= str_replace(["GROUP"], "", $nama); ?>">
 						      	<input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily" value="<?= $nisOrIdGroup; ?>">
 						      	<input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily" value="<?= $foto; ?>">
 						      	<input type="hidden" id="hg_tgl_posting_lookdaily" name="tgl_posting_lookdaily" value="<?= $tglPosting; ?>">
@@ -808,7 +1137,7 @@
 				      	");
 
 			    		$queryDailyGroup = mysqli_query($con, "
-					        SELECT id FROM group_siswa_approved WHERE id IN (
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
 					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$_GET[q]'
 					        )
 				      	");
@@ -819,6 +1148,12 @@
 			    	?>
 
 			    	<?php if ($countDailyGroup == 1): ?>
+
+			    		<?php  
+
+			    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+			    		?>
 
 			    		<div class="tombol-hide" style="display: none;">
 					    	<form action="<?= $_GET['q']; ?>" method="post">
@@ -856,6 +1191,68 @@
 			    		
 			    	<?php endif ?>
 
+			    <?php elseif( !empty(isset($_GET['q']) ) && isset($_POST['daily_group']) ): ?>
+
+			    	<?php  
+
+			    		$queryDailyGroup = mysqli_query($con, "
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$_GET[q]'
+					        )
+				      	");
+
+		    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+		    		?>
+
+			    	<div class="tombol-hide" style="display: none;">
+				    	<form action="<?= $_GET['q']; ?>" method="post">
+				    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+				    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+				        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
+				        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+				        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+				        	<input type="hidden" name="message" value="kosongx">
+				        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+				        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+				        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+				        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+				    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+				    		<button type="hidden" name="send_mssg_grp" id="try_group"> send hide </button>
+				    	</form>
+				    </div>
+
+			    <?php elseif( !empty(isset($_GET['q']) ) && isset($_POST['send_mssg_grp']) ): ?>
+
+			    	<?php  
+
+			    		$queryDailyGroup = mysqli_query($con, "
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
+					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$_GET[q]'
+					        )
+				      	");
+
+		    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+		    		?>
+
+			    	<div class="tombol-hide" style="display: none;">
+				    	<form action="<?= $_GET['q']; ?>" method="post">
+				    		<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+				    		<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+				        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
+				        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+				        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+				        	<input type="hidden" name="message" value="kosongx">
+				        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+				        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+				        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+				        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+				    		<input type="hidden" name="isi" value="<?= $isi; ?>">
+				    		<button type="hidden" name="send_mssg_grp" id="try_group"> send hide </button>
+				    	</form>
+				    </div>
+
 			    <?php else: ?>
 
 			    	<?php  
@@ -867,7 +1264,7 @@
 				      	");
 
 			    		$queryDailyGroup = mysqli_query($con, "
-					        SELECT id FROM group_siswa_approved WHERE id IN (
+					        SELECT id, group_kelas_id FROM group_siswa_approved WHERE id IN (
 					          SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
 					        )
 				      	");
@@ -878,6 +1275,12 @@
 			    	?>
 
 			    	<?php if ($countDailyGroup == 1): ?>
+
+			    		<?php  
+
+			    			$getDataGroupKelasID = mysqli_fetch_assoc($queryDailyGroup)['group_kelas_id'];
+
+			    		?>
 
 				    	<div class="tombol-hide" style="display: none;">
 					    	<form action="<?= $roomKey; ?>" method="post">
@@ -949,44 +1352,130 @@
 
 			        	<?php else: ?>
 
-			        		<?php foreach ($getDataKomenOther as $data): ?>
+			        		<?php if (isset($_POST['daily_group'])): ?>
 
-							    <?php if ($data['fromnip'] == $nisOrIdGroup): ?>
+			        			<?php foreach ($getDataKomenOther as $data): ?>
 
-							    	<div class="direct-chat-msg">
-							            <div class="direct-chat-info clearfix">
-						            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
-							              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+							        <?php if ($data['fromnip'] == $nipKepsek): ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+								              <span id="kepsekchat" class="direct-chat-name pull-left"> <?= $data['nama_kepsek']; ?> </span>
+								              <span id="tglsendkepsek" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							          	</div>
-							          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
-							          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
-						          	</div>
 
-						        <?php elseif ($data['fromnip'] == $nipKepsek): ?>
+							        <?php elseif ($data['fromnip'] == $users): ?>
 
-							    	<div class="direct-chat-msg">
-							            <div class="direct-chat-info clearfix">
-							              <span id="kepsekchat" class="direct-chat-name pull-left"> <?= $data['nama_kepsek']; ?> </span>
-							              <span id="tglsendkepsek" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+					        			<div class="direct-chat-msg right">
+								          <div class="direct-chat-info clearfix">
+								            <span id="namaguruchat" class="direct-chat-name pull-right"> <?= strtoupper($data['nama_guru']); ?> </span>
+								            <span id="tglsendguru" class="direct-chat-timestamp pull-left"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          </div>
+								          <img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          <div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+								        </div>
+
+								    <?php else: ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+							            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
+								              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							          	</div>
-							          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
-							          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
-						          	</div>
+					        			
+					        		<?php endif ?>
+					        		
+					        	<?php endforeach ?>
 
-						        <?php elseif ($data['fromnip'] == $users): ?>
+			        		<?php elseif(isset($_POST['send_mssg_grp'])): ?>
 
-				        			<div class="direct-chat-msg right">
-							          <div class="direct-chat-info clearfix">
-							            <span id="namaguruchat" class="direct-chat-name pull-right"> <?= strtoupper($data['nama_guru']); ?> </span>
-							            <span id="tglsendguru" class="direct-chat-timestamp pull-left"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
-							          </div>
-							          <img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
-							          <div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
-							        </div>
-				        			
-				        		<?php endif ?>
-				        		
-				        	<?php endforeach ?>
+			        			<?php foreach ($getDataKomenOther as $data): ?>
+
+							        <?php if ($data['fromnip'] == $nipKepsek): ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+								              <span id="kepsekchat" class="direct-chat-name pull-left"> <?= $data['nama_kepsek']; ?> </span>
+								              <span id="tglsendkepsek" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+							          	</div>
+
+							        <?php elseif ($data['fromnip'] == $users): ?>
+
+					        			<div class="direct-chat-msg right">
+								          <div class="direct-chat-info clearfix">
+								            <span id="namaguruchat" class="direct-chat-name pull-right"> <?= strtoupper($data['nama_guru']); ?> </span>
+								            <span id="tglsendguru" class="direct-chat-timestamp pull-left"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          </div>
+								          <img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          <div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+								        </div>
+
+								    <?php else: ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+							            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
+								              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+							          	</div>
+					        			
+					        		<?php endif ?>
+					        		
+					        	<?php endforeach ?>
+
+			        		<?php else: ?>
+
+			        			<?php foreach ($getDataKomenOther as $data): ?>
+
+								    <?php if ($data['fromnip'] == $nisOrIdGroup): ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+							            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
+								              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+							          	</div>
+
+							        <?php elseif ($data['fromnip'] == $nipKepsek): ?>
+
+								    	<div class="direct-chat-msg">
+								            <div class="direct-chat-info clearfix">
+								              <span id="kepsekchat" class="direct-chat-name pull-left"> <?= $data['nama_kepsek']; ?> </span>
+								              <span id="tglsendkepsek" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          	</div>
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+							          	</div>
+
+							        <?php elseif ($data['fromnip'] == $users): ?>
+
+					        			<div class="direct-chat-msg right">
+								          <div class="direct-chat-info clearfix">
+								            <span id="namaguruchat" class="direct-chat-name pull-right"> <?= strtoupper($data['nama_guru']); ?> </span>
+								            <span id="tglsendguru" class="direct-chat-timestamp pull-left"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
+								          </div>
+								          <img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          <div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
+								        </div>
+					        			
+					        		<?php endif ?>
+					        		
+					        	<?php endforeach ?>
+			        			
+			        		<?php endif ?>
 			        		
 			        	<?php endif ?>
 
@@ -1123,6 +1612,52 @@
 
 	        			 	<?php endif ?>
 
+	        			<?php elseif(isset($_POST['daily_group'])): ?>
+
+	        				<button id="refresh_btn_group" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+		                  		
+	                  		<form action="<?= $roomKey; ?>" method="post">
+					          <div class="input-group" id="tombolComment">
+					            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+					            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+						        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
+						        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+						        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+						        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+						        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+						        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+						        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+						        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+					                <span class="input-group-btn">
+					                  <button type="submit" name="send_mssg_grp" id="send-btn" class="btn btn-success btn-flat">Send</button>
+					                </span>
+					          </div>
+					        </form>
+
+	        			<?php elseif(isset($_POST['send_mssg_grp'])): ?>
+
+	        				<button id="refresh_btn_group" style="margin-bottom: 10px; font-weight: bold;" class="btn btn-light btn-flat"> <i class="glyphicon glyphicon-refresh"></i> Refresh to Update Data </button>
+		                  		
+	                  		<form action="<?= $roomKey; ?>" method="post">
+					          <div class="input-group" id="tombolComment">
+					            	<input type="text" id="message-input" name="message" placeholder="Type Message ..." class="form-control">
+					            	<input type="hidden" name="frompage" value="<?= $fromPage; ?>">
+					            	<input type="hidden" name="roomkey" value="<?= $roomKey; ?>">
+						        	<input type="hidden" name="nis" value="<?= $nisOrIdGroup; ?>">
+						        	<input type="hidden" name="nama" value="<?= strtoupper($nama); ?>">
+						        	<input type="hidden" name="guru" value="<?= strtoupper($guru); ?>">
+						        	<input type="hidden" name="foto" value="<?= $foto; ?>">
+						        	<input type="hidden" name="tglpost" value="<?= $tglPosting; ?>">
+						        	<input type="hidden" name="tglori" value="<?= $tglOri; ?>">
+						        	<input type="hidden" name="judul" value="<?= $judul; ?>">
+						        	<input type="hidden" name="isi" value="<?= $isi; ?>">
+					                <span class="input-group-btn">
+					                  <button type="submit" name="send_mssg_grp" id="send-btn" class="btn btn-success btn-flat">Send</button>
+					                </span>
+					          </div>
+					        </form>
+
 	        			<?php else: ?>
 
 	        				<?php  
@@ -1228,9 +1763,9 @@
 
 					<?php elseif($fromPage == "teachercreategroupdaily"): ?>
 
-						<form action="<?= $fromPage; ?>" method="post">
+						<form action="<?= $basegu; ?><?= $fromPage; ?>" method="post">
 							<input type="hidden" name="id_group" value="<?= $getDataGroupKelasID; ?>">
-							<input type="hidden" name="nama_group_kelas" value="<?= str_replace(["GROUP", ], "", $nama); ?>">
+							<input type="hidden" name="nama_group_kelas" value="<?= str_replace(["GROUP"], "", $nama); ?>">
 			        		<button class="btn btn-sm btn-primary" type="submit" name="send_data_group"> <span class="glyphicon glyphicon-log-out" id="cancel"></span> Kembali </button>
 			        	</form>
 						<br>
@@ -1487,8 +2022,18 @@
 
 		let newIcon = document.getElementById("addIcon");
 		newIcon.classList.remove("fa");
-		newIcon.classList.add("glyphicon");
-		newIcon.classList.add("glyphicon-zoom-in");
+
+		if (`<?= $isGroup; ?>` == false) {
+
+			newIcon.classList.add("fa");
+			newIcon.classList.add("fa-user");
+
+		} else if (`<?= $isGroup; ?>` == true) {
+
+			newIcon.classList.add("fa");
+			newIcon.classList.add("fa-users");
+
+		}
 
 		let getTitleList1 = document.getElementById('isiList2').innerHTML;
 		$("#isiMenu").css({
@@ -1497,7 +2042,12 @@
 
 		let createElementSpanNama = document.createElement('span')
 		createElementSpanNama.id  = 'spanIsiNama'
-		createElementSpanNama.textContent += `<?= $nama; ?>`
+
+		if (`<?= $isGroup; ?>`) {
+			createElementSpanNama.textContent += "GROUP " + `<?= $nama; ?>`
+		} else {
+			createElementSpanNama.textContent += `<?= $nama; ?>`
+		}
 
 		elementWrap.appendChild(createElementSpanNama)
 

@@ -458,7 +458,7 @@
 			      </div>
 			      <!-- /.box-header -->
 			      <div class="box-body" id="isian_daily">
-			        <h4 style="color: black;"> TITLE : <?= $judul; ?>  </h4>
+			        <h4 style="color: black;"> <strong> TITLE : </strong> <?= $judul; ?>  </h4>
 			        <img class="img-responsive pad" src="<?= $base; ?>image_uploads/<?= $foto; ?>" alt="Photo" style="width: auto; height: 300px;">
 			        <?= $isi; ?>
 			        

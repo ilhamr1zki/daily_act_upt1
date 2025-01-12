@@ -123,6 +123,7 @@
 
 							$fileBaruKepsek = $namaFileBaru;
 							$fileBaruGuru 	= $namaFileBaru;
+							$fileBaruOtm    = $namaFileBaru;
 
 							// move_uploaded_file($tmpName, '../../../../image_uploads/' . $namaFileBaru);
 
@@ -131,6 +132,7 @@
 			  					// echo "KESINI";exit;
 							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
 							    copy('../../../../image_uploads/' . $fileBaruGuru, '../../../../guru/image_uploads/' . $fileBaruGuru);
+							    copy('../../../../image_uploads/' . $fileBaruOtm, '../../../../walimurid/image_uploads/' . $fileBaruOtm);
 							    //and so on...
 							}
 
@@ -464,6 +466,7 @@
 							
 							$fileBaruKepsek = $namaFileBaru;
 							$fileBaruGuru 	= $namaFileBaru;
+							$fileBaruOtm    = $namaFileBaru;
 
 							date_default_timezone_set("Asia/Jakarta");
 
@@ -476,7 +479,7 @@
 			  					// echo "KESINI";exit;
 							    copy('../../../../image_uploads/' . $fileBaruKepsek, '../../../../kepala_sekolah/image_uploads/' . $fileBaruKepsek);
 							    copy('../../../../image_uploads/' . $fileBaruGuru, '../../../../guru/image_uploads/' . $fileBaruGuru);
-							    //and so on...
+							    copy('../../../../image_uploads/' . $fileBaruOtm, '../../../../walimurid/image_uploads/' . $fileBaruOtm);
 							}
 
 							if ($isDepartemenSD == 1) {

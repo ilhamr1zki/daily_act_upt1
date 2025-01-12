@@ -426,6 +426,8 @@
 
 	      	if (grouporstd == 'group') {
             	$("#lbl_stdorgp_hg_appr").text('GROUP');
+            	$("#hg_lookdaily_appr").attr('name', 'daily_group');
+            	$("#hg_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
           	} else {
             	$("#lbl_stdorgp_hg_appr").text('STUDENT');
           	}

@@ -21,6 +21,8 @@
 
   // echo $nama_role;exit;
 
+  $thisPage =  (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
   $currTahun    = "";
   $currSemester = "";
 
@@ -779,7 +781,7 @@ oncontextmenu="return false">
               </div>
 
               <div class="form-group">
-                <label for="siswa_daily_appr">STUDENT</label>
+                <label for="siswa_daily_appr" id="lbl_std_or_group_df_appr">STUDENT</label>
                 <input type="text" id="siswa_daily_appr" name="siswa_daily_appr" readonly class="form-control">
               </div>
 
@@ -809,14 +811,14 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="formDfAppr" method="post">
           <input type="hidden" id="df_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="df_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="df_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="df_nip_kepsek_lookdaily" name="nipkepsek_lookdaily">
           <input type="hidden" id="df_nama_guru_lookdaily" name="guru_lookdaily">
-          <input type="hidden" id="df_nis_siswa_lookdaily" name="nis_lookdaily">
-          <input type="hidden" id="df_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
+          <input type="hidden" id="df_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
+          <input type="hidden" id="df_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="df_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="df_tgl_posting" name="tgl_posting_lookdaily">
           <input type="hidden" id="df_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
@@ -866,7 +868,7 @@ oncontextmenu="return false">
               </div>
 
               <div class="form-group">
-                <label for="siswa_daily_appr">STUDENT</label>
+                <label for="siswa_daily_appr" id="lbl_std_or_group">STUDENT</label>
                 <input type="text" id="hg_siswa_daily_appr" name="hg_siswa_daily_appr" readonly class="form-control">
               </div>
 
@@ -896,14 +898,14 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="formHgAppr" method="post">
           <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="hg_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="hg_nip_kepsek_lookdaily" name="nipkepsek_lookdaily">
           <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily">
-          <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_lookdaily">
-          <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
+          <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
+          <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="hg_tgl_posting" name="tgl_posting_lookdaily">
           <input type="hidden" id="hg_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
@@ -1031,7 +1033,7 @@ oncontextmenu="return false">
                   
                 </ul>
               </li>
-              <li class="footer"><a href="querydailystudent" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Daily Activity </a> </li>
+              <li class="footer"><a href="<?= $basewam; ?>querydailystudent" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Daily Activity </a> </li>
             </ul>
           </li>
 
@@ -1140,7 +1142,10 @@ oncontextmenu="return false">
               </a>
               <ul class="treeview-menu">
                 <li> 
-                  <a href="<?= $basewam; ?>querydailystudent" id="query_data_siswa"><i class="glyphicon glyphicon-zoom-in text-primary"></i> <span style="margin-left: 7px;"> </span> Student </a>
+                  <a href="<?= $basewam; ?>querydailystudent" id="query_data_siswa"><i class="fa fa-user text-primary"></i> <span style="margin-left: 7px;"> </span> Student </a>
+                </li>
+                <li> 
+                  <a href="<?= $basewam; ?>querydailygroup" id="query_data_group"><i class="fa fa-users text-primary"></i> <span style="margin-left: 6px;" id="sub_isiList2group"> Group Class </span> </a>
                 </li>
               </ul>
             </li>
@@ -1224,6 +1229,8 @@ oncontextmenu="return false">
       require 'view/daily/create/index.php';
     } elseif($act == 'querydailystudent') {
       require 'view/daily/query/querydailysiswa.php';
+    } elseif($act == 'querydailygroup') {
+      require 'view/daily/query/querydailygroup.php';
     } elseif($act == 'listdaily') {
       require 'view/daily/query/listdaily.php';
     } elseif($act == 'teachercreatedaily') {
@@ -1403,6 +1410,51 @@ oncontextmenu="return false">
               let dataRoomKey       = $(this).data('room_key');
               let dataDfTglOri      = $(this).data('tgl_ori');
               let dataNipGuru       = $(this).data('nip_guru');
+              let dataStdOrGroup    = $(this).data('group_or_std');
+
+              if (`<?= $thisPage; ?>` == `<?= $basewam; ?>lookactivity/${dataRoomKey}`) {
+
+                $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailystudent`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailygroup`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_waiting_approval`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_not_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changepassword`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` != `<?= $basewam; ?>`) {
+
+                $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              } else {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              }
+
+              if (dataStdOrGroup == "group") {
+                $("#lbl_std_or_group_df_appr").text("GROUP");
+              } else if (dataStdOrGroup == "std") {
+                $("#lbl_std_or_group_df_appr").text("STUDENT");
+              }
 
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']");
 
@@ -1553,6 +1605,15 @@ oncontextmenu="return false">
       "autoWidth": false
     });
 
+    $('#list_group').DataTable({
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": false,
+      "info": true,
+      "autoWidth": false
+    });
+
     $('#example3').DataTable({
       "paging": true,
       "lengthChange": true,
@@ -1567,7 +1628,7 @@ oncontextmenu="return false">
       "lengthChange": true,
       "searching": true,
       "ordering": true,
-      "info": false,
+      "info": true,
       "autoWidth": false
     });
 

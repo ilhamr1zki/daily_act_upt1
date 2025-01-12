@@ -183,105 +183,162 @@
   	$arrTgl['tgl_awal']   = $tglSkrngAwal;
   	$arrTgl['tgl_akhir']  = $tglSkrngAkhir;
 
+  	// Get Id Group
+  	$queryGetIdGroup = mysqli_query($con, "
+  		SELECT group_kelas FROM siswa WHERE nis = '$nis'
+  	");
+
+  	$getIdGroup = mysqli_fetch_assoc($queryGetIdGroup)['group_kelas'];
+  	// echo $getIdGroup;exit;
+
   	// Array Penampung Data Sudah di Approve
-  	  $tampungDataTglUploadOri      = [];
-  	  $tampungDataRoomKey           = [];
-	  $tampungDataID_sdhAppr        = [];
-	  $tampungDataNIP_sdhAppr       = [];
-	  $tampungDataGuru_sdhAppr      = [];
-	  $tampungDataPengirim_sdhAppr  = [];
-	  $tampungDataUsername_sdhAppr  = [];
-	  $tampungDataTglDisetujui      = [];
-	  $tampungDataTglUpload_sdhAppr = [];
-	  $tampungDataJamUpload_sdhAppr = [];
-	  $tampungDataJamDisetujui      = [];
-	  $tampungDataImage_sdhAppr     = [];
-	  $tampungDataNis_siswa_sdhAppr = [];
-	  $tampungDataJudul_sdhAppr     = [];
-	  $tampungDataIsi_sdhAppr       = [];
-	  $elementNotifAppr             = '';
+  	  $tampungDataTglUploadOri      		= [];
+  	  $tampungDataRoomKey           		= [];
+	  $tampungDataID_sdhAppr        		= [];
+	  $tampungDataNIP_sdhAppr       		= [];
+	  $tampungDataGuru_sdhAppr      		= [];
+	  $tampungDataPengirim_sdhAppr  		= [];
+	  $tampungDataUsername_sdhAppr  		= [];
+	  $tampungDataTglDisetujui      		= [];
+	  $tampungDataTglUpload_sdhAppr 		= [];
+	  $tampungDataJamUpload_sdhAppr 		= [];
+	  $tampungDataJamDisetujui      		= [];
+	  $tampungDataImage_sdhAppr     		= [];
+	  $tampungDataNis_sdhAppr 				= [];
+	  $tampungDataJudul_sdhAppr     		= [];
+	  $tampungDataSiswaOrNamaGroup_sdhAppr 	= [];
+	  $tampungDataIsi_sdhAppr       		= [];
+	  $elementNotifAppr            	 		= '';
   	// Akhir Array Penampung Data Sudah di Approve
 
+	$is_group 	= "group";
+	$is_std 	= "std";
 
 	############################################################################################################
 	// Data Sudah di Approve
 
     	$queryApproved         = mysqli_query($con, "
-	      SELECT
-	      daily_siswa_approved.id as daily_id,
-	      daily_siswa_approved.from_nip as from_nip,
-	      daily_siswa_approved.image as foto,
-	      daily_siswa_approved.isi_daily as isi_daily,
-	      daily_siswa_approved.nis_siswa as nis_siswa,
-	      guru.nama as nama_guru,
-	      guru.username as username_guru,
-	      admin.username as nama_user,
-	      siswa.nama as nama_siswa,
-	      daily_siswa_approved.status_approve as status,
-	      daily_siswa_approved.title_daily as judul,
-	      daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
-	      daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui,
-	      ruang_pesan.room_key as room_key
-	      FROM 
-	      daily_siswa_approved 
-	      LEFT JOIN guru
-	      ON daily_siswa_approved.from_nip = guru.nip
-	      LEFT JOIN admin
-	      ON daily_siswa_approved.from_nip = admin.c_admin
-	      LEFT JOIN siswa
-	      ON daily_siswa_approved.nis_siswa = siswa.nis
-	      LEFT JOIN ruang_pesan
-	      ON daily_siswa_approved.id = ruang_pesan.daily_id
-	      WHERE daily_siswa_approved.status_approve = 1
-	      AND daily_siswa_approved.nis_siswa = '$nis'
-	      AND daily_siswa_approved.tanggal_disetujui_atau_tidak >= '$arrTgl[tgl_awal]' AND daily_siswa_approved.tanggal_disetujui_atau_tidak <= '$arrTgl[tgl_akhir]'
-	      ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+	     	SELECT 
+	 		guru.nip as nip_guru,
+	 		guru.nama as nama_guru,
+	 		guru.username as username_guru,
+	 		siswa.nis AS nis_or_id_group_kelas,
+	 		siswa.nama as nama_siswa_or_group,
+	 		ruang_pesan.room_key as room_key,
+	 		daily_siswa_approved.id as daily_id,
+	 		daily_siswa_approved.title_daily as judul_daily,
+	 		daily_siswa_approved.isi_daily as isi_daily,
+	 		daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+	 		daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+	 		daily_siswa_approved.image as foto_upload,
+	 		ruang_pesan.daily_id as daily_id
+	 		FROM daily_siswa_approved
+	 		LEFT JOIN guru
+	 		ON daily_siswa_approved.from_nip = guru.nip
+	 		LEFT JOIN siswa
+	 		ON daily_siswa_approved.nis_siswa = siswa.nis
+	 		LEFT JOIN ruang_pesan
+	 		ON daily_siswa_approved.id = ruang_pesan.daily_id
+	 		WHERE daily_siswa_approved.nis_siswa = '$nis'
+	 		AND daily_siswa_approved.tanggal_dibuat >= '$arrTgl[tgl_awal]' 
+			AND daily_siswa_approved.tanggal_dibuat <= '$arrTgl[tgl_akhir]'
+	 		AND daily_siswa_approved.status_approve = 1
+	 		UNION
+	 		SELECT 
+	 		group_siswa_approved.from_nip as nip_guru,
+	 		guru.nama as nama_guru,
+	 		guru.username as username_guru,
+	 		group_kelas.id AS id_group,
+	 		group_kelas.nama_group_kelas as nama_group,
+	 		group_siswa_approved.id as id_group_approved,
+	 		group_siswa_approved.group_kelas_id as id_group,
+	 		group_siswa_approved.title_daily as judul_daily,
+	 		group_siswa_approved.isi_daily as isi_daily,
+	 		group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+	 		group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+	 		group_siswa_approved.image as foto_upload,
+	 		ruang_pesan.daily_id as daily_id
+	 		FROM group_siswa_approved
+	 		LEFT JOIN guru
+	 		ON group_siswa_approved.from_nip = guru.nip
+	 		LEFT JOIN ruang_pesan
+	 		ON group_siswa_approved.id = ruang_pesan.daily_id
+	 		LEFT JOIN group_kelas
+	 		ON group_kelas.id = group_siswa_approved.group_kelas_id
+	 		WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
+	 		AND group_siswa_approved.tanggal_dibuat >= '$arrTgl[tgl_awal]' 
+			AND group_siswa_approved.tanggal_dibuat <= '$arrTgl[tgl_akhir]'
+	 		AND group_siswa_approved.status_approve = 1
+	 		ORDER BY tgl_dibuat DESC 
     	");
 
     	$queryApprovedAll      = mysqli_query($con, "
-	      SELECT
-	      daily_siswa_approved.id as daily_id,
-	      daily_siswa_approved.from_nip as from_nip,
-	      daily_siswa_approved.image as foto,
-	      daily_siswa_approved.isi_daily as isi_daily,
-	      daily_siswa_approved.nis_siswa as nis_siswa,
-	      guru.nama as nama_guru,
-	      admin.username as nama_user,
-	      siswa.nama as nama_siswa,
-	      daily_siswa_approved.status_approve as status,
-	      daily_siswa_approved.title_daily as judul,
-	      daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
-	      daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui
-	      FROM 
-	      daily_siswa_approved 
-	      LEFT JOIN guru
-	      ON daily_siswa_approved.from_nip = guru.nip
-	      LEFT JOIN admin
-	      ON daily_siswa_approved.from_nip = admin.c_admin
-	      LEFT JOIN siswa
-	      ON daily_siswa_approved.nis_siswa = siswa.nis
-	      WHERE daily_siswa_approved.status_approve = 1
-	      AND daily_siswa_approved.nis_siswa = '$nis'
-	      ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+	      	SELECT 
+	 		guru.nip as nip_guru,
+	 		guru.nama as nama_guru,
+	 		guru.username as username_guru,
+	 		siswa.nis AS nis_or_id_group_kelas,
+	 		siswa.nama as nama_siswa_or_group,
+	 		ruang_pesan.room_key as room_key,
+	 		daily_siswa_approved.id as daily_id,
+	 		daily_siswa_approved.title_daily as judul_daily,
+	 		daily_siswa_approved.isi_daily as isi_daily,
+	 		daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+	 		daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+	 		daily_siswa_approved.image as foto_upload,
+	 		ruang_pesan.daily_id as daily_id
+	 		FROM daily_siswa_approved
+	 		LEFT JOIN guru
+	 		ON daily_siswa_approved.from_nip = guru.nip
+	 		LEFT JOIN siswa
+	 		ON daily_siswa_approved.nis_siswa = siswa.nis
+	 		LEFT JOIN ruang_pesan
+	 		ON daily_siswa_approved.id = ruang_pesan.daily_id
+	 		WHERE daily_siswa_approved.nis_siswa = '$nis'
+	 		AND daily_siswa_approved.status_approve = 1
+	 		UNION
+	 		SELECT 
+	 		group_siswa_approved.from_nip as nip_guru,
+	 		guru.nama as nama_guru,
+	 		guru.username as username_guru,
+	 		group_kelas.id AS id_group,
+	 		group_kelas.nama_group_kelas as nama_group,
+	 		group_siswa_approved.id as id_group_approved,
+	 		group_siswa_approved.group_kelas_id as id_group,
+	 		group_siswa_approved.title_daily as judul_daily,
+	 		group_siswa_approved.isi_daily as isi_daily,
+	 		group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+	 		group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+	 		group_siswa_approved.image as foto_upload,
+	 		ruang_pesan.daily_id as daily_id
+	 		FROM group_siswa_approved
+	 		LEFT JOIN guru
+	 		ON group_siswa_approved.from_nip = guru.nip
+	 		LEFT JOIN ruang_pesan
+	 		ON group_siswa_approved.id = ruang_pesan.daily_id
+	 		LEFT JOIN group_kelas
+	 		ON group_kelas.id = group_siswa_approved.group_kelas_id
+	 		WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
+	 		AND group_siswa_approved.status_approve = 1
     	");
 
     	foreach ($queryApproved as $data_appr) {
 
-    	  $tampungDataTglUploadOri[]      = $data_appr['tgl_disetujui'];
-    	  $tampungDataRoomKey[] 		  = $data_appr['room_key'];
-	      $tampungDataID_sdhAppr[]        = $data_appr['daily_id'];
-	      $tampungDataNIP_sdhAppr[]       = $data_appr['from_nip'];
-	      $tampungDataNis_siswa_sdhAppr[] = $data_appr['nis_siswa'];
-	      $tampungDataUsername_sdhAppr[]  = strtoupper($data_appr['username_guru']);
-	      $tampungDataSiswa_sdhAppr[]     = strtoupper($data_appr['nama_siswa']);
-	      $tampungDataPengirim_sdhAppr[]  = $data_appr['nama_guru'];
-	      $tampungDataTglDiUpload[]       = substr($data_appr['tgl_dibuat'], 0, 11);
-	      $tampungDataTglDisetujui[]      = substr($data_appr['tgl_disetujui'], 0, 11);
-	      $tampungDataJamDiUpload[]       = substr($data_appr['tgl_dibuat'], 11, 19);
-	      $tampungDataJamDisetujui[]      = substr($data_appr['tgl_disetujui'], 11, 19);
-	      $tampungDataImage_sdhAppr[]     = $data_appr['foto'];
-	      $tampungDataJudul_sdhAppr[]     = $data_appr['judul'];
-	      $tampungDataIsi_sdhAppr[]       = $data_appr['isi_daily'];
+    	  $tampungDataTglUploadOri[]      			= $data_appr['tgl_posted'];
+    	  $tampungDataRoomKey[] 		  			= $data_appr['room_key'];
+	      $tampungDataID_sdhAppr[]        			= $data_appr['daily_id'];
+	      $tampungDataNIP_sdhAppr[]       			= $data_appr['nip_guru'];
+	      $tampungDataNis_sdhAppr[] 				= $data_appr['nis_or_id_group_kelas'];
+	      $tampungDataUsername_sdhAppr[]  			= strtoupper($data_appr['username_guru']);
+	      $tampungDataSiswaOrNamaGroup_sdhAppr[]    = strtoupper($data_appr['nama_siswa_or_group']);
+	      $tampungDataPengirim_sdhAppr[]  			= $data_appr['nama_guru'];
+	      $tampungDataTglDiUpload[]       			= substr($data_appr['tgl_dibuat'], 0, 11);
+	      $tampungDataTglDisetujui[]      			= substr($data_appr['tgl_posted'], 0, 11);
+	      $tampungDataJamDiUpload[]       			= substr($data_appr['tgl_dibuat'], 11, 19);
+	      $tampungDataJamDisetujui[]      			= substr($data_appr['tgl_posted'], 11, 19);
+	      $tampungDataImage_sdhAppr[]     			= $data_appr['foto_upload'];
+	      $tampungDataJudul_sdhAppr[]     			= $data_appr['judul_daily'];
+	      $tampungDataIsi_sdhAppr[]       			= $data_appr['isi_daily'];
 
     	}
 
@@ -295,34 +352,83 @@
 	        $explode                = explode(" ", $tampungDataPengirim_sdhAppr[$i]);
 	        $isiPesanNamaSiswa      = "";
 	        $isiPesan               = "";
+	        $isiNamaGuru      		= "";
 	        
-	        $semuaNamaSiswa = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
-	        $semuaPesan = strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
+	        $allStdOrGroup 	= strlen($tampungDataSiswaOrNamaGroup_sdhAppr[$i]) > 13 ? $isiPesanNamaSiswa .= substr($tampungDataSiswaOrNamaGroup_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswaOrNamaGroup_sdhAppr[$i];
+	        $semuaPesan 	= strlen($tampungDataJudul_sdhAppr[$i]) > 15 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungDataJudul_sdhAppr[$i];
+	        $semuaNamaGuru  = strlen($tampungDataPengirim_sdhAppr[$i]) > 17 ? $isiNamaGuru .= substr($tampungDataPengirim_sdhAppr[$i], 0, 17) . " ..." : $tampungDataPengirim_sdhAppr[$i];
 
-	        $forIsiNotifSdhAppr .= '
-	          	<li class="apprlist" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
-	            	<a href="#">
-		              	<h4 style="font-size: 12px;">
-		                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
-		              	</h4>
-			            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
-			                <img src="../imgstatis/logo2.png" style="width: 35px;">
-			            </div>
-		              	<h4 style="font-size: 12px; margin-top: 24px;">
-	                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $tampungDataUsername_sdhAppr[$i] . '</strong> </p>
-	                  	</h4>
-		              	<h4 style="font-size: 12px;">
-		                	<p style="font-size: 13px;margin-left: 59px;"> 
-			                  	<strong> JUDUL </strong> <span style="margin-left: 4px;"> : </span> 
-			                  	<strong id="title_daily" style="margin-left: 7px;"> 
-			                    '. $semuaPesan .'
-			                  	</strong> 
-		                	</p>
-		              	</h4>
-		            </a>
-	          	
-	          	</li>
-	        ';
+	        $dailyId  		= $tampungDataID_sdhAppr[$i];
+
+	        // Check Id Personal Or Id Group
+	      	$queryIdPersonal = mysqli_query($con, "
+		        SELECT id FROM daily_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$queryCheckIdGroup = mysqli_query($con, "
+		        SELECT id FROM group_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$countCheckPersonal = mysqli_num_rows($queryIdPersonal);
+	      	$countCheckIdGroup  = mysqli_num_rows($queryCheckIdGroup);
+
+	        if ($countCheckPersonal == 1) {
+
+	      		$forIsiNotifSdhAppr .= '
+		          	<li style="background-color: aqua;" class="apprlist" data-group_or_std="'. $is_std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+		            	<a href="#">
+			              	<h4 style="font-size: 12px;">
+			                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
+			              	</h4>
+				            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<h4 style="font-size: 12px; margin-top: 24px;">
+		                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $semuaNamaGuru . '</strong> </p>
+		                  	</h4>
+			              	<h4 style="font-size: 12px;">
+			                	<p style="font-size: 13px;margin-left: 59px;"> 
+				                  	<strong> TITLE </strong> <span style="margin-left: 17.5px;"> : </span> 
+				                  	<strong id="title_daily" style="margin-left: 7px;"> 
+				                    '. $semuaPesan .'
+				                  	</strong> 
+			                	</p>
+			              	</h4>
+			            </a>
+		          	
+		          	</li>
+		        ';
+
+	      	} else if ($countCheckIdGroup == 1) {
+
+	      		$forIsiNotifSdhAppr .= '
+		          	<li style="background-color: greenyellow;" class="apprlist" data-group_or_std="'. $is_group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+		            	<a href="#">
+			              	<h4 style="font-size: 12px;">
+			                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
+			              	</h4>
+				            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<h4 style="font-size: 12px; margin-top: 24px;">
+		                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $semuaNamaGuru . '</strong> </p>
+		                  	</h4>
+			              	<h4 style="font-size: 12px;">
+			                	<p style="font-size: 13px;margin-left: 59px;"> 
+				                  	<strong> TITLE </strong> <span style="margin-left: 17.5px;"> : </span> 
+				                  	<strong id="title_daily" style="margin-left: 7px;"> 
+				                    '. $semuaPesan .'
+				                  	</strong> 
+			                	</p>
+			              	</h4>
+			            </a>
+		          	
+		          	</li>
+		        ';
+
+	      	}
 
 	      }
 
@@ -332,38 +438,87 @@
 
 	        $explode                = explode(" ", $tampungDataPengirim_sdhAppr[$i]);
 
-	        $isiNamaSiswa      		= "";
+	        $isiNamaSiswaOrGroup    = "";
 	        $isiNamaGuru      		= "";
 	        $isiPesan               = "";
 	        
-	        $semuaNamaSiswa = strlen($tampungDataSiswa_sdhAppr[$i]) > 13 ? $isiNamaSiswa .= substr($tampungDataSiswa_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswa_sdhAppr[$i];
-	        $semuaNamaGuru  = strlen($tampungDataPengirim_sdhAppr[$i]) > 17 ? $isiNamaGuru .= substr($tampungDataPengirim_sdhAppr[$i], 0, 17) . " ..." : $tampungDataPengirim_sdhAppr[$i];
-	        $semuaPesan = strlen($tampungDataJudul_sdhAppr[$i]) > 17 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 17) . " ..." : $tampungDataJudul_sdhAppr[$i];
 
-	        $forIsiNotifSdhAppr .= '
-	          	<li class="apprlist" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
-	            	<a href="#">
-		              	<h4 style="font-size: 12px;">
-		                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
-		              	</h4>
-			            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
-			                <img src="../imgstatis/logo2.png" style="width: 35px;">
-			            </div>
-		              	<h4 style="font-size: 12px; margin-top: 24px;">
-	                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $semuaNamaGuru . '</strong> </p>
-	                  	</h4>
-		              	<h4 style="font-size: 12px;">
-		                	<p style="font-size: 13px;margin-left: 59px;"> 
-			                  	<strong> JUDUL </strong> <span style="margin-left: 10px;"> : </span> 
-			                  	<strong id="title_daily" style="margin-left: 7px;"> 
-			                    '. $semuaPesan .'
-			                  	</strong> 
-		                	</p>
-		              	</h4>
-		            </a>
-	          	
-	          	</li>
-	        ';
+	        $allStdOrGroup 	= strlen($tampungDataSiswaOrNamaGroup_sdhAppr[$i]) > 13 ? $isiNamaSiswaOrGroup .= substr($tampungDataSiswaOrNamaGroup_sdhAppr[$i], 0, 13) . " ..." : $tampungDataSiswaOrNamaGroup_sdhAppr[$i];
+	        $semuaNamaGuru  = strlen($tampungDataPengirim_sdhAppr[$i]) > 17 ? $isiNamaGuru .= substr($tampungDataPengirim_sdhAppr[$i], 0, 17) . " ..." : $tampungDataPengirim_sdhAppr[$i];
+	        $semuaPesan 	= strlen($tampungDataJudul_sdhAppr[$i]) > 17 ? $isiPesan .= substr($tampungDataJudul_sdhAppr[$i], 0, 17) . " ..." : $tampungDataJudul_sdhAppr[$i];
+
+	        $dailyId  = $tampungDataID_sdhAppr[$i];
+
+	        // Check Id Personal Or Id Group
+	      	$queryIdPersonal = mysqli_query($con, "
+		        SELECT id FROM daily_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$queryCheckIdGroup = mysqli_query($con, "
+		        SELECT id FROM group_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$countCheckPersonal = mysqli_num_rows($queryIdPersonal);
+	      	$countCheckIdGroup  = mysqli_num_rows($queryCheckIdGroup);
+
+	      	if ($countCheckPersonal == 1) {
+
+	      		$forIsiNotifSdhAppr .= '
+		          	<li style="background-color: aqua;" class="apprlist" data-group_or_std="'. $is_std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+		            	<a href="#">
+			              	<h4 style="font-size: 12px;">
+			                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
+			              	</h4>
+				            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<h4 style="font-size: 12px; margin-top: 24px;">
+		                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $semuaNamaGuru . '</strong> </p>
+		                  	</h4>
+			              	<h4 style="font-size: 12px;">
+			                	<p style="font-size: 13px;margin-left: 59px;"> 
+				                  	<strong> TITLE </strong> <span style="margin-left: 17.5px;"> : </span> 
+				                  	<strong id="title_daily" style="margin-left: 7px;"> 
+				                    '. $semuaPesan .'
+				                  	</strong> 
+			                	</p>
+			              	</h4>
+			            </a>
+		          	
+		          	</li>
+		        ';
+
+	      	} else if ($countCheckIdGroup == 1) {
+
+	      		$forIsiNotifSdhAppr .= '
+		          	<li style="background-color: greenyellow;" class="apprlist" data-group_or_std="'. $is_group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-username_guru = "'. $tampungDataUsername_sdhAppr[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataPengirim_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-siswa_was_appr="'. $tampungDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-tgl_upload = "'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] . '" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+		            	<a href="#">
+			              	<h4 style="font-size: 12px;">
+			                	<small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
+			              	</h4>
+				            <div class="pull-left" style="margin-left: 10px; margin-top: 15px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<h4 style="font-size: 12px; margin-top: 24px;">
+		                  		<p style="font-size: 13px;margin-left: 60px;"> <strong> FROM </strong> <span style="margin-left: 15px;"> : </span> <strong id="from_daily" style="margin-left: 7px;">'. $semuaNamaGuru . '</strong> </p>
+		                  	</h4>
+			              	<h4 style="font-size: 12px;">
+			                	<p style="font-size: 13px;margin-left: 59px;"> 
+				                  	<strong> TITLE </strong> <span style="margin-left: 17.5px;"> : </span> 
+				                  	<strong id="title_daily" style="margin-left: 7px;"> 
+				                    '. $semuaPesan .'
+				                  	</strong> 
+			                	</p>
+			              	</h4>
+			            </a>
+		          	
+		          	</li>
+		        ';
+
+	      	}
+
 
 	      }
 
@@ -426,7 +581,7 @@
       			$isiPesanNamaSiswa      = "";
       			$isiPesan               = "";
         
-      			$semuaNamaSiswa 		= strlen($dataArrNama[$i]) > 17 ? $isiPesanNamaSiswa .= substr($dataArrNama[$i], 0, 17) . " ..." : $dataArrNama[$i];
+      			$semuaNamaSiswaOrGroup 		= strlen($dataArrNama[$i]) > 17 ? $isiPesanNamaSiswa .= substr($dataArrNama[$i], 0, 17) . " ..." : $dataArrNama[$i];
       			$semuaPesan 			= strlen($dataArrJenisBayar[$i]) > 13 ? $isiPesan .= substr($dataArrJenisBayar[$i], 0, 13) . " ..." : $dataArrJenisBayar[$i];
 
       			$forIsiNotifInfo .= '
@@ -442,7 +597,7 @@
 		                		<p style="font-size: 15px;margin-left: 45px;"> 
 		                  			<strong> SISWA </strong> <span style="margin-left: 6px;"> : </span> 
 		                  			<strong id="title_daily" style="margin-left: 7px;"> 
-		                    		'. $semuaNamaSiswa .'
+		                    		'. $semuaNamaSiswaOrGroup .'
 		                  			</strong> 
 		                		</p>
 		              		</h4>
@@ -468,7 +623,7 @@
 		      	$isiPesanNamaSiswa      = "";
 		      	$isiPesan               = "";
 		        
-		      	$semuaNamaSiswa = strlen($dataArrNama[$i]) > 17 ? $isiPesanNamaSiswa .= substr($dataArrNama[$i], 0, 17) . " ..." : $dataArrNama[$i];
+		      	$semuaNamaSiswaOrGroup = strlen($dataArrNama[$i]) > 17 ? $isiPesanNamaSiswa .= substr($dataArrNama[$i], 0, 17) . " ..." : $dataArrNama[$i];
 		      	$semuaPesan 		= strlen($dataArrJenisBayar[$i]) > 13 ? $isiPesan .= substr($dataArrJenisBayar[$i], 0, 13) . " ..." : $dataArrJenisBayar[$i];
 
 		      	$forIsiNotifInfo .= '
@@ -484,7 +639,7 @@
 			                <p style="font-size: 15px;margin-left: 45px;"> 
 			                  <strong> SISWA </strong> <span style="margin-left: 6px;"> : </span> 
 			                  <strong id="title_daily" style="margin-left: 3px;"> 
-			                    '. $semuaNamaSiswa .'
+			                    '. $semuaNamaSiswaOrGroup .'
 			                  </strong> 
 			                </p>
 			              </h4>

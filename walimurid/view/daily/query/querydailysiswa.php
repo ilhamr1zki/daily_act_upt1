@@ -66,19 +66,31 @@
   } else {
 
       if (isset($_POST['send_data_student'])) {
-        // echo "page up";exit;
+
+        $nis                  = $_SESSION['c_otm'];
+
+        // Get Id Group
+        $queryGetIdGroup = mysqli_query($con, "
+          SELECT group_kelas FROM siswa WHERE nis = '$nis'
+        ");
+
+        $getIdGroup = mysqli_fetch_assoc($queryGetIdGroup)['group_kelas'];
+
         $dataActivityFromTeacher = mysqli_query($con, "
-          SELECT
-          guru.nama as nama_guru,
+          SELECT 
           guru.nip as nip_guru,
-          siswa.nis as nis_siswa,
-          siswa.nama as nama_siswa,
-          daily_siswa_approved.nis_siswa as daily_nis_siswa,
-          daily_siswa_approved.image as foto_upload,
+          guru.nama as nama_guru,
+          guru.username as username_guru,
+          siswa.nis AS nis_or_id_group_kelas,
+          siswa.nama as nama_siswa_or_group,
+          ruang_pesan.room_key as room_key,
+          daily_siswa_approved.id as daily_id,
           daily_siswa_approved.title_daily as judul_daily,
           daily_siswa_approved.isi_daily as isi_daily,
-          daily_siswa_approved.tanggal_disetujui_atau_tidak as daily_tanggal_disetujui_atau_tidak,
-          ruang_pesan.room_key as room_key
+          daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+          daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+          daily_siswa_approved.image as foto_upload,
+          ruang_pesan.daily_id as daily_id
           FROM daily_siswa_approved
           LEFT JOIN guru
           ON daily_siswa_approved.from_nip = guru.nip
@@ -86,9 +98,33 @@
           ON daily_siswa_approved.nis_siswa = siswa.nis
           LEFT JOIN ruang_pesan
           ON daily_siswa_approved.id = ruang_pesan.daily_id
-          WHERE daily_siswa_approved.status_approve = 1
-          AND daily_siswa_approved.nis_siswa = '$nis'
-          ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+          WHERE daily_siswa_approved.nis_siswa = '$nis'
+          AND daily_siswa_approved.status_approve = 1
+          UNION
+          SELECT 
+          group_siswa_approved.from_nip as nip_guru,
+          guru.nama as nama_guru,
+          guru.username as username_guru,
+          group_kelas.id AS id_group,
+          group_kelas.nama_group_kelas as nama_group,
+          group_siswa_approved.id as id_group_approved,
+          group_siswa_approved.group_kelas_id as id_group,
+          group_siswa_approved.title_daily as judul_daily,
+          group_siswa_approved.isi_daily as isi_daily,
+          group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+          group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+          group_siswa_approved.image as foto_upload,
+          ruang_pesan.daily_id as daily_id
+          FROM group_siswa_approved
+          LEFT JOIN guru
+          ON group_siswa_approved.from_nip = guru.nip
+          LEFT JOIN ruang_pesan
+          ON group_siswa_approved.id = ruang_pesan.daily_id
+          LEFT JOIN group_kelas
+          ON group_kelas.id = group_siswa_approved.group_kelas_id
+          WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
+          AND group_siswa_approved.status_approve = 1
+          ORDER BY tgl_posted DESC
         ");
 
         $getNama = mysqli_fetch_array($dataActivityFromTeacher);
@@ -107,11 +143,13 @@
             guru.nama as nama_guru,
             guru.nip as nip_guru,
             siswa.nis as nis_siswa,
-            siswa.nama as nama_siswa,
+            siswa.nis AS nis_or_id_group_kelas,
+            siswa.nama as nama_siswa_or_group,
             daily_siswa_approved.nis_siswa as daily_nis_siswa,
             daily_siswa_approved.image as foto_upload,
             daily_siswa_approved.title_daily as judul_daily,
             daily_siswa_approved.isi_daily as isi_daily,
+            daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
             daily_siswa_approved.tanggal_disetujui_atau_tidak as daily_tanggal_disetujui_atau_tidak,
             ruang_pesan.room_key as room_key
             FROM daily_siswa_approved
@@ -126,24 +164,36 @@
             ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
           ");
 
-          $upperName = strtoupper($getNama['nama_siswa']);
+          $upperName = strtoupper($getNama['nama_siswa_or_group']);
 
         }
 
       } else {
         
+        $nis                  = $_SESSION['c_otm'];
+
+        // Get Id Group
+        $queryGetIdGroup = mysqli_query($con, "
+          SELECT group_kelas FROM siswa WHERE nis = '$nis'
+        ");
+
+        $getIdGroup = mysqli_fetch_assoc($queryGetIdGroup)['group_kelas'];
+
         $dataActivityFromTeacher = mysqli_query($con, "
-          SELECT
-          guru.nama as nama_guru,
+          SELECT 
           guru.nip as nip_guru,
-          siswa.nis as nis_siswa,
-          siswa.nama as nama_siswa,
-          daily_siswa_approved.nis_siswa as daily_nis_siswa,
-          daily_siswa_approved.image as foto_upload,
+          guru.nama as nama_guru,
+          guru.username as username_guru,
+          siswa.nis AS nis_or_id_group_kelas,
+          siswa.nama as nama_siswa_or_group,
+          ruang_pesan.room_key as room_key,
+          daily_siswa_approved.id as daily_id,
           daily_siswa_approved.title_daily as judul_daily,
           daily_siswa_approved.isi_daily as isi_daily,
-          daily_siswa_approved.tanggal_disetujui_atau_tidak as daily_tanggal_disetujui_atau_tidak,
-          ruang_pesan.room_key as room_key
+          daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+          daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+          daily_siswa_approved.image as foto_upload,
+          ruang_pesan.daily_id as daily_id
           FROM daily_siswa_approved
           LEFT JOIN guru
           ON daily_siswa_approved.from_nip = guru.nip
@@ -151,9 +201,8 @@
           ON daily_siswa_approved.nis_siswa = siswa.nis
           LEFT JOIN ruang_pesan
           ON daily_siswa_approved.id = ruang_pesan.daily_id
-          WHERE daily_siswa_approved.status_approve = 1
-          AND daily_siswa_approved.nis_siswa = '$nis'
-          ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+          WHERE daily_siswa_approved.nis_siswa = '$nis'
+          AND daily_siswa_approved.status_approve = 1
         ");
 
         $getNama = mysqli_fetch_array($dataActivityFromTeacher);
@@ -168,17 +217,20 @@
         } elseif ($countDataAct != 0) {
           
           $dataActivityFromTeacher = mysqli_query($con, "
-            SELECT
-            guru.nama as nama_guru,
+            SELECT 
             guru.nip as nip_guru,
-            siswa.nis as nis_siswa,
-            siswa.nama as nama_siswa,
-            daily_siswa_approved.nis_siswa as daily_nis_siswa,
-            daily_siswa_approved.image as foto_upload,
+            guru.nama as nama_guru,
+            guru.username as username_guru,
+            siswa.nis AS nis_or_id_group_kelas,
+            siswa.nama as nama_siswa_or_group,
+            ruang_pesan.room_key as room_key,
+            daily_siswa_approved.id as daily_id,
             daily_siswa_approved.title_daily as judul_daily,
             daily_siswa_approved.isi_daily as isi_daily,
-            daily_siswa_approved.tanggal_disetujui_atau_tidak as daily_tanggal_disetujui_atau_tidak,
-            ruang_pesan.room_key as room_key
+            daily_siswa_approved.tanggal_dibuat as tgl_dibuat,
+            daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+            daily_siswa_approved.image as foto_upload,
+            ruang_pesan.daily_id as daily_id
             FROM daily_siswa_approved
             LEFT JOIN guru
             ON daily_siswa_approved.from_nip = guru.nip
@@ -186,12 +238,36 @@
             ON daily_siswa_approved.nis_siswa = siswa.nis
             LEFT JOIN ruang_pesan
             ON daily_siswa_approved.id = ruang_pesan.daily_id
-            WHERE daily_siswa_approved.status_approve = 1
-            AND daily_siswa_approved.nis_siswa = '$nis'
-            ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+            WHERE daily_siswa_approved.nis_siswa = '$nis'
+            AND daily_siswa_approved.status_approve = 1
+            UNION
+            SELECT 
+            group_siswa_approved.from_nip as nip_guru,
+            guru.nama as nama_guru,
+            guru.username as username_guru,
+            group_kelas.id AS id_group,
+            group_kelas.nama_group_kelas as nama_group,
+            group_siswa_approved.id as id_group_approved,
+            group_siswa_approved.group_kelas_id as id_group,
+            group_siswa_approved.title_daily as judul_daily,
+            group_siswa_approved.isi_daily as isi_daily,
+            group_siswa_approved.tanggal_dibuat as tgl_dibuat,
+            group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
+            group_siswa_approved.image as foto_upload,
+            ruang_pesan.daily_id as daily_id
+            FROM group_siswa_approved
+            LEFT JOIN guru
+            ON group_siswa_approved.from_nip = guru.nip
+            LEFT JOIN ruang_pesan
+            ON group_siswa_approved.id = ruang_pesan.daily_id
+            LEFT JOIN group_kelas
+            ON group_kelas.id = group_siswa_approved.group_kelas_id
+            WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
+            AND group_siswa_approved.status_approve = 1
+            ORDER BY tgl_posted DESC
           ");
 
-          $upperName = strtoupper($getNama['nama_siswa']);
+          $upperName = strtoupper($getNama['nama_siswa_or_group']);
 
         }
 
@@ -226,10 +302,9 @@
       <table id="example" border="1" class="display nowrap" style="width:100%">
           <thead style="background-color: lightyellow;">
               <tr>
-                  <th style="text-align: center;" width="5%">NO</th>
+                <th style="text-align: center;" width="5%">NO</th>
                 <th style="text-align: center;"> FROM TEACHER </th>
-              <th style="text-align: center;"> STUDENT </th>
-              <th style="text-align: center;"> ACTIVITY TITLE </th>
+                <th style="text-align: center;"> ACTIVITY TITLE </th>
                 <th style="text-align: center;"> DATE POSTED </th>
                 <th style="text-align: center;"> LOOK DAILY </th>
               </tr>
@@ -241,20 +316,19 @@
               <tr style="background-color: limegreen; color: white; font-weight: bold;">
                 <td style="text-align: center;">  <?= $no++; ?> </td>
                 <td style="text-align: center;">  <?= strtoupper($data['nama_guru']); ?> </td>
-                <td style="text-align: center;">  <?= strtoupper($data['nama_siswa']); ?> </td>
                 <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
-                <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
+                <td style="text-align: center;">  <?= formatDateEnglish($data['tgl_posted']); ?> </td>
                 <td style="text-align: center;">
-                  <form action="lookactivity" method="post">
+                  <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
                     <input type="hidden" name="frompage" value="<?= $diMenu; ?>">
                     <input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
-                    <input type="hidden" name="nis" value="<?= strtoupper($data['nis_siswa']); ?>">
-                    <input type="hidden" name="nama" value="<?= strtoupper($data['nama_siswa']); ?>">
+                    <input type="hidden" name="nis" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
+                    <input type="hidden" name="nama" value="<?= strtoupper($data['nama_siswa_or_group']); ?>">
                     <input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
                     <input type="hidden" name="foto" value="<?= strtoupper($data['foto_upload']); ?>">
-                    <input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
+                    <input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['tgl_posted']); ?>">
                     <input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
-                    <input type="hidden" name="tglori" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
+                    <input type="hidden" name="tglori" value="<?= $data['tgl_posted']; ?>">
                     <input type="hidden" name="judul" value="<?= $data['judul_daily']; ?>">
                     <input type="hidden" name="isi" value="<?= $data['isi_daily']; ?>">
                     <button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="krm"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
@@ -344,16 +418,12 @@
         });
       }
 
-      $("#backto_querydailystd").click(function(){
-        location.href = `<?= $basekepsek; ?>querydailystudent`
-      });
-
       let titleLists1   = document.getElementById('titleList1').innerHTML
 
     let newIcon = document.getElementById("addIcon");
     newIcon.classList.remove("fa");
-    newIcon.classList.add("glyphicon");
-    newIcon.classList.add("glyphicon-zoom-in");
+    newIcon.classList.add("fa");
+    newIcon.classList.add("fa-user");
 
     let getTitleList1 = document.getElementById('isiList2').innerHTML;
     $("#isiMenu").css({
