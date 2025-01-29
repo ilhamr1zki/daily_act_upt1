@@ -38,6 +38,9 @@
 	  	$isDepartemenPAUD  	= preg_match($findDepartemenPAUD, $_SESSION['c_guru']);
 	  	$isAllDepartement   = preg_match($allDepartement, $_SESSION['c_guru']);
 
+	  	$queryGetStudentName	= mysqli_query($con, "SELECT nama FROM siswa WHERE nis = '$dataNIS' ");
+	  	$getStudentName 		= mysqli_fetch_array($queryGetStudentName)['nama'];
+
 	  	if ($dataNIS == '') {
 
 	  		$_SESSION['nis_empty'] = "gagal";
@@ -138,143 +141,183 @@
 
 							if ($isDepartemenSD == 1) {
 
-								$createRoomChatStd = mysqli_query($con, "
-									INSERT INTO daily_siswa_approved 
-									SET 
-									departemen 		= 'SD',
-									from_nip 		= '$dataNIP',
-									nis_siswa 		= '$dataNIS',
-									title_daily     = '$judulDaily',
-									isi_daily 		= '$isData',
-									image           = '$namaFileBaru',
-									tanggal_dibuat  = '$tglSkrng',
-									status_approve	= 0
+								$curl = curl_init();
+
+								$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+								// Nomer HP Kepsek SD
+								$target = "6282110992502, 6289515998565";
+								$txt = [];
+
+								$original_array = ['895334303884', '82110992502/089515998565'];
+
+								for ($i=0; $i < count($original_array); $i++) {
+									
+								    $check = substr($original_array[$i], 0, 1);
+								    
+								    if($check == 8) {
+								    
+								    	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+								    	$txt[] = $changeFormat;
+									
+								    } 
+										
+								}
+
+								$queryGetDataNumberKepsek = mysqli_query($con, "
+									SELECT no_hp FROM guru WHERE nip = '2019032'
 								");
 
-								if ($createRoomChatStd) {
-									$_SESSION['create_room_std'] = "berhasil";
-									header("Location:". "$basegu" ."createdailystudent");
-									// $curl = curl_init();
+								$getNumberPhoneKepsek = mysqli_fetch_array($queryGetDataNumberKepsek)['no_hp'];
+								// echo $getNumberPhoneKepsek;exit;
 
+								$destination_array = implode(',', $txt);
+								// echo $destination_array;exit;
 
-        							// Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Guru beserta Account token nya yang ada di menu setting di wwebsite fonnte
-									// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+								// $target = $destination_array;
+								$pesan  = "*ADA NOTIF BARU DAILY SISWA _". strtoupper($getStudentName) ."_ UNTUK MENUNGGU PERSETUJUAN ANDA !*". "\n" . "\n" . $basekepsek . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-      								// Yang akan di kirimkan notif personal, nomer Kepsek Fonnte
-									// $target = "6282110992502, 6289515998565";
-									// $txt = [];
+								curl_setopt_array($curl, array(
+								  CURLOPT_URL => 'https://api.fonnte.com/send',
+								  CURLOPT_RETURNTRANSFER => true,
+								  CURLOPT_ENCODING => '',
+								  CURLOPT_MAXREDIRS => 10,
+								  CURLOPT_TIMEOUT => 0,
+								  CURLOPT_FOLLOWLOCATION => true,
+								  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+								  CURLOPT_CUSTOMREQUEST => 'POST',
+								  CURLOPT_POSTFIELDS => array(
+								    'target' => $getNumberPhoneKepsek,
+								    'message' => $pesan
+								  ),
+								  CURLOPT_HTTPHEADER => array(
+								    'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+								  ),
+								));
 
-									// $original_array = ['895334303884', '82110992502/089515998565'];
+								$response = curl_exec($curl);
 
-									// for ($i=0; $i < count($original_array); $i++) {
-										
-									//     $check = substr($original_array[$i], 0, 1);
-									    
-									//     if($check == 8) {
-									    
-									//     	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
-									//     	$txt[] = $changeFormat;
-										
-									//     } 
+								if ($response) {
 
-											
-									// }
+									$createRoomChatStd = mysqli_query($con, "
+										INSERT INTO daily_siswa_approved 
+										SET 
+										departemen 		= 'SD',
+										from_nip 		= '$dataNIP',
+										nis_siswa 		= '$dataNIS',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
 
-									// $destination_array = implode(',', $txt);
-									// // echo $destination_array;exit;
-
-									// $target = $destination_array;
-									// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
-
-									// curl_setopt_array($curl, array(
-									//   CURLOPT_URL => 'https://api.fonnte.com/send',
-									//   CURLOPT_RETURNTRANSFER => true,
-									//   CURLOPT_ENCODING => '',
-									//   CURLOPT_MAXREDIRS => 10,
-									//   CURLOPT_TIMEOUT => 0,
-									//   CURLOPT_FOLLOWLOCATION => true,
-									//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-									//   CURLOPT_CUSTOMREQUEST => 'POST',
-									//   CURLOPT_POSTFIELDS => array(
-									//     'target' => $target,
-									//     'message' => $pesan,
-									//     'delay' => '3-5'
-									//   ),
-									//   CURLOPT_HTTPHEADER => array(
-									//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
-									//   ),
-									// ));
-
-									// $response = curl_exec($curl);
-
-									// curl_close($curl);
-
-									// if ($response == true) {
-									// 	header("Location:". "$basegu" ."createdailystudent");
-									// }
+									if ($createRoomChatStd) {
+										$_SESSION['create_room_std'] = "berhasil";
+										header("Location:". "$basegu" ."createdailystudent");
+									} else {
+										$_SESSION['create_room_std'] = "gagal";
+										header("Location:". "$basegu" ."createdailystudent");
+									}
 
 								} else {
-									$_SESSION['create_room_std'] = "gagal";
-									header("Location:". "$basegu" ."createdailystudent");
+
+									$_SESSION['create_room_std'] = "res_gagal";
+									header("Location:". "$basegu" ."create_room_std");
+
 								}
+
+								curl_close($curl);
 
 							} else if ($isDepartemenPAUD == 1) {
 
-								$createRoomChatStd = mysqli_query($con, "
-									INSERT INTO daily_siswa_approved 
-									SET 
-									departemen 		= 'PAUD',
-									from_nip 		= '$dataNIP',
-									nis_siswa 		= '$dataNIS',
-									title_daily     = '$judulDaily',
-									isi_daily 		= '$isData',
-									image           = '$namaFileBaru',
-									tanggal_dibuat  = '$tglSkrng',
-									status_approve	= 0
+								$curl = curl_init();
+
+								$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+								// Nomer HP Kepsek SD
+								$target = "6282110992502, 6289515998565";
+								$txt = [];
+
+								$original_array = ['895334303884', '82110992502/089515998565'];
+
+								for ($i=0; $i < count($original_array); $i++) {
+									
+								    $check = substr($original_array[$i], 0, 1);
+								    
+								    if($check == 8) {
+								    
+								    	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+								    	$txt[] = $changeFormat;
+									
+								    } 
+										
+								}
+
+								$queryGetDataNumberKepsek = mysqli_query($con, "
+									SELECT no_hp FROM guru WHERE nip = '2019034'
 								");
 
-								if ($createRoomChatStd) {
-									$_SESSION['create_room_std'] = "berhasil";
-									header("Location:". "$basegu" ."createdailystudent");
-									// $curl = curl_init();
+								$getNumberPhoneKepsek = mysqli_fetch_array($queryGetDataNumberKepsek)['no_hp'];
+								// echo $getNumberPhoneKepsek;exit;
 
-									// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+								$destination_array = implode(',', $txt);
+								// echo $destination_array;exit;
 
-									// // Nomer HP Kepsek SD
-									// $target = "6282110992502, 6289515998565";
-									// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+								// $target = $destination_array;
+								$pesan  = "*ADA NOTIF BARU DAILY SISWA _". strtoupper($getStudentName) ."_ UNTUK MENUNGGU PERSETUJUAN ANDA !*". "\n" . "\n" . $basekepsek . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-									// curl_setopt_array($curl, array(
-									//   CURLOPT_URL => 'https://api.fonnte.com/send',
-									//   CURLOPT_RETURNTRANSFER => true,
-									//   CURLOPT_ENCODING => '',
-									//   CURLOPT_MAXREDIRS => 10,
-									//   CURLOPT_TIMEOUT => 0,
-									//   CURLOPT_FOLLOWLOCATION => true,
-									//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-									//   CURLOPT_CUSTOMREQUEST => 'POST',
-									//   CURLOPT_POSTFIELDS => array(
-									//     'target' => $target,
-									//     'message' => $pesan,
-									//     'delay' => '3-5'
-									//   ),
-									//   CURLOPT_HTTPHEADER => array(
-									//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
-									//   ),
-									// ));
+								curl_setopt_array($curl, array(
+								  CURLOPT_URL => 'https://api.fonnte.com/send',
+								  CURLOPT_RETURNTRANSFER => true,
+								  CURLOPT_ENCODING => '',
+								  CURLOPT_MAXREDIRS => 10,
+								  CURLOPT_TIMEOUT => 0,
+								  CURLOPT_FOLLOWLOCATION => true,
+								  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+								  CURLOPT_CUSTOMREQUEST => 'POST',
+								  CURLOPT_POSTFIELDS => array(
+								    'target' => $getNumberPhoneKepsek,
+								    'message' => $pesan
+								  ),
+								  CURLOPT_HTTPHEADER => array(
+								    'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+								  ),
+								));
 
-									// $response = curl_exec($curl);
+								$response = curl_exec($curl);
 
-									// curl_close($curl);
+								if ($response) {
 
-									// if ($response == true) {
-										// header("Location:". "$basegu" ."createdailystudent");
-									// }
+									$createRoomChatStd = mysqli_query($con, "
+										INSERT INTO daily_siswa_approved 
+										SET 
+										departemen 		= 'PAUD',
+										from_nip 		= '$dataNIP',
+										nis_siswa 		= '$dataNIS',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
+
+									if ($createRoomChatStd) {
+										$_SESSION['create_room_std'] = "berhasil";
+										header("Location:". "$basegu" ."createdailystudent");
+									} else {
+										$_SESSION['create_room_std'] = "gagal";
+										header("Location:". "$basegu" ."createdailystudent");
+									}
 
 								} else {
-									$_SESSION['create_room_std'] = "gagal";
-									header("Location:". "$basegu" ."createdailystudent");
+
+									$_SESSION['create_room_std'] = "res_gagal";
+									header("Location:". "$basegu" ."create_room_std");
+
 								}
+
+								curl_close($curl);
 
 							} else if ($isAllDepartement == 1) {
 
@@ -364,6 +407,7 @@
 
 		$judulDaily  		= mysqli_real_escape_string($con, htmlspecialchars($_POST['jdl_daily']) );
 		$dataIdGroup 		= htmlspecialchars($_POST['id_group']);
+
 		$dataNIP     		= htmlspecialchars($_POST['nipguru']); 
 		$isData 			= mysqli_real_escape_string($con, htmlspecialchars($_POST['editor_catatan'])) . "empty_or_no";
 
@@ -384,6 +428,9 @@
 
 	  	$isDepartemenSD  	= preg_match($findDepartemenSD, $_SESSION['c_guru']);
 	  	$isDepartemenPAUD  	= preg_match($findDepartemenPAUD, $_SESSION['c_guru']);
+
+	  	$queryGetNameGroup 	= mysqli_query($con, "SELECT nama_group_kelas FROM group_kelas WHERE id = '$dataIdGroup' ");
+	  	$getNameGroupClass 	= mysqli_fetch_array($queryGetNameGroup)['nama_group_kelas'];
 
 	  	if ($dataIdGroup == '') {
 
@@ -484,7 +531,7 @@
 
 							if ($isDepartemenSD == 1) {
 								
-								move_uploaded_file($tmpName, '../../../../kepala_sekolah/image_uploads/' . $namaFileBaru);
+								// move_uploaded_file($tmpName, '../../../../kepala_sekolah/image_uploads/' . $namaFileBaru);
 
 								// echo "SD";exit;
 								$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoran_idgroupkelas where kode='groupkelas' limit 1 "));
@@ -494,86 +541,100 @@
 
 						      	$kodseq = "groupkelas".$invID;
 
-						      	// $curl = curl_init();
+						      	$curl = curl_init();
 
-								// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+								$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
 								// Nomer HP Kepsek SD
-								// $target = "6282110992502, 6289515998565";
-								// $txt = [];
+								$target = "6282110992502, 6289515998565";
+								$txt = [];
 
-								// $original_array = ['895334303884', '82110992502/089515998565'];
+								$original_array = ['895334303884', '82110992502/089515998565'];
 
-								// for ($i=0; $i < count($original_array); $i++) {
+								for ($i=0; $i < count($original_array); $i++) {
 									
-								//     $check = substr($original_array[$i], 0, 1);
+								    $check = substr($original_array[$i], 0, 1);
 								    
-								//     if($check == 8) {
+								    if($check == 8) {
 								    
-								//     	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
-								//     	$txt[] = $changeFormat;
+								    	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+								    	$txt[] = $changeFormat;
 									
-								//     } 
-
+								    } 
 										
-								// }
+								}
 
-								// $destination_array = implode(',', $txt);
+								$queryGetDataNumberKepsek = mysqli_query($con, "
+									SELECT no_hp FROM guru WHERE nip = '2019032'
+								");
+
+								$getNumberPhoneKepsek = mysqli_fetch_array($queryGetDataNumberKepsek)['no_hp'];
+								// echo $getNumberPhoneKepsek;exit;
+
+								$destination_array = implode(',', $txt);
 								// echo $destination_array;exit;
 
 								// $target = $destination_array;
-								// $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "https://www.facebook.com/";
+								$pesan  = "*ADA NOTIF BARU DAILY GROUP ". $getNameGroupClass ." UNTUK MENUNGGU PERSETUJUAN ANDA !*". "\n" . "\n" . $basekepsek . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-								// curl_setopt_array($curl, array(
-								//   CURLOPT_URL => 'https://api.fonnte.com/send',
-								//   CURLOPT_RETURNTRANSFER => true,
-								//   CURLOPT_ENCODING => '',
-								//   CURLOPT_MAXREDIRS => 10,
-								//   CURLOPT_TIMEOUT => 0,
-								//   CURLOPT_FOLLOWLOCATION => true,
-								//   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-								//   CURLOPT_CUSTOMREQUEST => 'POST',
-								//   CURLOPT_POSTFIELDS => array(
-								//     'target' => $target,
-								//     'message' => $pesan,
-								//     'delay' => '3-5'
-								//   ),
-								//   CURLOPT_HTTPHEADER => array(
-								//     'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
-								//   ),
-								// ));
+								curl_setopt_array($curl, array(
+								  CURLOPT_URL => 'https://api.fonnte.com/send',
+								  CURLOPT_RETURNTRANSFER => true,
+								  CURLOPT_ENCODING => '',
+								  CURLOPT_MAXREDIRS => 10,
+								  CURLOPT_TIMEOUT => 0,
+								  CURLOPT_FOLLOWLOCATION => true,
+								  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+								  CURLOPT_CUSTOMREQUEST => 'POST',
+								  CURLOPT_POSTFIELDS => array(
+								    'target' => $getNumberPhoneKepsek,
+								    'message' => $pesan
+								  ),
+								  CURLOPT_HTTPHEADER => array(
+								    'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+								  ),
+								));
 
-								// $response = curl_exec($curl);
+								$response = curl_exec($curl);
 
-								// curl_close($curl);
+								if ($response == true) {
+									
+									$createRoomChatGroup = mysqli_query($con, "
+										INSERT INTO group_siswa_approved 
+										SET 
+										id 				= '$kodseq',
+										departemen 		= 'SD',
+										from_nip 		= '$dataNIP',
+										group_kelas_id 	= '$dataIdGroup',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
 
-								// if ($response == true) {
-								// 	header("Location:". "$basegu" ."createdailystudent");
-								// }
-						      	// echo $kodseq;exit;
+									if ($createRoomChatGroup) {
 
-								$createRoomChatGroup = mysqli_query($con, "
-									INSERT INTO group_siswa_approved 
-									SET 
-									id 				= '$kodseq',
-									departemen 		= 'SD',
-									from_nip 		= '$dataNIP',
-									group_kelas_id 	= '$dataIdGroup',
-									title_daily     = '$judulDaily',
-									isi_daily 		= '$isData',
-									image           = '$namaFileBaru',
-									tanggal_dibuat  = '$tglSkrng',
-									status_approve	= 0
-								");
+										$penomoran=mysqli_query($con,"UPDATE penomoran_idgroupkelas set nourut='$nomorurut' where kode='groupkelas' ");
 
-								if ($createRoomChatGroup) {
-									$penomoran=mysqli_query($con,"UPDATE penomoran_idgroupkelas set nourut='$nomorurut' where kode='groupkelas' ");
-									$_SESSION['create_room_group'] = "berhasil";
-									header("Location:". "$basegu" ."createdailygroup");
+										if ($penomoran == true) {
+
+											$_SESSION['create_room_group'] = "berhasil";
+											header("Location:". "$basegu" ."createdailygroup");
+
+										}
+
+									} else {
+										$_SESSION['create_room_group'] = "gagal";
+										header("Location:". "$basegu" ."createdailygroup");
+									}
+
 								} else {
-									$_SESSION['create_room_group'] = "gagal";
+									$_SESSION['create_room_group'] = "res_gagal";
 									header("Location:". "$basegu" ."createdailygroup");
 								}
+
+								curl_close($curl);
 
 							} else if ($isDepartemenPAUD == 1) {
 								
@@ -584,29 +645,95 @@
 
 						      	$kodseq = "groupkelas".$invID;
 
-								$createRoomChatGroup = mysqli_query($con, "
-									INSERT INTO group_siswa_approved 
-									SET 
-									id 				= '$kodseq',
-									departemen 		= 'PAUD',
-									from_nip 		= '$dataNIP',
-									group_kelas_id 	= '$dataIdGroup',
-									title_daily     = '$judulDaily',
-									isi_daily 		= '$isData',
-									image           = '$namaFileBaru',
-									tanggal_dibuat  = '$tglSkrng',
-									status_approve	= 0
-								");
+						      	$curl = curl_init();
 
-								if ($createRoomChatGroup) {
-									$penomoran=mysqli_query($con,"UPDATE penomoran_idgroupkelas set nourut='$nomorurut' where kode='groupkelas' ");
-									$_SESSION['create_room_group'] = "berhasil";
-									header("Location:". "$basegu" ."createdailygroup");
-								} else {
-									$_SESSION['create_room_group'] = "gagal";
-									header("Location:". "$basegu" ."createdailygroup");
+								$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+								// Nomer HP Kepsek SD
+								$target = "6282110992502, 6289515998565";
+								$txt = [];
+
+								$original_array = ['895334303884', '82110992502/089515998565'];
+
+								for ($i=0; $i < count($original_array); $i++) {
+									
+								    $check = substr($original_array[$i], 0, 1);
+								    
+								    if($check == 8) {
+								    
+								    	$changeFormat = "62" . str_replace(["/08"], ",628", $original_array[$i]);    
+								    	$txt[] = $changeFormat;
+									
+								    } 
+										
 								}
 
+								$queryGetDataNumberKepsek = mysqli_query($con, "
+									SELECT no_hp FROM guru WHERE nip = '2019034'
+								");
+
+								$getNumberPhoneKepsek = mysqli_fetch_array($queryGetDataNumberKepsek)['no_hp'];
+								// echo $getNumberPhoneKepsek;exit;
+
+								$destination_array = implode(',', $txt);
+								// echo $destination_array;exit;
+
+								// $target = $destination_array;
+								$pesan  = "*ADA NOTIF BARU DAILY GROUP ". $getNameGroupClass ." UNTUK MENUNGGU PERSETUJUAN ANDA !*". "\n" . "\n" . $basekepsek . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+								curl_setopt_array($curl, array(
+								  CURLOPT_URL => 'https://api.fonnte.com/send',
+								  CURLOPT_RETURNTRANSFER => true,
+								  CURLOPT_ENCODING => '',
+								  CURLOPT_MAXREDIRS => 10,
+								  CURLOPT_TIMEOUT => 0,
+								  CURLOPT_FOLLOWLOCATION => true,
+								  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+								  CURLOPT_CUSTOMREQUEST => 'POST',
+								  CURLOPT_POSTFIELDS => array(
+								    'target' => $getNumberPhoneKepsek,
+								    'message' => $pesan
+								  ),
+								  CURLOPT_HTTPHEADER => array(
+								    'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+								  ),
+								));
+
+								$response = curl_exec($curl);
+
+								if ($response) {
+
+									$createRoomChatGroup = mysqli_query($con, "
+										INSERT INTO group_siswa_approved 
+										SET 
+										id 				= '$kodseq',
+										departemen 		= 'PAUD',
+										from_nip 		= '$dataNIP',
+										group_kelas_id 	= '$dataIdGroup',
+										title_daily     = '$judulDaily',
+										isi_daily 		= '$isData',
+										image           = '$namaFileBaru',
+										tanggal_dibuat  = '$tglSkrng',
+										status_approve	= 0
+									");
+
+									if ($createRoomChatGroup) {
+										$penomoran=mysqli_query($con,"UPDATE penomoran_idgroupkelas set nourut='$nomorurut' where kode='groupkelas' ");
+										$_SESSION['create_room_group'] = "berhasil";
+										header("Location:". "$basegu" ."createdailygroup");
+									} else {
+										$_SESSION['create_room_group'] = "gagal";
+										header("Location:". "$basegu" ."createdailygroup");
+									}
+
+								} else {
+
+									$_SESSION['create_room_group'] = "res_gagal";
+									header("Location:". "$basegu" ."createdailygroup");
+
+								}
+
+								curl_close($curl);
 
 							}
 

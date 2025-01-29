@@ -506,8 +506,13 @@
       }
 
       #namakepsek,
-      #namaguruchat {
+      #namaguruchat,
+      #kepsekchat {
         font-size: 10px;
+      }
+
+      #namakepsek {
+        margin-top: 1px
       }
 
       #tglpublish,
@@ -911,7 +916,7 @@ oncontextmenu="return false">
           <input type="hidden" id="hg_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
           <input type="hidden" id="hg_jdl_posting_lookdaily" name="jdl_posting_lookdaily">
           <input type="hidden" id="hg_isi_posting_lookdaily" name="isi_posting_lookdaily">
-          <button type="submit" name="redirectLookDaily" id="df_lookdaily_appr" class="btn btn-primary"> <i class="glyphicon glyphicon-eye-open"></i> Lookdaily </button>
+          <button type="submit" name="redirectLookDaily" id="df_lookdaily_hgappr" class="btn btn-primary"> <i class="glyphicon glyphicon-eye-open"></i> Lookdaily </button>
         </form>
       </div>
     </div>
@@ -1054,14 +1059,14 @@ oncontextmenu="return false">
           <li class="dropdown user user-menu">
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="<?php echo $base; ?>imgstatis/logo2.png" class="user-image" alt="User Image">
+              <img src="<?php echo $base; ?>imgstatis/df.jpg" class="user-image" alt="User Image">
                 <span class="hidden-xs"> <?php echo $_SESSION['username_otm'] ?> </span>
               </a>
 
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header" style="height: 185px;">
-                  <img style="margin-bottom: 10px;" src="<?php echo $base; ?>imgstatis/logo2.png" class="img-circle" alt="User Image">
+                  <img style="margin-bottom: 10px;" src="<?php echo $base; ?>imgstatis/df.jpg" class="img-circle" alt="User Image">
                 <p style="margin-top: -9px; font-size: 13px;">
                   <?php echo ucfirst($_SESSION['username_otm']); ?>
                 </p>
@@ -1109,7 +1114,7 @@ oncontextmenu="return false">
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-            <img src="<?php echo $base; ?>imgstatis/logo2.png" class="img-circle" alt="User Image">
+            <img src="<?php echo $base; ?>imgstatis/df.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p> <?= ucfirst($usrnm[0]); ?> </p>
@@ -1142,7 +1147,7 @@ oncontextmenu="return false">
               </a>
               <ul class="treeview-menu">
                 <li> 
-                  <a href="<?= $basewam; ?>querydailystudent" id="query_data_siswa"><i class="fa fa-user text-primary"></i> <span style="margin-left: 7px;"> </span> Student </a>
+                  <a href="<?= $basewam; ?>querydailystudent" id="query_data_siswa"><i class="fa fa-user text-primary" style="margin-left: 3px;"></i> <span style="margin-left: 3px;"> </span> Student </a>
                 </li>
                 <li> 
                   <a href="<?= $basewam; ?>querydailygroup" id="query_data_group"><i class="fa fa-users text-primary"></i> <span style="margin-left: 6px;" id="sub_isiList2group"> Group Class </span> </a>
@@ -1162,6 +1167,10 @@ oncontextmenu="return false">
             
             <li>
               <a href="<?= $basewam; ?>changepassword" id="changepassword"><i class="glyphicon glyphicon-wrench text-primary"></i> <span id="isiList4"> Change Password </span> </a>
+            </li>
+
+            <li>
+              <a href="<?= $basewam; ?>changenumberphone" id="changenumberphone"><i class="glyphicon glyphicon-phone text-primary"></i> <span id="isiList4"> Change Number Phone </span> </a>
             </li>
 
           </ul>
@@ -1243,6 +1252,10 @@ oncontextmenu="return false">
     elseif ($act == 'changepassword') {
       require 'view/maintenance/changepassword/index.php';
     } 
+
+    elseif ($act == 'changenumberphone') {
+      require 'view/maintenance/changenumberphone/index.php';
+    }
 
     #region form maintenance
     elseif ($act == 'tahunajaran') {
@@ -1424,6 +1437,16 @@ oncontextmenu="return false">
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
 
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailystudent`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+                $('#df_frompage_lookdaily').val("querydailystudent");
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailygroup`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+                $('#df_frompage_lookdaily').val("querydailygroup");
+
               } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_waiting_approval`) {
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
@@ -1440,6 +1463,10 @@ oncontextmenu="return false">
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
 
+              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changenumberphone`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
               } else if (`<?= $thisPage; ?>` != `<?= $basewam; ?>`) {
 
                 $('#formDfAppr').attr('action', `${dataRoomKey}`);
@@ -1452,8 +1479,12 @@ oncontextmenu="return false">
 
               if (dataStdOrGroup == "group") {
                 $("#lbl_std_or_group_df_appr").text("GROUP");
+                $("#df_lookdaily_appr").attr('name', 'daily_group');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
               } else if (dataStdOrGroup == "std") {
                 $("#lbl_std_or_group_df_appr").text("STUDENT");
+                $("#df_lookdaily_appr").attr('name', 'redirectLookDaily');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
               }
 
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']");
@@ -1609,7 +1640,7 @@ oncontextmenu="return false">
       "paging": true,
       "lengthChange": true,
       "searching": true,
-      "ordering": false,
+      "ordering": true,
       "info": true,
       "autoWidth": false
     });

@@ -50,6 +50,101 @@
   // Guru Daily Personal
   else if ($roleguru == 1 && $stdorgroup == 0) {
     $guru_std = 1;
+
+    // Cari Daily Student
+    $queryFindStudentName = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nama AS nama_siswa 
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getStudentName = mysqli_fetch_assoc($queryFindStudentName)['nama_siswa'];
+
+    // Cari NIS Siswa
+    $queryFindStudentNIS = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nis AS nis_siswa 
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getNis = mysqli_fetch_assoc($queryFindStudentNIS)['nis_siswa'];
+
+    // Cari Foto Daily Siswa 
+    $queryFindImageDailyStd = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nis AS nis_siswa,
+      daily_siswa_approved.image as foto_daily
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getImageUploadDailyStd = mysqli_fetch_assoc($queryFindImageDailyStd)['foto_daily'];
+
+    // Cari Tanggal Daily Siswa
+    $queryFindDateDailyStd = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nis AS nis_siswa,
+      daily_siswa_approved.tanggal_disetujui_atau_tidak as tgl_disetujui
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getDateDailyStd = mysqli_fetch_assoc($queryFindDateDailyStd)['tgl_disetujui'];
+
+    // Cari Judul Daily Siswa
+    $queryFindTitleDailyStd = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nis AS nis_siswa,
+      daily_siswa_approved.title_daily as judul_daily
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getTitleDailyStd = mysqli_fetch_assoc($queryFindTitleDailyStd)['judul_daily'];
+
+    // Cari Isi Daily Siswa
+    $queryFindContentDailyStd = mysqli_query($con, "
+      SELECT 
+      daily_siswa_approved.id AS id_std,
+      siswa.nis AS nis_siswa,
+      daily_siswa_approved.isi_daily as isi_daily
+      FROM daily_siswa_approved
+      LEFT JOIN siswa
+      ON daily_siswa_approved.nis_siswa = siswa.nis
+      WHERE daily_siswa_approved.id IN (
+        SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomkeys'
+      )
+    ");
+
+    $getContentDailyStd = mysqli_fetch_assoc($queryFindContentDailyStd)['isi_daily'];
+
   } 
 
   // Guru Daily Group
@@ -183,7 +278,7 @@
 
     <form action="<?= $basegu; ?>lookactivity/<?= $roomkeys; ?>" method="post" style="display: none;">
       <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
-      <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily" value="<?= $roomkeys; ?>">
+      <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_group_lookdaily" value="<?= $roomkeys; ?>">
       <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily" value="<?= $getNameTeacher; ?>">
       <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily" value="<?= $getNameGroup; ?>">
       <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily" value="<?= $getIdGroup; ?>">
@@ -192,10 +287,26 @@
       <input type="hidden" id="hg_tglori_posting_lookdaily" name="tglori_posting_lookdaily" value="<?= $getDateDailyGroup; ?>">
       <input type="hidden" id="hg_jdl_posting_lookdaily" name="jdl_posting_lookdaily" value="<?= $getTitleDailyGroup; ?>">
       <input type="hidden" id="hg_isi_posting_lookdaily" name="isi_posting_lookdaily" value="<?= $getContentDailyGroup; ?>">
-      <button type="submit" id="btn_activity"></button>
+      <button type="submit" name="daily_group" id="btn_activity"></button>
     </form>
 
-  <?php elseif($stdorgroup == 0): ?>
+  <?php elseif($guru_std == 1): ?>
+
+    <form action="<?= $basegu; ?>lookactivity/<?= $roomkeys; ?>" method="post" style="display: none;">
+
+      <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
+      <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily" value="<?= $roomkeys; ?>">
+      <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily" value="<?= $getNameTeacher; ?>">
+      <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily" value="<?= $getStudentName; ?>">
+      <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily" value="<?= $getNis; ?>">
+      <input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily" value="<?= $getImageUploadDailyStd; ?>">
+      <input type="hidden" id="hg_tgl_posting_lookdaily" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($getDateDailyStd); ?>">
+      <input type="hidden" id="hg_tglori_posting_lookdaily" name="tglori_posting_lookdaily" value="<?= $getDateDailyStd; ?>">
+      <input type="hidden" id="hg_jdl_posting_lookdaily" name="jdl_posting_lookdaily" value="<?= $getTitleDailyStd; ?>">
+      <input type="hidden" id="hg_isi_posting_lookdaily" name="isi_posting_lookdaily" value="<?= $getContentDailyStd; ?>">
+      <button type="submit" name="redirectLookDaily" id="btn_activity"></button>
+
+    </form>
     
   <?php endif ?>
   

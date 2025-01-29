@@ -2047,33 +2047,51 @@ oncontextmenu="return false">
         success:function(data) {
 
           console.log(JSON.parse(data).status_approve);
+          let validNumberPhone = JSON.parse(data).number_phone_teacher;
+          let createdByTeacher = JSON.parse(data).created_by_teacher;
 
-          Swal.fire({
-            title : "Approve Daily",
-            icon  : "success",
-            timer : 1000
-          });
+          if (validNumberPhone == true) {
+            
+            Swal.fire({
+              title : "Approve Daily",
+              icon  : "success",
+              timer : 1000
+            });
 
-          $("#not_approve").hide();
-          $("#approve").hide();
-          $("#close_approve_wait").click();
+            $("#not_approve").hide();
+            $("#approve").hide();
+            $("#close_approve_wait").click();
 
-          if (inPage == 'dashboard') {
+            if (inPage == 'dashboard') {
+
+              setTimeout(function(){
+                location.href = `<?= $basekepsek; ?>`;
+              }, 1500);
+
+            } else if (inPage == 'waiting') {
+
+              setTimeout(function(){
+                location.href = `<?= $basekepsek; ?>status_waiting_approval`;
+              }, 1500);
+
+            } else if (inPage == 'approved') {
+
+              setTimeout(function(){
+                location.href = `<?= $basekepsek; ?>status_approved`;
+              }, 1500);
+
+            }
+
+          } else if (validNumberPhone == false) {
+
+            Swal.fire({
+              title : `Invalid Number Phone Teacher ${createdByTeacher}`,
+              icon  : "warning",
+              timer : 1500
+            });
 
             setTimeout(function(){
               location.href = `<?= $basekepsek; ?>`;
-            }, 1500);
-
-          } else if (inPage == 'waiting') {
-
-            setTimeout(function(){
-              location.href = `<?= $basekepsek; ?>status_waiting_approval`;
-            }, 1500);
-
-          } else if (inPage == 'approved') {
-
-            setTimeout(function(){
-              location.href = `<?= $basekepsek; ?>status_approved`;
             }, 1500);
 
           }
@@ -2250,20 +2268,38 @@ oncontextmenu="return false">
         success:function(data) {
 
           console.log(JSON.parse(data).status_approve);
+          let validNumberPhone = JSON.parse(data).number_phone_teacher;
+          let createdByTeacher = JSON.parse(data).created_by_teacher;
 
-          Swal.fire({
-            title : "Approve Daily",
-            icon  : "success",
-            timer : 1000
-          });
+          if (validNumberPhone == true) {
 
-          $("#hightlight_not_approve").hide();
-          $("#hightlight_approve").hide();
-          $("#hightlight_close_approve_wait").click();
+            Swal.fire({
+              title : "Approve Daily",
+              icon  : "success",
+              timer : 1000
+            });
 
-          setTimeout(function(){
-            location.href = `<?= $basekepsek; ?>`;
-          }, 1500);
+            $("#hightlight_not_approve").hide();
+            $("#hightlight_approve").hide();
+            $("#hightlight_close_approve_wait").click();
+
+            setTimeout(function(){
+              location.href = `<?= $basekepsek; ?>`;
+            }, 1500);
+
+          } else if (validNumberPhone == false) {
+
+            Swal.fire({
+              title : `Invalid Number Phone Teacher ${createdByTeacher}`,
+              icon  : "warning",
+              timer : 1500
+            });
+
+            setTimeout(function(){
+              location.href = `<?= $basekepsek; ?>`;
+            }, 1500);
+
+          }
 
         }
 

@@ -33,6 +33,7 @@
       $pendidikan     = htmlspecialchars($_POST['_pendidikan']); 
       $jurusan        = mysqli_real_escape_string($con, htmlspecialchars($_POST['_jurusan'])); 
       $email          = htmlspecialchars($_POST['_email']);
+      $no_hp          = htmlspecialchars($_POST['nohp']);
 
       $queryInsGuru = mysqli_query($con, "
         INSERT INTO guru
@@ -50,7 +51,8 @@
         jurusan     = '$jurusan',
         email       = '$email',
         username    = '$username',
-        password    = '$password'
+        password    = '$password',
+        no_hp       = '$no_hp'
       ");
 
       if ($queryInsGuru) {
@@ -99,7 +101,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                           <label>NIP<sup style="color: red;">*</sup></label>
-                          <input type="text" id="inp_nip" placeholder="Hanya Boleh Angka" name="nip" class="form-control">
+                          <input type="text" id="inp_nip" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="7" placeholder="Hanya Boleh Angka" name="nip" class="form-control">
                         </div>
                     </div>
                     <div class="col-sm-6">
@@ -186,13 +188,19 @@
                 </div>
 
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>NO.HP / WA YANG AKTIF<sup style="color: red;">*</sup></label>
+                      <input type="text" required="" placeholder="628xxx / 08xxx" name="nohp" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="12" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
                     <div class="form-group">
                       <label>USERNAME</label>
                       <input type="text" required="" name="username" class="form-control">
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <div class="form-group">
                       <label>PASSWORD</label>
                       <input type="password" required="" id="password" name="password" class="form-control">
@@ -249,6 +257,8 @@
     forceParse: 0
   });
 
+  $("#inp_nip").focus();
+
   $("#swp1").click(function(){
     let x = document.getElementById("password");
     if (x.type === "password") {
@@ -270,6 +280,14 @@
 
   function mouseOver1() {
     document.getElementById("swp1").style.cursor = "pointer";
+  }
+
+  function onlyNumberKey(evt) {
+    // Only ASCII character in that range allowed
+    let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+        return false;
+    return true;
   }
 
   $(document).ready(function() {

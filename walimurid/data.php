@@ -250,7 +250,7 @@
 	 		guru.username as username_guru,
 	 		group_kelas.id AS id_group,
 	 		group_kelas.nama_group_kelas as nama_group,
-	 		group_siswa_approved.id as id_group_approved,
+	 		ruang_pesan.room_key as room_key,
 	 		group_siswa_approved.group_kelas_id as id_group,
 	 		group_siswa_approved.title_daily as judul_daily,
 	 		group_siswa_approved.isi_daily as isi_daily,

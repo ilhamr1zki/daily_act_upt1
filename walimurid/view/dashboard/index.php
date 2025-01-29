@@ -256,8 +256,12 @@
 
 		if (stdOrGroup == "std") {
 			$("#lbl_std_or_group").text("STUDENT");
+			$("#df_lookdaily_hgappr").attr('name', 'redirectLookDaily');
+            $("#hg_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
 		} else if (stdOrGroup == "group") {
 			$("#lbl_std_or_group").text("GROUP");
+			$("#df_lookdaily_hgappr").attr('name', 'daily_group');
+            $("#hg_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
 		}
 
 		$('#formHgAppr').attr('action', `lookactivity/${roomKey}`);

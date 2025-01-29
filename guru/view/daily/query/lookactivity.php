@@ -726,8 +726,6 @@
 				      	ORDER BY tbl_komentar.id
 				    ");
 
-				  	$nama = 'GROUP ' . $nama;
-
 				    $countDataChat 	= mysqli_num_rows($getDataKomenOther);
 
 				  	$fromPage   	= htmlspecialchars($_POST['frompage']);
@@ -1016,18 +1014,14 @@
 		100%{opacity: 1;}
 	}
 
-	#nama_sswa {
-		font-size: 10px;
-	}
-
 	@media only screen and (max-width: 768px) {
 
 		#nama_sswa {
-			font-size: 8px;
+			font-size: 10px;
 		}
 
 		#time_send {
-			font-size: 8px;
+			font-size: 10px;
 		}
 
 	}
@@ -1326,7 +1320,7 @@
 		    <!-- DIRECT CHAT SUCCESS -->
 			    <div class="box box-primary direct-chat direct-chat-primary">
 			      <div class="box-header with-border" style="background-color: gainsboro;">
-			        <h3 class="box-title" style="color: black;"> Comments </h3>
+			        <h3 class="box-title" style="color: black;"> <strong> COMMENTS </strong> </h3>
 			      </div>
 			      <!-- /.box-header -->
 			      <div class="box-body">
@@ -1385,7 +1379,7 @@
 							            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
 								              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
 								          	</div>
-								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/df.jpg" alt="Message User Image">
 								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							          	</div>
 					        			
@@ -1426,7 +1420,7 @@
 							            		<span id="nama_sswa" class="direct-chat-name pull-left"> WALI MURID : <?= strtoupper($data['nama_siswa']); ?> </span>
 								              	<span id="time_send" class="direct-chat-timestamp pull-right"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
 								          	</div>
-								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/df.jpg" alt="Message User Image">
 								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							          	</div>
 					        			

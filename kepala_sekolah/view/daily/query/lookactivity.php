@@ -423,19 +423,15 @@
 ?>
 
 	<style type="text/css">
-		
-		#nama_sswa {
-			font-size: 10px;
-		}
 
 		@media only screen and (max-width: 768px) {
 
 			#nama_sswa {
-				font-size: 8px;
+				font-size: 10px;
 			}
 
 			#time_send {
-				font-size: 8px;
+				font-size: 10px;
 			}
 
 		}
@@ -493,7 +489,7 @@
 		    <!-- DIRECT CHAT SUCCESS -->
 			    <div class="box box-primary direct-chat direct-chat-primary">
 			      <div class="box-header with-border" style="background-color: gainsboro;">
-			        <h3 class="box-title" style="color: black;"> Comments </h3>
+			        <h3 class="box-title" style="color: black;"> <strong> COMMENTS </strong> </h3>
 			      </div>
 			      <!-- /.box-header -->
 			      <div class="box-body">

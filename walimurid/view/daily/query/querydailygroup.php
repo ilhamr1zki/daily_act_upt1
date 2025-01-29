@@ -53,6 +53,8 @@
     return($result);  
   }
 
+  $nipKepsek = "";
+
   // echo "Waktu Habis : " . $timeOut . " Waktu Berjalan : " . $timeRunningOut;
 
   if ($timeRunningOut == $timeOut || $timeRunningOut > $timeOut) {
@@ -71,6 +73,7 @@
   	");
 
   	$getIdGroup = mysqli_fetch_assoc($queryFindIdGroup)['group_kelas'];
+    // echo $getIdGroup;exit;
 
   	// Cari Apakah Daily Group APproved dengan id Group Kelas yang telah di tentukan
   	$groupApproved = mysqli_query($con, "
@@ -79,15 +82,19 @@
   		group_siswa_approved.title_daily as judul_daily, 
   		group_siswa_approved.isi_daily as isi_daily,
   		group_siswa_approved.image as foto_upload,
+      group_siswa_approved.group_kelas_id AS group_kelas_id,
   		group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
   		guru.nama as nama_guru,
   		guru.nip as nip_guru,
-  		group_kelas.nama_group_kelas as nama_group_kelas
+  		group_kelas.nama_group_kelas as nama_group_kelas,
+      ruang_pesan.room_key AS room_key
   		from group_siswa_approved 
   		LEFT JOIN guru 
   		ON group_siswa_approved.from_nip = guru.nip
   		LEFT JOIN group_kelas
   		ON group_siswa_approved.group_kelas_id = group_kelas.id
+      LEFT JOIN ruang_pesan
+      ON group_siswa_approved.id = ruang_pesan.daily_id
   		WHERE 
   		group_siswa_approved.group_kelas_id = '$getIdGroup' 
   		AND group_siswa_approved.status_approve = 1
@@ -105,6 +112,8 @@
         ORDER BY nama_group_kelas ASC
       ");
 
+      $nipKepsek = "2019032";
+
     } else if ($checkDataPAUD == 1) {
 
       $dataGroupDaily = mysqli_query($con, "
@@ -115,6 +124,8 @@
         )
         ORDER BY nama_group_kelas ASC
       ");
+
+      $nipKepsek = "2019034";
 
     }
 
@@ -136,12 +147,12 @@
     <table id="list_group" style="text-align: center;" class="table table-bordered table-hover">
 
       <thead>
-        <tr style="background-color: lightyellow; font-weight: bold;">
-          <th style="text-align: center; border: 1px solid black;" width="5%">NO</th>
-          <th style="text-align: center; border: 1px solid black;"> FROM TEACHER </th>
-          <th style="text-align: center; border: 1px solid black;"> ACTIVITY TITLE </th>
-          <th style="text-align: center; border: 1px solid black;"> DATE POSTED </th>
-          <th style="text-align: center; border: 1px solid black;"> ACTION </th>
+        <tr style="background-color: grey; font-weight: bold; color: white;">
+          <th style="text-align: center; border: 1px solid white;" width="5%">NO</th>
+          <th style="text-align: center; border: 1px solid white;"> FROM TEACHER </th>
+          <th style="text-align: center; border: 1px solid white;"> ACTIVITY TITLE </th>
+          <th style="text-align: center; border: 1px solid white;"> DATE POSTED </th>
+          <th style="text-align: center; border: 1px solid white;"> ACTION </th>
           <!-- Terdapat Administrasi Pembiayaan Yang Perlu Di Selesaikan -->
         </tr>
       </thead>
@@ -150,16 +161,27 @@
 
         <?php foreach ($groupApproved as $data): ?>
           
-          <tr>
+          <tr style="background-color: greenyellow;">
             <td style="text-align: center;"> <?= $no++; ?> </td>
             <td style="text-align: center;"> <?= $data['nama_guru']; ?> </td>
             <td style="text-align: center;"> <?= $data['judul_daily'] ?> </td>
             <td style="text-align: center;"> <?= format_tgl_indo($data['tgl_posted']); ?> </td>
             <td style="text-align: center;"> 
-              <form action="teachercreategroupdaily" method="post">
-                <input type="hidden" name="id_group" value="<?= $getIdGroup; ?>">
-                <input type="hidden" name="nama_group_kelas" value="<?= $data['nama_group_kelas']; ?>">
-                <button class="btn btn-sm btn-primary" type="submit" name="send_data_group"> <i class="glyphicon glyphicon-eye-open"></i> DAILY </button> 
+              <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
+
+                <input type="hidden" name="frompage_lookdaily" value="querydailygroup">
+                <input type="hidden" name="roomkey_group_lookdaily" value="<?= $data['room_key']; ?>">
+                <input type="hidden" name="nipguru_lookdaily" value="<?= $data['from_nip']; ?>">
+                <input type="hidden" name="nipkepsek_lookdaily" value="<?= $nipKepsek; ?>">
+                <input type="hidden" name="guru_lookdaily" value="<?= $data['nama_guru']; ?>">
+                <input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['group_kelas_id']; ?>">
+                <input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= $data['nama_group_kelas']; ?>">
+                <input type="hidden" name="foto_upload_lookdaily" value="<?= $data['foto_upload']; ?>">
+                <input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['tgl_posted']); ?>">
+                <input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['tgl_posted']; ?>">
+                <input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul_daily']; ?>">
+                <input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+                <button class="btn btn-sm btn-primary" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> DAILY </button> 
               </form>
             </td>
 

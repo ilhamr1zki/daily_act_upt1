@@ -100,30 +100,6 @@
           ON daily_siswa_approved.id = ruang_pesan.daily_id
           WHERE daily_siswa_approved.nis_siswa = '$nis'
           AND daily_siswa_approved.status_approve = 1
-          UNION
-          SELECT 
-          group_siswa_approved.from_nip as nip_guru,
-          guru.nama as nama_guru,
-          guru.username as username_guru,
-          group_kelas.id AS id_group,
-          group_kelas.nama_group_kelas as nama_group,
-          group_siswa_approved.id as id_group_approved,
-          group_siswa_approved.group_kelas_id as id_group,
-          group_siswa_approved.title_daily as judul_daily,
-          group_siswa_approved.isi_daily as isi_daily,
-          group_siswa_approved.tanggal_dibuat as tgl_dibuat,
-          group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
-          group_siswa_approved.image as foto_upload,
-          ruang_pesan.daily_id as daily_id
-          FROM group_siswa_approved
-          LEFT JOIN guru
-          ON group_siswa_approved.from_nip = guru.nip
-          LEFT JOIN ruang_pesan
-          ON group_siswa_approved.id = ruang_pesan.daily_id
-          LEFT JOIN group_kelas
-          ON group_kelas.id = group_siswa_approved.group_kelas_id
-          WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
-          AND group_siswa_approved.status_approve = 1
           ORDER BY tgl_posted DESC
         ");
 
@@ -161,7 +137,7 @@
             ON daily_siswa_approved.id = ruang_pesan.daily_id
             WHERE daily_siswa_approved.status_approve = 1
             AND daily_siswa_approved.nis_siswa = '$nis'
-            ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
+            ORDER BY tgl_posted DESC
           ");
 
           $upperName = strtoupper($getNama['nama_siswa_or_group']);
@@ -203,6 +179,7 @@
           ON daily_siswa_approved.id = ruang_pesan.daily_id
           WHERE daily_siswa_approved.nis_siswa = '$nis'
           AND daily_siswa_approved.status_approve = 1
+          ORDER BY tgl_posted DESC
         ");
 
         $getNama = mysqli_fetch_array($dataActivityFromTeacher);
@@ -240,30 +217,6 @@
             ON daily_siswa_approved.id = ruang_pesan.daily_id
             WHERE daily_siswa_approved.nis_siswa = '$nis'
             AND daily_siswa_approved.status_approve = 1
-            UNION
-            SELECT 
-            group_siswa_approved.from_nip as nip_guru,
-            guru.nama as nama_guru,
-            guru.username as username_guru,
-            group_kelas.id AS id_group,
-            group_kelas.nama_group_kelas as nama_group,
-            group_siswa_approved.id as id_group_approved,
-            group_siswa_approved.group_kelas_id as id_group,
-            group_siswa_approved.title_daily as judul_daily,
-            group_siswa_approved.isi_daily as isi_daily,
-            group_siswa_approved.tanggal_dibuat as tgl_dibuat,
-            group_siswa_approved.tanggal_disetujui_atau_tidak as tgl_posted,
-            group_siswa_approved.image as foto_upload,
-            ruang_pesan.daily_id as daily_id
-            FROM group_siswa_approved
-            LEFT JOIN guru
-            ON group_siswa_approved.from_nip = guru.nip
-            LEFT JOIN ruang_pesan
-            ON group_siswa_approved.id = ruang_pesan.daily_id
-            LEFT JOIN group_kelas
-            ON group_kelas.id = group_siswa_approved.group_kelas_id
-            WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
-            AND group_siswa_approved.status_approve = 1
             ORDER BY tgl_posted DESC
           ");
 
@@ -300,7 +253,7 @@
       </table>
 
       <table id="example" border="1" class="display nowrap" style="width:100%">
-          <thead style="background-color: lightyellow;">
+          <thead style="background-color: grey; color: white;">
               <tr>
                 <th style="text-align: center;" width="5%">NO</th>
                 <th style="text-align: center;"> FROM TEACHER </th>
@@ -313,7 +266,7 @@
             
             <?php foreach ($dataActivityFromTeacher as $data): ?>
                 
-              <tr style="background-color: limegreen; color: white; font-weight: bold;">
+              <tr style="background-color: aqua; font-weight: bold;">
                 <td style="text-align: center;">  <?= $no++; ?> </td>
                 <td style="text-align: center;">  <?= strtoupper($data['nama_guru']); ?> </td>
                 <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
@@ -359,7 +312,7 @@
     DataTable.ext.search.push(function (settings, data, dataIndex) {
       let min = minDate.val();
         let max = maxDate.val();
-        let date = new Date(data[4]);
+        let date = new Date(data[3]);
 
         if (
             (min === null && max === null) ||

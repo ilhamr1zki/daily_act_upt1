@@ -1740,6 +1740,10 @@ oncontextmenu="return false">
               <a href="<?= $basegu; ?>changepassword" id="changepassword"><i class="glyphicon glyphicon-wrench text-primary" id="create"></i> <span id="isiList4"> Change Password </span> </a>
             </li>
 
+            <li>
+              <a href="<?= $basegu; ?>changenumberphone" id="changenumberphone"><i class="glyphicon glyphicon-phone text-primary" id="create"></i> <span id="isiList4"> Change Number Phone </span> </a>
+            </li>
+
           </ul>
         </li>
 
@@ -1839,6 +1843,10 @@ oncontextmenu="return false">
     #region change password
     else if ($act == 'changepassword') {
       require 'view/maintenance/change_password/index.php';
+    }
+
+    else if ($act == 'changenumberphone') {
+      require 'view/maintenance/change_numberphone/index.php';
     }
 
     else{
@@ -2107,15 +2115,17 @@ oncontextmenu="return false">
               } else {
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-                $("#lookdaily_appr").attr('name', 'daily_group');
-                $("#df_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
 
               }
 
               if (grouporstd == 'group') {
                 $("#lbl_std_or_gp_df_appr").text('GROUP');
+                $("#lookdaily_appr").attr('name', 'daily_group');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
               } else {
                 $("#lbl_std_or_gp_df_appr").text('STUDENT');
+                $("#lookdaily_appr").attr('name', 'redirectLookDaily');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
               }
 
               $("#date_approved").val(dataTglAppr);

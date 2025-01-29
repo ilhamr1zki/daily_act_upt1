@@ -96,7 +96,7 @@
 
                 if ($checkData != 0) {
 
-                    mysqli_query($con, "UPDATE `daily_activity`.`tahun_ajaran` SET `tahun`='$tahunAjaran', `semester`='$semester', `status`='$status' WHERE  `c_role`='$c_role'");
+                    mysqli_query($con, "UPDATE tahun_ajaran SET tahun = '$tahunAjaran', semester = '$semester', status = '$status' WHERE c_role = '$c_role' ");
 
                     $reloadPage = 1;
 
