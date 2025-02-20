@@ -838,6 +838,120 @@ oncontextmenu="return false">
   <!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-all-daily" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom-color: white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <center>
+            <h4 class="modal-title" id="exampleModalScrollableTitle"> <strong> DAILY ACTIVITY </strong> </h4>
+          </center>
+      </div>
+      <div class="modal-body" style="margin-bottom: 10px; overflow-y: scroll; max-height: 600px;">
+
+          <div class="box-body" style="padding-left: 60px; padding-right: 60px;">
+
+            <form role="form" id="forms">
+
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label> FROM </label>
+                    <input type="text" readonly class="form-control" name="pengirim_appr" id="all_pengirim_appr">
+                  </div>
+                </div>
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label> DATE POSTED </label>
+                    <input type="text" readonly id="all_tanggal_upload_appr" name="tanggal_upload_appr" class="form-control">
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="form-group">
+                <label for="siswa_daily_appr" id="all_lbl_std_or_group_df_appr">STUDENT</label>
+                <input type="text" id="all_siswa_daily_appr" name="siswa_daily_appr" readonly class="form-control">
+              </div>
+
+              <div class="form-group gambar_banner_appr">
+                <label for="banner"> UPLOADED PHOTO </label>
+                <!-- <input type="text" id="banner" name=""> -->
+                <img class="img-responsive pad" id="all_foto_upload_appr" alt="Photo">
+              </div>
+
+              <div class="form-group">
+                <label for="title_daily_appr">TITLE DAILY ACTIVITY</label>
+                <input type="text" id="all_title_daily_appr" name="title_daily_appr" readonly class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="main_daily_appr">DESCRIPTION DAILY ACTIVITY</label>
+                <div class="isiDailyAppr" id="all_main_daily_appr" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;" class="form-control">
+                  
+                </div>
+                <!-- <textarea style="height: 150px;" class="form-control" id="main_daily" rows="3" placeholder="Announcement ..."></textarea> -->
+              </div>
+
+            </form>
+
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="all_close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+        <form id="formDfAllDaily" method="post">
+          <input type="hidden" name="frompage_lookdaily" value="homepage">
+          <input type="hidden" name="roomkey_group_lookdaily" id="mdl_roomkey_group_lookdaily">
+          <input type="hidden" name="nipguru_lookdaily" id="mdl_nipguru_lookdaily">
+          <input type="hidden" name="nipkepsek_lookdaily" id="mdl_nipkepsek_lookdaily">
+          <input type="hidden" name="guru_lookdaily" id="mdl_guru_lookdaily">
+          <input type="hidden" name="nis_or_idgroup_lookdaily" id="mdl_nis_or_idgroup_lookdaily">
+          <input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" id="mdl_nama_siswa_or_groupkelas_lookdaily">
+          <input type="hidden" name="foto_upload_lookdaily" id="mdl_foto_upload_lookdaily">
+          <input type="hidden" name="tgl_posting_lookdaily" id="mdl_tgl_posting_lookdaily">
+          <input type="hidden" name="tglori_posting_lookdaily" id="mdl_tglori_posting_lookdaily">
+          <input type="hidden" name="jdl_posting_lookdaily" id="mdl_jdl_posting_lookdaily">
+          <input type="hidden" name="isi_posting_lookdaily" id="mdl_isi_posting_lookdaily">
+          <button class="btn btn-sm btn-primary" id="mdl_all_daily" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> DAILY </button>
+        </form>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modal-default-all-status-approved">
+  <div class="modal-dialog">
+    <div class="modal-content" id="modal-content-semua-status">
+      <div class="modal-header" style="border-bottom-color: white;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+          <center>
+            <h4 class="modal-title"> <strong> All Daily Activity </strong> </h4>
+          </center>
+      </div>
+      <div class="modal-body" id="modal-body-semua-status" style="overflow-y: scroll; max-height: 400px;">
+        <!-- <ul class="menu" id="isi_pengumumans">
+        </ul> -->
+        <section class="content" id="content_all_body_status" style="cursor: pointer; padding: 10px;">
+
+        </section>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="close_approve_status" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
 <div class="modal fade" id="modal-hg-appr">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -1038,7 +1152,8 @@ oncontextmenu="return false">
                   
                 </ul>
               </li>
-              <li class="footer"><a href="<?= $basewam; ?>querydailystudent" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Daily Activity </a> </li>
+              <!-- <li class="footer"><a href="<?= $basewam; ?>querydailystudent" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Daily Activity </a> </li> -->
+              <li class="footer"><a href="javascript:void(0);" id="view_all"> View all (<strong id="viewAllStatAppr"></strong>) Daily Activity </a> </li>
             </ul>
           </li>
 
@@ -1376,6 +1491,12 @@ oncontextmenu="return false">
     // alert(role)
     let showNotif         = document.getElementById('notifMasuk')
 
+    $("#view_all").click(function(e) {
+      e.preventDefault();
+      $("#modal-default-all-status-approved").modal("show");
+
+    });
+
     const loadData = () => {
 
       setInterval(function(){
@@ -1392,6 +1513,7 @@ oncontextmenu="return false">
               $("#pesanSdhApprove").html(`Belum Ada Daily Yang Di Buat Hari Ini`);
               $(".msgAppr").css("background-color", "whitesmoke");
               $("#isi_pesan_sudah_approve").hide();
+              $("#content_all_body_status").html(JSON.parse(this.responseText).all_daily)
 
             } else if (jumlahAppr != 0) {
 
@@ -1401,6 +1523,7 @@ oncontextmenu="return false">
               $("#pesanSdhApprove").html(`Ada <span style="font-weight: bold;"> ${JSON.parse(this.responseText).notif_appr} </span> Daily Hari Ini`);
               $(".msgAppr").css("background-color", "lightyellow");
               $("#isi_pesan_sudah_approve").html(JSON.parse(this.responseText).isi_notif_approved);
+              $("#content_all_body_status").html(JSON.parse(this.responseText).all_daily)
 
             }
 
@@ -1510,6 +1633,89 @@ oncontextmenu="return false">
               $("#df_nip_guru_lookdaily").val(dataNipGuru);
               $("#df_nip_kepsek_lookdaily").val(`<?= $nipkepsek; ?>`);
 
+            });
+
+            $(".detail_status").click(function(e) {
+
+              let room_key            = $(this).data('roomkey');
+              let allStdOrGroup       = $(this).data('group_orstd');
+              let allpengirim         = $(this).data('from');
+              let allTglPosted        = $(this).data('tgl_posted');
+              let allTimePosted       = $(this).data('time_posted');
+              let allNamaSiswaOrGroup = $(this).data('namasiswa_or_group');
+              let allImageUpload      = $(this).data('foto_upload');
+              let allTitleDaily       = $(this).data('title_daily');
+              let allDescriptionDaily = $(this).data('isi_daily');
+              let allNipDaily         = $(this).data('nipguru');
+              let allNamaGuru         = $(this).data('namaguru');
+              let allNisOrIdGroup     = $(this).data('nisoridgroup');
+              let allDateOri          = $(this).data('tgl_ori');
+
+              $('#formDfAllDaily').attr('action', `lookactivity/${room_key}`);
+              let allImageAppr         = document.querySelector("img[id='all_foto_upload_appr']");
+
+              allImageAppr.setAttribute("src", `../image_uploads/${allImageUpload}`);
+              $("#modal-all-daily").modal("show");
+              $("#modal-default-all-status-approved").modal("hide");
+
+              if (allStdOrGroup == "group") {
+
+                $("#all_lbl_std_or_group_df_appr").text("GROUP");
+                $("#mdl_roomkey_group_lookdaily").attr('name', 'roomkey_group_lookdaily');
+                $("#mdl_roomkey_group_lookdaily").val(room_key);
+                $("#all_pengirim_appr").val(allpengirim);
+                $("#all_tanggal_upload_appr").val(allTglPosted + ' ' + allTimePosted);
+                $("#all_siswa_daily_appr").val(allNamaSiswaOrGroup);
+                $("#mdl_nipguru_lookdaily").val(allNipDaily);
+                $("#mdl_nipkepsek_lookdaily").val(`<?= $nipkepsek; ?>`);
+                $("#mdl_guru_lookdaily").val(allNamaGuru);
+                $("#mdl_nis_or_idgroup_lookdaily").val(allNisOrIdGroup);
+                $("#mdl_foto_upload_lookdaily").val(allImageUpload);
+                $("#mdl_nama_siswa_or_groupkelas_lookdaily").val(allNamaSiswaOrGroup);
+                $("#mdl_tgl_posting_lookdaily").val(allTglPosted + " " + allTimePosted);
+                $("#mdl_tglori_posting_lookdaily").val(allDateOri);
+
+                $("#mdl_jdl_posting_lookdaily").val(allTitleDaily);
+                $("#all_title_daily_appr").val(allTitleDaily);
+
+                $("#mdl_isi_posting_lookdaily").val(allDescriptionDaily);
+                $("#all_main_daily_appr").html(allDescriptionDaily);
+                $("#mdl_all_daily").attr('name', 'daily_group');
+
+              } else if (allStdOrGroup == "std") {
+                
+                $("#all_lbl_std_or_group_df_appr").text("STUDENT");
+
+                $('#mdl_roomkey_group_lookdaily').attr('name', 'roomkey_lookdaily');
+                $("#mdl_roomkey_group_lookdaily").val(room_key);
+
+                $("#all_pengirim_appr").val(allpengirim);
+                $("#all_tanggal_upload_appr").val(allTglPosted + ' ' + allTimePosted);
+                $("#all_siswa_daily_appr").val(allNamaSiswaOrGroup);
+                $("#mdl_nipguru_lookdaily").val(allNipDaily);
+                $("#mdl_nipkepsek_lookdaily").val(`<?= $nipkepsek; ?>`);
+                $("#mdl_guru_lookdaily").val(allNamaGuru);
+                $("#mdl_nis_or_idgroup_lookdaily").val(allNisOrIdGroup);
+                $("#mdl_foto_upload_lookdaily").val(allImageUpload);
+                $("#mdl_nama_siswa_or_groupkelas_lookdaily").val(allNamaSiswaOrGroup);
+                $("#mdl_tgl_posting_lookdaily").val(allTglPosted + " " + allTimePosted);
+                $("#mdl_tglori_posting_lookdaily").val(allDateOri);
+
+                $("#mdl_jdl_posting_lookdaily").val(allTitleDaily);
+                $("#all_title_daily_appr").val(allTitleDaily);
+
+                $("#mdl_isi_posting_lookdaily").val(allDescriptionDaily);
+                $("#all_main_daily_appr").html(allDescriptionDaily);
+                $("#mdl_all_daily").attr('name', 'redirectLookDaily');
+
+              }
+
+              
+
+            });
+
+            $("#all_close_approve").click(function(e) {
+              $("#modal-default-all-status-approved").modal("show");
             });
 
             let jumlahInfo     = JSON.parse(this.responseText).notif_info;

@@ -8,10 +8,12 @@
 	$sesi      		= 0;
 	$nama      		= "";
 	$jumlahData 	= 0;
+	$countData 		= 0;
 
 	$no 			= 1;
 
-	$nip_guru      = $_SESSION['nip_guru'];
+	$nip_guru      	= $_SESSION['nip_guru'];
+	$isTeacher 		= $_SESSION['nama_guru']; 
 
 	$diMenu     	= "teachercreatedaily";
 
@@ -92,10 +94,13 @@
 	  			ORDER BY daily_siswa_approved.tanggal_disetujui_atau_tidak DESC
 	  		");
 
+  			$countData = mysqli_num_rows($dataActivityFromTeacher);
+
   		} else {
 
   			$dataActivityFromTeacher = [];
   			$sesi      = 1;
+  			$countData;
   		}
 
   		$jumlahData = 5;
@@ -237,6 +242,13 @@
 	    $("#aList1").click();
 
 	    setTimeout(clickSubMenu, 500);
+
+	    if (`<?= $countData; ?>` == 0) {
+	    	Swal.fire({
+		        title: `TIDAK ADA DAILY SISWA <?= $upperName; ?> YANG DIBUAT OLEH <?= $isTeacher; ?> !`,
+		        icon: "warning"
+	      	});
+	    }
 
 	    function clickSubMenu() {
 	      $("#isiListQuery").click();

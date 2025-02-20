@@ -30,6 +30,25 @@
 
   	}
 
+  	function format_tgl_indo($date){  
+	    $tanggal_indo = date_create($date);
+	    date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
+	    $array_bulan = array(1=>'Januari','Februari','Maret', 'April', 'Mei', 'Juni','Juli','Agustus','September','Oktober', 'November','Desember');
+	    $date = strtotime($date);
+	    $tanggal = date ('d', $date);
+	    $bulan = $array_bulan[date('n',$date)];
+	    $tahun = date('Y',$date); 
+
+	    $H     = date_format($tanggal_indo, "H");
+	    $i     = date_format($tanggal_indo, "i");
+	    $s     = date_format($tanggal_indo, "s");
+	    // $jamIndo = date("h:i:s", $date);
+	    $jamIndo = date_format($tanggal_indo, "H:i:s");
+	    // echo $jamIndo;
+	    $result = $tanggal ." ". $bulan ." ". $tahun . " " . $jamIndo;       
+	    return($result);  
+	}
+
   	function tgl_indo($date){  
 	    $tanggal_indo = date_create($date);
 	    date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
@@ -59,6 +78,7 @@
   	$arr                  = [];
   	$status_approve       = "";
   	$forIsiNotifSdhAppr   = "";
+  	$output_all_approve   = "";
   	$isiStatusDaily       = "";
   	$isiPesan             = '';
   
@@ -209,7 +229,31 @@
 	  $tampungDataSiswaOrNamaGroup_sdhAppr 	= [];
 	  $tampungDataIsi_sdhAppr       		= [];
 	  $elementNotifAppr            	 		= '';
+
+	  $countCheckPersonal  					= "";
   	// Akhir Array Penampung Data Sudah di Approve
+
+	 // Array Semua Data
+	  $tampungSemuaDataTglUploadOri      			= [];
+  	  $tampungSemuaDataRoomKey           			= [];
+	  $tampungSemuaDataID_sdhAppr        			= [];
+	  $tampungSemuaDataNIP_sdhAppr       			= [];
+	  $tampungSemuaDataGuru_sdhAppr      			= [];
+	  $tampungSemuaDataPengirim_sdhAppr  			= [];
+	  $tampungSemuaDataUsername_sdhAppr  			= [];
+	  $tampungSemuaDataTglDisetujui      			= [];
+	  $tampungSemuaDataTglUpload_sdhAppr 			= [];
+	  $tampungSemuaDataJamUpload_sdhAppr 			= [];
+	  $tampungSemuaDataJamDisetujui      			= [];
+	  $tampungSemuaDataImage_sdhAppr     			= [];
+	  $tampungSemuaDataNis_sdhAppr 					= [];
+	  $tampungSemuaDataJudul_sdhAppr     			= [];
+	  $tampungSemuaDataSiswaOrNamaGroup_sdhAppr 	= [];
+	  $tampungSemuaDataIsi_sdhAppr       			= [];
+	  $elementSemuaNotifAppr            	 		= '';
+
+	  $countSemuaCheckPersonal  					= "";
+	 // Akhir Array Semua Data 
 
 	$is_group 	= "group";
 	$is_std 	= "std";
@@ -303,7 +347,7 @@
 	 		guru.username as username_guru,
 	 		group_kelas.id AS id_group,
 	 		group_kelas.nama_group_kelas as nama_group,
-	 		group_siswa_approved.id as id_group_approved,
+	 		ruang_pesan.room_key as room_key,
 	 		group_siswa_approved.group_kelas_id as id_group,
 	 		group_siswa_approved.title_daily as judul_daily,
 	 		group_siswa_approved.isi_daily as isi_daily,
@@ -320,6 +364,7 @@
 	 		ON group_kelas.id = group_siswa_approved.group_kelas_id
 	 		WHERE group_siswa_approved.group_kelas_id = '$getIdGroup'
 	 		AND group_siswa_approved.status_approve = 1
+	 		ORDER BY tgl_posted DESC
     	");
 
     	foreach ($queryApproved as $data_appr) {
@@ -341,6 +386,28 @@
 	      $tampungDataIsi_sdhAppr[]       			= $data_appr['isi_daily'];
 
     	}
+
+    	foreach ($queryApprovedAll as $data_all_appr) {
+
+    	  $tampungSemuaDataTglUploadOri[]      			= $data_all_appr['tgl_posted'];
+    	  $tampungSemuaDataRoomKey[] 		  			= $data_all_appr['room_key'];
+	      $tampungSemuaDataID_sdhAppr[]        			= $data_all_appr['daily_id'];
+	      $tampungSemuaDataNIP_sdhAppr[]       			= $data_all_appr['nip_guru'];
+	      $tampungSemuaDataNis_sdhAppr[] 				= $data_all_appr['nis_or_id_group_kelas'];
+	      $tampungSemuaDataUsername_sdhAppr[]  			= strtoupper($data_all_appr['username_guru']);
+	      $tampungSemuaDataSiswaOrNamaGroup_sdhAppr[]   = strtoupper($data_all_appr['nama_siswa_or_group']);
+	      $tampungSemuaDataPengirim_sdhAppr[]  			= $data_all_appr['nama_guru'];
+	      $tampungSemuaDataTglDiUpload[]       			= $data_all_appr['tgl_posted'];
+	      $tampungSemuaDataTglDisetujui[]      			= tgl_indo(substr($data_all_appr['tgl_posted'], 0, -8));
+	      $tampungSemuaDataJamDiUpload[]       			= substr($data_all_appr['tgl_dibuat'], 11, 19);
+	      $tampungSemuaDataJamDisetujui[]      			= substr($data_all_appr['tgl_posted'], -8);
+	      $tampungSemuaDataImage_sdhAppr[]     			= $data_all_appr['foto_upload'];
+	      $tampungSemuaDataJudul_sdhAppr[]     			= $data_all_appr['judul_daily'];
+	      $tampungSemuaDataIsi_sdhAppr[]       			= $data_all_appr['isi_daily'];
+
+    	}
+
+    	// var_dump($tampungSemuaDataTglDisetujui);exit;
 
       	$countDataApproved    = mysqli_num_rows($queryApproved);
 	    $countDataApprovedAll = mysqli_num_rows($queryApprovedAll);
@@ -524,6 +591,78 @@
 
 	    }
 
+	    // var_dump($tampungSemuaDataPengirim_sdhAppr);exit;
+
+	    for ($i=0; $i < $countDataApprovedAll; $i++) { 
+
+	    	$explode                	= explode(" ", $tampungSemuaDataPengirim_sdhAppr[$i]);
+	        $isiSemuaPesanNamaSiswa     = "";
+	        $isiSemuaPesan              = "";
+	        $isiSemuaNamaGuru      		= "";
+	        
+	        $semuaPesanAppr 	= strlen($tampungSemuaDataJudul_sdhAppr[$i]) > 15 ? $isiSemuaPesan .= substr($tampungSemuaDataJudul_sdhAppr[$i], 0, 15) . " ..." : $tampungSemuaDataJudul_sdhAppr[$i];
+	        $semuaNamaGuruAppr 	= strlen($tampungSemuaDataPengirim_sdhAppr[$i]) > 17 ? $isiSemuaNamaGuru .= substr($tampungSemuaDataPengirim_sdhAppr[$i], 0, 17) . " ..." : $tampungSemuaDataPengirim_sdhAppr[$i];
+
+	        $dailyId  		= $tampungSemuaDataID_sdhAppr[$i];
+
+	        // Check Id Personal Or Id Group
+	      	$queryIdPersonal = mysqli_query($con, "
+		        SELECT id FROM daily_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$queryCheckIdGroup = mysqli_query($con, "
+		        SELECT id FROM group_siswa_approved
+		        WHERE id = '$dailyId'
+	      	");
+
+	      	$countAllCheckPersonal = mysqli_num_rows($queryIdPersonal);
+	      	$countAllCheckIdGroup  = mysqli_num_rows($queryCheckIdGroup);
+
+	      	if ($countAllCheckPersonal == 1) {
+
+	      		$output_all_approve .= '
+		        	<div>
+		              	<div class="box-body" style="background-color: aqua; margin-top: -9px; border: 3px solid black;">
+		              		<div class="pull-left" style="margin-left: 10px; margin-top: 27px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<div class="box-body detail_status" data-tgl_ori="'. $tampungSemuaDataTglDiUpload[$i] .'" data-nisoridgroup="'. $tampungSemuaDataNis_sdhAppr[$i] .'" data-namaguru="'. $tampungSemuaDataPengirim_sdhAppr[$i] .'" data-nipguru="'. $tampungSemuaDataNIP_sdhAppr[$i] .'" data-isi_daily="'. $tampungSemuaDataIsi_sdhAppr[$i] .'" data-title_daily="'. $tampungSemuaDataJudul_sdhAppr[$i] .'" data-foto_upload="'. $tampungSemuaDataImage_sdhAppr[$i] .'" data-namasiswa_or_group="'. $tampungSemuaDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-group_orstd='. "std" .' data-tgl_posted="'. $tampungSemuaDataTglDisetujui[$i] . '" data-time_posted='. $tampungSemuaDataJamDisetujui[$i] . ' data-roomkey='. $tampungSemuaDataRoomKey[$i] .' data-from="'.$tampungSemuaDataPengirim_sdhAppr[$i].'" data-toggle="modal" data-target="modal-default" style="position: relative; width: 100%; margin-top: 13px; margin-left: 60px; margin-bottom: 15px;">
+				                
+				                <p style="font-size:13px;"> <strong> FROM <span style="margin-left: 8.5px;"> : <span style="margin-left: 5px;"> '. $tampungSemuaDataPengirim_sdhAppr[$i] . ' </strong> </p>
+				                <p style="font-size:13px;"> <strong> TITLE <span style="margin-left: 10px;"> :  </strong> </span> <strong style="margin-left: 5px;"> '. $tampungSemuaDataJudul_sdhAppr[$i] .' </strong> </p>
+				               
+				            </div>
+			            </div>
+		            </div>
+		            <br>
+		            <br>
+		       	';
+
+	      	} else if ($countAllCheckIdGroup == 1) {
+
+	      		$output_all_approve .= '
+		        	<div>
+		              	<div class="box-body" style="background-color: greenyellow; margin-top: -9px; border: 3px solid black;">
+		              		<div class="pull-left" style="margin-left: 10px; margin-top: 27px;">
+				                <img src="../imgstatis/logo2.png" style="width: 35px;">
+				            </div>
+			              	<div class="box-body detail_status" data-tgl_ori="'. $tampungSemuaDataTglDiUpload[$i] .'" data-nisoridgroup="'. $tampungSemuaDataNis_sdhAppr[$i] .'" data-namaguru="'. $tampungSemuaDataPengirim_sdhAppr[$i] .'" data-nipguru="'. $tampungSemuaDataNIP_sdhAppr[$i] .'" data-isi_daily="'. $tampungSemuaDataIsi_sdhAppr[$i] .'" data-title_daily="'. $tampungSemuaDataJudul_sdhAppr[$i] .'" data-foto_upload="'. $tampungSemuaDataImage_sdhAppr[$i] .'" data-namasiswa_or_group="'. $tampungSemuaDataSiswaOrNamaGroup_sdhAppr[$i] .'" data-group_orstd='. "group" .' data-tgl_posted="'. $tampungSemuaDataTglDisetujui[$i] . '" data-time_posted='. $tampungSemuaDataJamDisetujui[$i] . ' data-roomkey='. $tampungSemuaDataRoomKey[$i] .' data-from="'.$tampungSemuaDataPengirim_sdhAppr[$i].'" data-toggle="modal" data-target="modal-default" style="position: relative; width: 100%; margin-top: 13px; margin-left: 60px; margin-bottom: 15px;">
+				                
+				                <p style="font-size:13px;"> <strong> FROM <span style="margin-left: 8.5px;"> : <span style="margin-left: 5px;"> '. $tampungSemuaDataPengirim_sdhAppr[$i] . ' </strong> </p>
+				                <p style="font-size:13px;"> <strong> TITLE <span style="margin-left: 10px;"> :  </strong> </span> <strong style="margin-left: 5px;"> '. $tampungSemuaDataJudul_sdhAppr[$i] .' </strong> </p>
+				               
+				            </div>
+			            </div>
+		            </div>
+		            <br>
+		            <br>
+		       	';
+
+	      	}
+
+	    }
+
     // Akhir Data Sudah di Approve
     ############################################################################################################
 
@@ -674,6 +813,8 @@
   	$arr['notif_info']      		= $jumlahDataInfo;
   	$arr['isi_notif_info']  		= $forIsiNotifInfo;
   	// Akhir Notif Info
+
+  	$arr['all_daily'] 				= $output_all_approve;
 
   	echo json_encode($arr);
 

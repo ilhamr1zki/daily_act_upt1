@@ -1,0 +1,44 @@
+Alur jika ingin upload data siswa ke aplikasi daily :
+
+- pastikan data siswa termasuk NIS nya telah ada di aplikasi SPP
+- Copy NIS siswa dari aplikasi SPP dan copy kan ke kolom nis (kolom ada di paling akhir)
+- pastikan format tanggal seperti ini : contoh : 2025-01-31
+
+*Catatan : 
+Karena format ini adalah hasil dari format PPDB maka untuk isian kolom di Bawah bisa di kosongkan atau di beri "-" :
+- anak_ke
+- dari_berapa_saudara
+- kk_atau_adik_di_aiis
+- tingkat_kelas_kk_atau_adik
+- nama_kk_atau_adik
+- riwayat_penyakit
+- bacaan_tahsin
+- jumlah_juz_dihafal
+- juz_dihafal
+- hafalan_surat
+- dapat_berjalan_pada_usia
+- dapat_berbicara_bermakna_pada_usia
+- pernah_menjalani_terapi
+- jenis_terapi
+- alasan_menjalani_terapi
+- durasi_terapi
+- waktu_mulai_dan_waktu_selesai_terapi
+- saat_ini_masih_menjalani_terapi
+- keterlambatan_perkembangan
+- terbiasa_solat_lima_waktu
+- orangtua_sudah_lancar_dalam_tahsin
+- hafalan_tahfidz_orangtua
+- peran_orangtua_membantu_anak_menghafal
+- anak_terbiasa_menonton_tv_atau_gadget
+- berapa_lama_menonton_tv_atau_gadget_dalam_sehari
+- rencana_mutasi
+- file_pdf_akte
+- file_pdf_kk
+- ktp_ayah
+- ktp_ibu
+- sertif_tahsin
+- sertif_tahfidz
+- nominal_infaq
+- nominal_terbilang
+- tanggal_formulir_dibuat
+

@@ -123,6 +123,7 @@
 			       ) AS U
 			 	WHERE
 			 		U.from_nip = '$nip'
+			 		AND U.status_approve <> 0
 				    ORDER BY U.tgl_dibuat DESC
   			");
 
@@ -220,19 +221,19 @@
 							        <td style="text-align: center;"> APPROVED <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
 							        <td style="text-align: center;"> <?= format_tgl_indo($data['tgl_disetujui']); ?> </td>
 							        <td style="text-align: center;">
-								        <form action="lookactivity" method="post">
-								        	<input type="hidden" name="frompage" value="createdailybyteacher">
-								        	<input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
-								        	<input type="hidden" name="nis" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
-								        	<input type="hidden" name="nama" value="GROUP <?= strtoupper($data['nama_siswa_or_nama_group_kelas']); ?>">
-								        	<input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
-								        	<input type="hidden" name="foto" value="<?= strtoupper($data['foto']); ?>">
-								        	<input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['tgl_disetujui']); ?>">
+								        <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
+								        	<input type="hidden" name="frompage_lookdaily" value="createdailybyteacher">
+								        	<input type="hidden" name="roomkey_group_lookdaily" value="<?= $data['room_key']; ?>">
+								        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
+								        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_siswa_or_nama_group_kelas']); ?>">
+								        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
+								        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto']); ?>">
+								        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['tgl_disetujui']); ?>">
 								        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['from_nip']; ?>">
-								        	<input type="hidden" name="tglori" value="<?= $data['tgl_disetujui']; ?>">
-								        	<input type="hidden" name="judul" value="<?= $data['judul']; ?>">
-								        	<input type="hidden" name="isi" value="<?= $data['isi_daily']; ?>">
-								        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="krm"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
+								        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['tgl_disetujui']; ?>">
+								        	<input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul']; ?>">
+								        	<input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+								        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
 								        </form>
 								    </td>
 						      	</tr>
@@ -262,19 +263,19 @@
 							        <td style="text-align: center;"> APPROVED <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
 							        <td style="text-align: center;"> <?= format_tgl_indo($data['tgl_disetujui']); ?> </td>
 							        <td style="text-align: center;">
-								        <form action="lookactivity" method="post">
-								        	<input type="hidden" name="frompage" value="createdailybyteacher">
-								        	<input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
-								        	<input type="hidden" name="nis" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
-								        	<input type="hidden" name="nama" value="<?= strtoupper($data['nama_siswa_or_nama_group_kelas']); ?>">
-								        	<input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
-								        	<input type="hidden" name="foto" value="<?= strtoupper($data['foto']); ?>">
-								        	<input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['tgl_disetujui']); ?>">
+								        <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
+								        	<input type="hidden" name="frompage_lookdaily" value="createdailybyteacher">
+								        	<input type="hidden" name="roomkey_lookdaily" value="<?= $data['room_key']; ?>">
+								        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
+								        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_siswa_or_nama_group_kelas']); ?>">
+								        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
+								        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto']); ?>">
+								        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['tgl_disetujui']); ?>">
 								        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['from_nip']; ?>">
-								        	<input type="hidden" name="tglori" value="<?= $data['tgl_disetujui']; ?>">
-								        	<input type="hidden" name="judul" value="<?= $data['judul']; ?>">
-								        	<input type="hidden" name="isi" value="<?= $data['isi_daily']; ?>">
-								        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="krm"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
+								        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['tgl_disetujui']; ?>">
+								        	<input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul']; ?>">
+								        	<input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+								        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="redirectLookDaily"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
 								        </form>
 								    </td>
 						      	</tr>

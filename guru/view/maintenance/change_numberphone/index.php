@@ -30,29 +30,45 @@
 
         $noHp   = htmlspecialchars($_POST['nohp']); 
 
-        $sqlUpdateNoHp = mysqli_query($con, "
-            UPDATE guru SET no_hp = '$noHp' WHERE nip = '$_SESSION[nip_guru]'
-        ");
+        $formatNumber = substr($noHp, 0, 2);
 
-        if ($sqlUpdateNoHp == true) {
+        if ($formatNumber == "08") {
 
-            $_SESSION['update_nohp'] = 'success';
-
-            $queryNumberPhone = mysqli_query($con, "
-                SELECT no_hp FROM guru WHERE nip = '$_SESSION[nip_guru]'
+            $sqlUpdateNoHp = mysqli_query($con, "
+                UPDATE guru SET no_hp = '$noHp' WHERE nip = '$_SESSION[nip_guru]'
             ");
 
-            $getNumberPhone = mysqli_fetch_array($queryNumberPhone)['no_hp'];
+            if ($sqlUpdateNoHp == true) {
+
+                $_SESSION['update_nohp'] = 'success';
+
+                $queryNumberPhone = mysqli_query($con, "
+                    SELECT no_hp FROM guru WHERE nip = '$_SESSION[nip_guru]'
+                ");
+
+                $getNumberPhone = mysqli_fetch_array($queryNumberPhone)['no_hp'];
+
+            } else {
+
+                $_SESSION['update_nohp'] = 'failed';
+
+                $queryNumberPhone = mysqli_query($con, "
+                    SELECT no_hp FROM guru WHERE nip = '$_SESSION[nip_guru]'
+                ");
+
+                $getNumberPhone = mysqli_fetch_array($queryNumberPhone)['no_hp'];
+
+            }
 
         } else {
 
-            $_SESSION['update_nohp'] = 'failed';
-
             $queryNumberPhone = mysqli_query($con, "
                 SELECT no_hp FROM guru WHERE nip = '$_SESSION[nip_guru]'
             ");
 
             $getNumberPhone = mysqli_fetch_array($queryNumberPhone)['no_hp'];
+
+            $_SESSION['update_nohp'] = 'format_invalid';
 
         }
 
@@ -85,6 +101,13 @@
           </div>
         <?php } ?>
 
+        <?php if(isset($_SESSION['update_nohp']) && $_SESSION['update_nohp'] == 'format_invalid'){?>
+          <div style="color: yellow;" class="alert alert-danger alert-dismissable"> FORMAT NO HP / WA INVALID
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+             <?php unset($_SESSION['update_nohp']); ?>
+          </div>
+        <?php } ?>
+
     </div>
 </div>
 
@@ -97,7 +120,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label> NOMER HP / WA </label>
-                        <input type="text" required class="form-control" name="nohp" placeholder="password sekarang" value="<?= $getNumberPhone; ?>" id="nohp">
+                        <input type="text" required class="form-control" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="13" name="nohp" placeholder="password sekarang" value="<?= $getNumberPhone; ?>" id="nohp">
                     </div>
                 </div>
 
@@ -129,6 +152,8 @@
             "background-color" : "#ccc",
             "color" : "black"
         });
+
+        $("#nohp").focus();
 
         $("#swp1").click(function(){
             let x = document.getElementById("password_lama");
@@ -194,6 +219,15 @@
 
     function mouseOver3() {
       document.getElementById("swp3").style.cursor = "pointer";
+    }
+
+    function onlyNumberKey(evt) {
+
+        // Only ASCII character in that range allowed
+        let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
     }
 
 </script>

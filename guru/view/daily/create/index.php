@@ -93,7 +93,7 @@
       <?php } ?> 
 
       <?php if(isset($_SESSION['create_room_std']) && $_SESSION['create_room_std']=='res_gagal'){?>
-        <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> GAGAL MEMBUAT DAILY ! SERVER SEDANG DALAM GANGGUAN ! </span>
+        <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> GAGAL MENGIRIM NOTIF WHATSAPP ! SERVER SEDANG DALAM GANGGUAN ! </span>
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         </div>
           <?php 

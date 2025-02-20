@@ -420,9 +420,9 @@
 
         $thisNumberPhoneTeacher = mysqli_fetch_array($queryGetNumberTeacher)['no_hp'];
 
-        // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
+        // Yang akan di kirimkan notif daily siswa, nomer Guru yang upload daily tersebut
         $target = $thisNumberPhoneTeacher;
-        $pesan  = "*DAILY SISWA _". strtoupper($getStudentName) ."_ YANG ANDA BUAT SUDAH DI APPROVE ✅ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+        $pesan  = "*DAILY SISWA _". strtoupper($getStudentName) ."_ YANG ANDA BUAT TELAH DI APPROVE ✅ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
         curl_setopt_array($curl_ke_guru, array(
           CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -438,7 +438,7 @@
             'message' => $pesan
           ),
           CURLOPT_HTTPHEADER => array(
-            'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+            'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
           ),
         ));
 
@@ -450,9 +450,9 @@
 
             $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
-            // Yang akan di kirimkan notif group, nomer Kepsek Sesuai Divisi dan orang tua murid yang di buat daily nya oleh guru
+            // Yang akan di kirimkan notif daily siswa, nomer Kepsek Sesuai Divisi dan orang tua murid yang di buat daily nya oleh guru
             $target = $destination_number;
-            $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . "lookactivity/" . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+            $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
             curl_setopt_array($curlheadmaster_andparents, array(
               CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -551,9 +551,9 @@
 
         }
 
-        $destination_array = implode(',', $tampungNoHpOtm);
+        $destination_numbergroupotm = implode(',', $tampungNoHpOtm);
 
-        // echo $destination_array;exit;
+        // echo $destination_numbergroupotm;exit;
 
         // echo $getNameGroup;exit;
 
@@ -595,7 +595,7 @@
 
           // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
           $target = $thisNumberPhoneTeacher;
-          $pesan  = "*DAILY GROUP _". $getNameGroup ."_ YANG ANDA BUAT SUDAH DI APPROVE ✅ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+          $pesan  = "*DAILY GROUP _". $getNameGroup ."_ YANG ANDA BUAT TELAH DI APPROVE ✅ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
           curl_setopt_array($curl_ke_guru, array(
             CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -612,7 +612,7 @@
               'delay' => '3-5'
             ),
             CURLOPT_HTTPHEADER => array(
-              'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
             ),
           ));
 
@@ -625,9 +625,9 @@
             $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
             // Yang akan di kirimkan notif group, nomer Group Kelas OTM
-            // $target = $destination_array;
-            $target = "6289515998565,62895334303884,6288212660849,62895329874975";
-            $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . "lookactivity/" . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+            $target = $destination_numbergroupotm;
+            // $target = "6289515998565,62895334303884,6288212660849,62895329874975";
+            $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
             curl_setopt_array($curl_otm, array(
               CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -644,7 +644,7 @@
                 'delay' => '3-5'
               ),
               CURLOPT_HTTPHEADER => array(
-                'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+                'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
               ),
             ));
 
@@ -657,7 +657,7 @@
 
               // Yang akan di kirimkan notif group, nomer Kepsek Sesuai Divisi
               $target = $getNumberHeadMaster;
-              $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . "lookactivity/" . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+              $pesan  = "*ADA NOTIF BARU DAILY ACTIVITY YANG BELUM DI BACA !*". "\n" . "\n" . $base . $isRoomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
               curl_setopt_array($curl_kepsek, array(
                 CURLOPT_URL => 'https://api.fonnte.com/send',
@@ -674,7 +674,7 @@
                   'delay' => '3-5'
                 ),
                 CURLOPT_HTTPHEADER => array(
-                  'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+                  'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
                 ),
               ));
 
@@ -715,8 +715,9 @@
   else if (isset($_POST['daily_id_not_appr'])) {
 
     $idGroupOrNis = $_POST['daily_id_not_appr'];
-    // echo $idGroupOrNis;exit;
+
     $reason  = mysqli_real_escape_string($con, htmlspecialchars($_POST['is_reason'])) . "empty_val";
+    $nip     = htmlspecialchars($_POST['nipguru']);
 
     date_default_timezone_set("Asia/Jakarta");
 
@@ -769,19 +770,31 @@
 
           if ($execQueryNotAppr == true && $execQueryInsertReason == true) {
 
-            $curl_ke_guru = curl_init();
+            // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+            $curl = curl_init();
 
             $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
-            // var_dump($tampungFormatNoHP);exit;
-            $destination_array = implode(',', $tampungFormatNoHP);
-            // echo $destination_array;exit;
+            // Get Room Key 
+            $queryFindRoomKey = mysqli_query($con, "
+              SELECT room_key FROM ruang_pesan WHERE daily_id IN (
+                SELECT id FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              )
+            ");
+
+            $isRoomKey = mysqli_fetch_assoc($queryFindRoomKey)['room_key'];
+
+            $queryGetNumberTeacher = mysqli_query($con, "
+              SELECT no_hp FROM guru WHERE nip = '$nip'
+            ");
+
+            $thisNumberPhoneTeacher = mysqli_fetch_array($queryGetNumberTeacher)['no_hp'];
 
             // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
-            $target = "6282110992502";
-            $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "DAILY GROUP ". $getNameGroup ." TIDAK DI APPROVE ❌ ";
+            $target = $thisNumberPhoneTeacher;
+            $pesan  = "*DAILY GROUP _". strtoupper($getNameGroup) ."_ YANG ANDA BUAT TIDAK DI APPROVE ❌ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $basegu . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-            curl_setopt_array($curl_ke_guru, array(
+            curl_setopt_array($curl, array(
               CURLOPT_URL => 'https://api.fonnte.com/send',
               CURLOPT_RETURNTRANSFER => true,
               CURLOPT_ENCODING => '',
@@ -792,23 +805,22 @@
               CURLOPT_CUSTOMREQUEST => 'POST',
               CURLOPT_POSTFIELDS => array(
                 'target' => $target,
-                'message' => $pesan,
-                'delay' => '3-5'
+                'message' => $pesan
               ),
               CURLOPT_HTTPHEADER => array(
-                'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+                'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
               ),
             ));
 
-            $response_ke_guru = curl_exec($curl_ke_guru);
+            $response = curl_exec($curl);
 
-            curl_close($curl_ke_guru);
-
-            if ($response_ke_guru) {
+            if ($response) {
               $arr['status_not_approve'] = true;
             } else {
               $arr['status_not_approve'] = false;
             }
+
+            curl_close($curl);
 
           } else {
             $arr['status_not_approve'] = false;
@@ -827,19 +839,31 @@
 
           if ($execQueryNotAppr == true && $execQueryInsertReason == true) {
 
-            $curl_ke_guru = curl_init();
+            // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+            $curl = curl_init();
 
             $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
-            // var_dump($tampungFormatNoHP);exit;
-            $destination_array = implode(',', $tampungFormatNoHP);
-            // echo $destination_array;exit;
+            // Get Room Key 
+            $queryFindRoomKey = mysqli_query($con, "
+              SELECT room_key FROM ruang_pesan WHERE daily_id IN (
+                SELECT id FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              )
+            ");
+
+            $isRoomKey = mysqli_fetch_assoc($queryFindRoomKey)['room_key'];
+
+            $queryGetNumberTeacher = mysqli_query($con, "
+              SELECT no_hp FROM guru WHERE nip = '$nip'
+            ");
+
+            $thisNumberPhoneTeacher = mysqli_fetch_array($queryGetNumberTeacher)['no_hp'];
 
             // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
-            $target = "6282110992502";
-            $pesan  = "*SEDANG UJI COBA SYSTEM, ABAIKAN PESAN INI*" . "\n" . "DAILY GROUP ". $getNameGroup ." TIDAK DI APPROVE ❌ ";
+            $target = $thisNumberPhoneTeacher;
+            $pesan  = "*DAILY GROUP _". strtoupper($getNameGroup) ."_ YANG ANDA BUAT TIDAK DI APPROVE ❌ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $basegu . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-            curl_setopt_array($curl_ke_guru, array(
+            curl_setopt_array($curl, array(
               CURLOPT_URL => 'https://api.fonnte.com/send',
               CURLOPT_RETURNTRANSFER => true,
               CURLOPT_ENCODING => '',
@@ -850,23 +874,22 @@
               CURLOPT_CUSTOMREQUEST => 'POST',
               CURLOPT_POSTFIELDS => array(
                 'target' => $target,
-                'message' => $pesan,
-                'delay' => '3-5'
+                'message' => $pesan
               ),
               CURLOPT_HTTPHEADER => array(
-                'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+                'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
               ),
             ));
 
-            $response_ke_guru = curl_exec($curl_ke_guru);
+            $response = curl_exec($curl);
 
-            curl_close($curl_ke_guru);
-
-            if ($response_ke_guru) {
+            if ($response) {
               $arr['status_not_approve'] = true;
             } else {
               $arr['status_not_approve'] = false;
             }
+
+            curl_close($curl);
 
           } else {
             $arr['status_not_approve'] = false;
@@ -876,7 +899,7 @@
 
       } else {
 
-        echo "Gagal";
+        // echo "Gagal";
         $arr['status_not_approve'] = false;
 
       }
@@ -903,7 +926,67 @@
           ");
 
           if ($execQueryNotAppr == true && $execQueryInsertReason == true) {
-            $arr['status_not_approve'] = true;
+
+            $queryGetStudentName  = mysqli_query($con, "
+              SELECT nama FROM siswa WHERE nis IN (
+                SELECT nis_siswa FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              ) 
+            ");
+
+            $getStudentName     = mysqli_fetch_array($queryGetStudentName)['nama'];
+
+            // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+            $curl = curl_init();
+
+            $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+            // Get Room Key 
+            $queryFindRoomKey = mysqli_query($con, "
+              SELECT room_key FROM ruang_pesan WHERE daily_id IN (
+                SELECT id FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              )
+            ");
+
+            $isRoomKey = mysqli_fetch_assoc($queryFindRoomKey)['room_key'];
+
+            $queryGetNumberTeacher = mysqli_query($con, "
+              SELECT no_hp FROM guru WHERE nip = '$nip'
+            ");
+
+            $thisNumberPhoneTeacher = mysqli_fetch_array($queryGetNumberTeacher)['no_hp'];
+
+            // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
+            $target = $thisNumberPhoneTeacher;
+            $pesan  = "*DAILY SISWA _". strtoupper($getStudentName) ."_ YANG ANDA BUAT TIDAK DI APPROVE ❌ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $basegu . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => 'https://api.fonnte.com/send',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => array(
+                'target' => $target,
+                'message' => $pesan
+              ),
+              CURLOPT_HTTPHEADER => array(
+                'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+              ),
+            ));
+
+            $response = curl_exec($curl);
+
+            if ($response) {
+              $arr['status_not_approve'] = true;
+            } else {
+              $arr['status_not_approve'] = false;
+            }
+
+            curl_close($curl);
+
           } else {
             $arr['status_not_approve'] = false;
           }
@@ -920,12 +1003,77 @@
           ");
 
           if ($execQueryNotAppr == true && $execQueryInsertReason == true) {
-            $arr['status_not_approve'] = true;
+
+            $queryGetStudentName  = mysqli_query($con, "
+              SELECT nama FROM siswa WHERE nis IN (
+                SELECT nis_siswa FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              ) 
+            ");
+
+            $getStudentName     = mysqli_fetch_array($queryGetStudentName)['nama'];
+
+            // Kirim Notif Ke Guru Yang Upload Daily dengan Nomer Fonnte Kepsek beserta Account token nya yang ada di menu setting di wwebsite fonnte
+            $curl = curl_init();
+
+            $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+            // Get Room Key 
+            $queryFindRoomKey = mysqli_query($con, "
+              SELECT room_key FROM ruang_pesan WHERE daily_id IN (
+                SELECT id FROM daily_siswa_approved WHERE id = '$idGroupOrNis'
+              )
+            ");
+
+            $isRoomKey = mysqli_fetch_assoc($queryFindRoomKey)['room_key'];
+
+            $queryGetNumberTeacher = mysqli_query($con, "
+              SELECT no_hp FROM guru WHERE nip = '$nip'
+            ");
+
+            $thisNumberPhoneTeacher = mysqli_fetch_array($queryGetNumberTeacher)['no_hp'];
+
+            // Yang akan di kirimkan notif group, nomer Guru yang upload daily tersebut
+            $target = $thisNumberPhoneTeacher;
+            $pesan  = "*DAILY SISWA _". strtoupper($getStudentName) ."_ YANG ANDA BUAT TIDAK DI APPROVE ❌ OLEH KEPALA SEKOLAH*" . "\n" . "\n" . $basegu . "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => 'https://api.fonnte.com/send',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => array(
+                'target' => $target,
+                'message' => $pesan
+              ),
+              CURLOPT_HTTPHEADER => array(
+                'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+              ),
+            ));
+
+            $response = curl_exec($curl);
+
+            if ($response) {
+              $arr['status_not_approve'] = true;
+            } else {
+              $arr['status_not_approve'] = false;
+            }
+
+            curl_close($curl);
+
           } else {
             $arr['status_not_approve'] = false;
           }
 
         }
+
+      } else {
+
+        // echo "Gagal";
+        $arr['status_not_approve'] = false;
 
       }
 
@@ -1351,7 +1499,7 @@
           if ($countCheckNis == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -1385,7 +1533,7 @@
           } else if ($countCheckIdGroup == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -1449,7 +1597,7 @@
           if ($countCheckNis == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -1483,7 +1631,7 @@
           } else if ($countCheckIdGroup == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -2231,7 +2379,7 @@
           if ($countCheckNis == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -2265,7 +2413,7 @@
           } else if ($countCheckIdGroup == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -2329,7 +2477,7 @@
           if ($countCheckNis == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. std .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNis_siswa_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>
@@ -2363,7 +2511,7 @@
           } else if ($countCheckIdGroup == 1) {
 
             $forIsiNotifSdhAppr .= '
-              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswa_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
+              <li class="apprlist" data-group_or_std="'. group .'" data-nip_guru="'. $tampungDataNIP_sdhAppr[$i] .'" data-tgl_ori="'. $tampungDataTglUploadOri[$i] .'" data-room_key="'. $tampungDataRoomKey[$i] .'" data-nis_siswa_was_appr="'. $tampungDataNisOrIdGroup_sdhAppr[$i] .'" data-nama_guru_lengkap="'. $tampungDataGuru_sdhAppr[$i] .'" data-daily_id="'. $tampungDataID_sdhAppr[$i] .'" data-siswaorgroup_was_appr="'. $tampungDataSiswa_sdhAppr[$i] .'" data-tgl_approved ="'. tgl_indo($tampungDataTglDisetujui[$i]) . " " . $tampungDataJamDisetujui[$i] .'" data-tgl_upload="'. tgl_indo($tampungDataTglUpload_sdhAppr[$i]) . " " . $tampungDataJamUpload_sdhAppr[$i] .'" data-pengirim="'. $explode[0] .'" data-img="'. $tampungDataImage_sdhAppr[$i] .'" data-judul="'. $tampungDataJudul_sdhAppr[$i] .'" data-isian="'. $tampungDataIsi_sdhAppr[$i] .'" data-toggle="modal">
                 <a href="#">
                   <h4 style="font-size: 12px;">
                     <small style="font-size: 12px;float: right;margin-top: -13px;"> <i class="fa fa-clock-o" style="margin-right: 5px;"></i>'. getDateTimeDiff($tampungDataTglDisetujui[$i]." ".$tampungDataJamDisetujui[$i]) . '</small>

@@ -70,7 +70,6 @@
     $isFromNotif      = htmlspecialchars($_POST['fromnotif']);
     $isRoomKey        = htmlspecialchars($_POST['room_key']);
     $personalorgroup  = htmlspecialchars($_POST['isgroup']);
-    // echo $password;exit;
 
     $role = $_POST['sebagai'];
 
@@ -98,7 +97,7 @@
 
       } else if ($isFromNotif == "yes") {
 
-        $hash = password_hash($role, PASSWORD_DEFAULT);
+        $hash = password_hash("*_@1154ct1vit135_*" . $role, PASSWORD_DEFAULT);
 
         if ($user->loginNotifHeadMaster($username, $password, $isRoomKey)) {
           header("location: fromnotif?role=$hash&roomkey=$isRoomKey&stdorgroup=$personalorgroup");
@@ -125,7 +124,7 @@
 
       } else if ($isFromNotif == "yes") {
 
-        $hash = password_hash($role, PASSWORD_DEFAULT);
+        $hash = password_hash("*_@1154ct1vit135_*" . $role, PASSWORD_DEFAULT);
 
         if ($user->loginNotifGuru($username, $password, $isRoomKey)) {
           header("location: fromnotif?role=$hash&roomkey=$isRoomKey&stdorgroup=$personalorgroup");
@@ -137,13 +136,28 @@
 
       }
 
-
     } else if ($role == 'otm') {
 
-      if ($user->loginOtm($username, $password)) {
-        header("location: $basewam");
-      } else {
-        $error      = $user->getLastError();
+      if ($isFromNotif == "no") {
+
+        if ($user->loginOtm($username, $password)) {
+          header("location: $basewam");
+        } else {
+          $error      = $user->getLastError();
+        }
+
+      } else if ($isFromNotif == "yes") {
+        
+        $hash = password_hash("*_@1154ct1vit135_*" . $role, PASSWORD_DEFAULT);
+
+        if ($user->loginNotifOtm($username, $password, $isRoomKey)) {
+          header("location: fromnotif?role=$hash&roomkey=$isRoomKey&stdorgroup=$personalorgroup");
+        } else {
+          
+          $error      = $user->getLastError();
+
+        }
+
       }
 
     }
@@ -257,8 +271,12 @@ no-repeat center center fixed; background-size: cover;
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input type="password" name="password" id="pw" class="form-control eye_paswd2" placeholder="Password" required="" autocomplete="off">
-          <span class="glyphicon glyphicon-eye-close form-control-feedback openeye2"></span>
+          <input type="password" name="password" id="pw" class="form-control eye_paswd3" placeholder="Password" required="" autocomplete="off">
+          <span id="myCheck" class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <label> SHOW PASSWORD </label>
+          <i class="glyphicon glyphicon-eye-close" id="sh_pw"></i>
         </div>
         <div class="form-group">
           <label>*Login Sebagai </label>

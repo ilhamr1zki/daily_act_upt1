@@ -413,13 +413,18 @@
 	function showDataApproved(stdOrGroup, roomKey, daily_id, dateOri, dateApproved, sender, datePosted, nipguru, nis, nm, photo, title, main) {
 
 		grouporstd = stdOrGroup;
+		$('#form_inpage_appr').attr('action', `lookactivity/${roomKey}`);
 
 		$("#inpage-approved").modal('show');
 
 		if (grouporstd == "std") {
 			$("#lbl_std_or_gp_inpage_appr").text("STUDENT");
+			$("#inpage_lookdaily_appr").attr('name', 'redirectLookDaily');
+        	$("#inpage_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
 		} else if (grouporstd == "group") {
 			$("#lbl_std_or_gp_inpage_appr").text("GROUP");
+			$("#inpage_lookdaily_appr").attr('name', 'daily_group');
+        	$("#inpage_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
 		}
 
 		$("#inpage_date_approved").val(dateApproved);

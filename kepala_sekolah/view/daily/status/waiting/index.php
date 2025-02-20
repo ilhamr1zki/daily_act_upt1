@@ -278,6 +278,7 @@
 					      		`<?= $waiting_appr['daily_id']; ?>`,
 					      		`<?= $waiting_appr['status_approve']; ?>`,
 					      		`<?= $waiting_appr['nama_guru']; ?>`,
+					      		`<?= $waiting_appr['from_nip']; ?>`,
 					      		`<?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?>`,
 					      		`<?= $waiting_appr['tgl_disetujui']; ?>`,
 					      		`<?= $waiting_appr['foto']; ?>`,
@@ -301,6 +302,7 @@
 					      		`<?= $waiting_appr['daily_id']; ?>`,
 					      		`<?= $waiting_appr['status_approve']; ?>`,
 					      		`<?= $waiting_appr['nama_guru']; ?>`,
+					      		`<?= $waiting_appr['from_nip']; ?>`,
 					      		`<?= format_tgl_indo($waiting_appr['tgl_dibuat']); ?>`,
 					      		`<?= $waiting_appr['tgl_disetujui']; ?>`,
 					      		`<?= $waiting_appr['foto']; ?>`,
@@ -336,7 +338,7 @@
 
 <script type="text/javascript">
 
-	function showDataWaitAppr(stdOrGroup, dailyID, stat, from, datePosted, dateAppr, imgUpload, siswa, title, main) {
+	function showDataWaitAppr(stdOrGroup, dailyID, stat, from, nip, datePosted, dateAppr, imgUpload, siswa, title, main) {
 
 		grouporstd = stdOrGroup;
 
@@ -367,6 +369,7 @@
       	$("#inpage_title_daily_wt_appr").val(dataHgJudul);
       	$("#inpage_siswa_daily_wt_appr").val(dataHgSiswa);
       	$("#inpage_id_daily_waiiting_wt_appr").val(dataHgDailyId);
+      	$("#inpage_nip_daily_waiiting_wt_appr").val(nip);
       	hgImage.setAttribute("src", `../image_uploads/${dataHgImage}`);
       	$("#inpage_main_daily_wt_appr").html(dataHgDaily);
 

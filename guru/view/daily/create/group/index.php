@@ -156,6 +156,16 @@
         </div>
       <?php } ?>
 
+      <?php if(isset($_SESSION['invalid_nip']) && $_SESSION['invalid_nip'] == 'gagal'){?>
+        <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> TIDAK BISA MEMBUAT DAILY UNTUK GROUP <?= $_SESSION['namegroup']; ?> ! KARENA ANDA BUKAN WALAS DARI GROUP KELAS TERSEBUT ! </span>
+           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+           <?php 
+              unset($_SESSION['invalid_nip']);
+              unset($_SESSION['namegroup']);
+          ?>
+        </div>
+      <?php } ?>
+
       <?php if(isset($_SESSION['nis_empty']) && $_SESSION['nis_empty'] == 'gagal'){?>
         <div style="display: none;" class="alert alert-danger alert-dismissable"> NIS Tidak Boleh Kosong !
            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

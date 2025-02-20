@@ -66,6 +66,7 @@
   		if (isset($_POST['send_data_group'])) {
 
   			$id_group  		= htmlspecialchars($_POST['id_group']);
+  			// echo $id_group;exit;
   			$namagroupkelas	= htmlspecialchars($_POST['nama_group_kelas']);
 
   			// echo $id_group;exit;
@@ -96,6 +97,11 @@
   			");
 
   			$countDataActivity = mysqli_num_rows($dataActivityGroupFromTeacher);
+
+  			if ($countDataActivity == 0) {
+  				$dataActivityGroupFromTeacher = [];
+  				$sesi      = 2;
+  			}
 
   		} else {
   			
@@ -146,27 +152,62 @@
 
 	        	<?php if ($countDataActivity == 0): ?>
         			
-        			<?php 
-        				$dataEmpty = 0; 
-        				$sesi = 0;
-	  					$_SESSION['data'] = 'nodata';
-        			?>
+	        		<?php if ($sesi == 2): ?>
 
-        			<div class="row">
-					    <div class="col-xs-12 col-md-12 col-lg-12">
+	        			<?php $dataEmpty = 1; ?>
+		        		<?php foreach ($dataActivityGroupFromTeacher as $data): ?>
+					      	
+					      	<tr style="background-color: limegreen; color: white; font-weight: bold;">
+						        <td style="text-align: center;">  <?= $no++; ?> </td>
+						        <td style="text-align: center;">  <?= $data['nama_guru'] ?> </td>
+						        <td style="text-align: center;">  <?= strtoupper($data['nama_group_kelas']) ?> </td>
+						        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
+						        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
+						        <td style="text-align: center;">
+							        <form action="<?= $basekepsek; ?>lookactivity/<?= $data['room_key']; ?>" method="post">
+							        	<input type="hidden" name="frompage_lookdaily" value="<?= $diMenu; ?>">
+							        	<input type="hidden" name="roomkey_group_lookdaily" value="<?= $data['room_key']; ?>">
+							        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>">
+							        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
+							        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
+							        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+							        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
+							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
+							        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
+							        	<input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul_daily']; ?>">
+							        	<input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+							        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
+							        </form>
+							    </td>
+					      	</tr>
 
-					        <?php if(isset($_SESSION['data']) && $_SESSION['data'] == 'nodata'){?>
-					          <div style="display: none;" class="alert alert-danger alert-dismissable"> Tidak Ada Data Yang Di Kirim! 
-					             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					             <?php 
-					             	$nis_or_idgroup = 0;
-					             	unset($_SESSION['data']);
-					             ?>
-					          </div>
-					        <?php } ?>
+				      	<?php endforeach ?>
 
-					    </div>
-					</div>
+			      	<?php else: ?>
+
+				      	<?php 
+	        				$dataEmpty = 0; 
+	        				$sesi = 0;
+		  					$_SESSION['data'] = 'nodata';
+	        			?>
+
+	        			<div class="row">
+						    <div class="col-xs-12 col-md-12 col-lg-12">
+
+						        <?php if(isset($_SESSION['data']) && $_SESSION['data'] == 'nodata'){?>
+						          <div style="display: none;" class="alert alert-danger alert-dismissable"> Tidak Ada Data Yang Di Kirim! 
+						             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						             <?php 
+						             	$nis_or_idgroup = 0;
+						             	unset($_SESSION['data']);
+						             ?>
+						          </div>
+						        <?php } ?>
+
+						    </div>
+						</div>
+		        			
+	        		<?php endif ?>
 
         		<?php else: ?>
 	        		<?php $dataEmpty = 1; ?>
@@ -179,19 +220,19 @@
 					        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
 					        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 					        <td style="text-align: center;">
-						        <form action="lookactivity" method="post">
-						        	<input type="hidden" name="frompage" value="<?= $diMenu; ?>">
-						        	<input type="hidden" name="roomkey" value="<?= $data['room_key']; ?>">
-						        	<input type="hidden" name="id_group_approved" value="<?= $data['id_group_approved']; ?>">
-						        	<input type="hidden" name="nama" value="<?= strtoupper($data['nama_group_kelas']); ?>">
-						        	<input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
-						        	<input type="hidden" name="foto" value="<?= strtoupper($data['foto_upload']); ?>">
-						        	<input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
+						        <form action="<?= $basekepsek; ?>lookactivity/<?= $data['room_key']; ?>" method="post">
+						        	<input type="hidden" name="frompage_lookdaily" value="<?= $diMenu; ?>">
+						        	<input type="hidden" name="roomkey_group_lookdaily" value="<?= $data['room_key']; ?>">
+						        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>">
+						        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
+						        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
+						        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+						        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
 						        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
-						        	<input type="hidden" name="tglori" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
-						        	<input type="hidden" name="judul" value="<?= $data['judul_daily']; ?>">
-						        	<input type="hidden" name="isi" value="<?= $data['isi_daily']; ?>">
-						        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="krm_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
+						        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
+						        	<input type="hidden" name="jdl_posting_lookdaily" value="<?= $data['judul_daily']; ?>">
+						        	<input type="hidden" name="isi_posting_lookdaily" value="<?= $data['isi_daily']; ?>">
+						        	<button class="btn btn-sm btn-primary" style="text-align: center;" type="submit" name="daily_group"> <i class="glyphicon glyphicon-eye-open"></i> LOOK DAILY </button>
 						        </form>
 						    </td>
 				      	</tr>
@@ -312,7 +353,7 @@
 			"font-weight" : "bold"
 		});
 
-		document.getElementById('isiMenu').innerHTML =  `<span style="font-weight: bold;"> QUERY </span>`+ ' - <span style="font-weight: bold;"> TEACHER CREATE DAILY </span> - ' + `<span style="font-weight: bold;"> <?= $upperName; ?> </span>` 
+		document.getElementById('isiMenu').innerHTML =  `<span style="font-weight: bold;"> QUERY </span>`+ ' - <span style="font-weight: bold;"> TEACHER CREATE DAILY </span> - ' + `<span style="font-weight: bold;"> GROUP <?= $upperName; ?> </span>` 
 
 	    function showPopUpNoData() {
 	      Swal.fire({

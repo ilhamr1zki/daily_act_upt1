@@ -430,6 +430,8 @@
             	$("#hg_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
           	} else {
             	$("#lbl_stdorgp_hg_appr").text('STUDENT');
+            	$("#hg_lookdaily_appr").attr('name', 'redirectLookDaily');
+            	$("#hg_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
           	}
 
 	      	$("#hg_save_reason").hide();

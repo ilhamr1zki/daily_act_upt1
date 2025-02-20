@@ -565,6 +565,7 @@
 		} else if (stat == 1) {
 			// alert("Sudah Di Approve");
 			$("#modal-hightlight-appr").modal('show');
+			$('#formHgAppr').attr('action', `lookactivity/${roomKey}`);
 			let dataHgDailyId   = $(this).data('daily_id');
 	      	let dataHgSender    = from;
 	      	let dataHgSiswa 	= siswa;
@@ -579,8 +580,12 @@
 
 	      	if (grouporstd == 'group') {
             	$("#lbl_std_or_gp_hg_appr").text('GROUP');
+            	$("#hg_lookdaily_appr").attr('name', 'daily_group');
+            	$("#hg_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
           	} else {
             	$("#lbl_std_or_gp_hg_appr").text('STUDENT');
+            	$("#hg_lookdaily_appr").attr('name', 'redirectLookDaily');
+            	$("#hg_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
           	}
 
 	      	$("#hg_save_reason").hide();

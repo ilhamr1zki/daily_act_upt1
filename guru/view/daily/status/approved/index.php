@@ -300,8 +300,14 @@
 
 		if (grouporstd == "std") {
 			$("#lbl_std_or_gp_inpage_appr").text("STUDENT");
+			$("#inpage_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
+			$("#inpage_roomkey_lookdaily").val(roomKey);
+			$("#inpage_lookdaily_appr").attr('name', 'redirectLookDaily');
 		} else if (grouporstd == "group") {
 			$("#lbl_std_or_gp_inpage_appr").text("GROUP");
+			$("#inpage_lookdaily_appr").attr('name', 'daily_group');
+			$("#inpage_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
+			$("#inpage_roomkey_lookdaily").val(roomKey);
 		}
 
 		$("#inpage_nama_guru_lookdaily").val(sender);
@@ -311,7 +317,6 @@
 		$("#inpage_tgl_posting_lookdaily").val(dateApproved);
 		$("#inpage_jdl_posting_lookdaily").val(title);
 		$("#inpage_isi_posting_lookdaily").val(main);
-		$("#inpage_roomkey_lookdaily").val(roomKey);
 		$("#inpage_tglori_posting_lookdaily").val(dateOri);
 
 	}

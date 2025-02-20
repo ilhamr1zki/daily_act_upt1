@@ -403,6 +403,101 @@ class Auth {
 
     }
 
+    public function loginNotifOtm($username, $password, $rkey) {
+
+        try {
+            
+
+            $tampungPassword = [];
+
+            // $queryGetDataPasswordAwal = mysqli_query($con, "SELECT password FROM akses_otm");
+            $getAllPassword = $this->db->prepare("
+                SELECT password FROM akses_otm
+            ");
+
+            $getAllPassword->execute();
+            $allDataPw = $getAllPassword->fetchAll();
+
+            for ($i=0; $i < count($allDataPw); $i++) {
+                $tampungPassword[] = $allDataPw[$i]['password'];
+                // echo $allDataPw[$i]['password'] . "<br>";
+            }
+
+            // exit;
+
+            $getPasswordOTM = $this->db->prepare("
+                SELECT password FROM akses_otm WHERE nis_siswa = :nis_siswa
+            ");
+
+            $getPasswordOTM->bindParam(":nis_siswa", $username);
+            $getPasswordOTM->execute();
+            $allDataPwOTM = $getPasswordOTM->fetch();
+
+            $login = $this->db->prepare("
+                SELECT 
+                `akses_otm`.nis_siswa as nis_siswa, `siswa`.c_siswa as c_siswa, `siswa`.c_kelas as kelas_siswa, `siswa`.nama as nama_siswa, `akses_otm`.password as password
+                FROM akses_otm
+                LEFT JOIN
+                siswa
+                ON `akses_otm`.nis_siswa = `siswa`.nis
+                WHERE nis_siswa = :nis_siswa  
+            ");
+            $login->bindParam(":nis_siswa", $username);
+            $login->execute();
+            $data = $login->fetch();
+            // Jika jumlah baris > 0
+            if ($login->rowCount() > 0) {
+
+                if (in_array($password,$tampungPassword)) {
+                    // echo $password . " Terdaftar";exit;
+                
+                    $_SESSION['c_otm']          = $data['nis_siswa'];
+                    $_SESSION['bag_siswa']      = $data['c_siswa'];
+                    $_SESSION['get_pw']         = $password;
+                    $_SESSION['username_otm']   = strtoupper($data['nama_siswa']);
+                    $_SESSION['kls_siswa']      = $data['kelas_siswa']; 
+                    $_SESSION['roomkeys']       = $rkey;
+                    $_SESSION['start_sess']     = time();
+                    // Session Will Be Expired after 30 Minute
+                    $_SESSION['expire']         = $_SESSION['start_sess'] + (30 * 60);
+                    return true;
+
+                } else if (password_verify($password, $allDataPwOTM['password'])) {
+                    
+                    $_SESSION['c_otm']          = $data['nis_siswa'];
+                    $_SESSION['bag_siswa']      = $data['c_siswa'];
+                    $_SESSION['get_pw']         = $password;
+                    $_SESSION['username_otm']   = strtoupper($data['nama_siswa']);
+                    $_SESSION['kls_siswa']      = $data['kelas_siswa']; 
+                    $_SESSION['roomkeys']       = $rkey;
+                    $_SESSION['start_sess']     = time();
+                    // Session Will Be Expired after 30 Minute
+                    $_SESSION['expire']         = $_SESSION['start_sess'] + (30 * 60);
+                    return true;
+
+                } else {
+
+                    $this->error = "Wrong Password !";
+                    $this->kode = 2;
+
+                    return false;
+
+                  }
+
+            } else {
+
+                $this->error = "fail_login!";
+                return false;
+            }
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+    }
+
     /**
      * @return true|void
      *

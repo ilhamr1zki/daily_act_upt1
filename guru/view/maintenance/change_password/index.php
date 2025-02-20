@@ -92,15 +92,6 @@
           </div>
         <?php } ?>
 
-        <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] == 'session_time_out'){?>
-            <div style="display: none;" class="alert alert-danger alert-dismissable"> Waktu Sesi Telah Habis
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <?php 
-                    unset($_SESSION['form_success']); 
-                ?>
-            </div>
-        <?php } ?>
-
         <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] == 'change_password_too_short'){?>
           <div style="display: none;" class="alert alert-danger alert-dismissable"> Panjang Password Baru Minimal 5 Karakter
              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

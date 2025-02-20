@@ -219,80 +219,97 @@
 	  		$countCheckNis 		= mysqli_num_rows($queryCheckNis);
 	  		$countCheckIDGroup 	= mysqli_num_rows($queryCheckIdGroup);
 
-	  		if ($countCheckIDGroup == 1) {
-	  			$isGroup = true;
+	  		// Get daily id
+	  		$getNisFromDailySiswaAppr = mysqli_fetch_array(mysqli_query($con, "
+	  			SELECT nis_siswa FROM daily_siswa_approved 
+	  			WHERE id IN (
+	  				SELECT daily_id FROM ruang_pesan WHERE room_key = '$roomKey'
+	  			)
+	  		"));
 
-	  			if (!empty(isset($_GET['q']))) {
+	  		if ($nisotm == $getNisFromDailySiswaAppr['nis_siswa']) {
 
-	  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+		  		if ($countCheckIDGroup == 1) {
+		  			$isGroup = true;
 
-			  		date_default_timezone_set("Asia/Jakarta");
-				  	$arrTgl               = [];
-					  
-				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		  			if (!empty(isset($_GET['q']))) {
 
-				  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+		  				$countDataChat = mysqli_num_rows($getDataKomenOther);
 
-				  	if ($tglOri < $tglSkrngAwal) {
-				  		$sesiKomen = 0;
-				  	} else {
-				  		$sesiKomen = 1;
-				  	}
+				  		date_default_timezone_set("Asia/Jakarta");
+					  	$arrTgl               = [];
+						  
+					  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+					  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
 
-				  	if ($foundDataSD == 1) {
-				  		$nipKepsek = "2019032";
-				  	} else if ($foundDataPAUD == 1) {
-				  		$nipKepsek = "2019034";
-				  	}
+					  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
 
-			  		$key_room   = $roomKey;
+					  	if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
 
-		  		} else {
+					  	if ($foundDataSD == 1) {
+					  		$nipKepsek = "2019032";
+					  	} else if ($foundDataPAUD == 1) {
+					  		$nipKepsek = "2019034";
+					  	}
 
-		  			$sesi = 0;
-		  			$isGroup = "noparams";
-	  				$_SESSION['data'] = 'nodata';
+				  		$key_room   = $roomKey;
+
+			  		} else {
+
+			  			$sesi = 0;
+			  			$isGroup = "noparams";
+		  				$_SESSION['data'] = 'nodata';
+
+			  		}
+
+		  		} else if ($countCheckNis == 1) {
+
+		  			if (!empty(isset($_GET['q']))) {
+
+		  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				  		date_default_timezone_set("Asia/Jakarta");
+					  	$arrTgl               = [];
+						  
+					  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+					  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+					  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+
+					  	if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
+
+					  	if ($foundDataSD == 1) {
+					  		$nipKepsek = "2019032";
+					  	} else if ($foundDataPAUD == 1) {
+					  		$nipKepsek = "2019034";
+					  	}
+
+				  		$key_room   = $roomKey;
+
+			  		} else {
+
+			  			$sesi = 0;
+			  			$isGroup = "noparams";
+		  				$_SESSION['data'] = 'nodata';
+
+			  		}
 
 		  		}
 
-	  		} else if ($countCheckNis == 1) {
+	  		} else {
 
-	  			if (!empty(isset($_GET['q']))) {
+	  			$_SESSION['data'] = 'user_invalid';
+	  			$sesi = 2 ;
 
-	  				$countDataChat = mysqli_num_rows($getDataKomenOther);
-
-			  		date_default_timezone_set("Asia/Jakarta");
-				  	$arrTgl               = [];
-					  
-				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
-
-				  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
-
-				  	if ($tglOri < $tglSkrngAwal) {
-				  		$sesiKomen = 0;
-				  	} else {
-				  		$sesiKomen = 1;
-				  	}
-
-				  	if ($foundDataSD == 1) {
-				  		$nipKepsek = "2019032";
-				  	} else if ($foundDataPAUD == 1) {
-				  		$nipKepsek = "2019034";
-				  	}
-
-			  		$key_room   = $roomKey;
-
-		  		} else {
-
-		  			$sesi = 0;
-		  			$isGroup = "noparams";
-	  				$_SESSION['data'] = 'nodata';
-
-		  		}
-
-	  		} 
+	  		}
 
 	  	} elseif (isset($_POST['send_mssg'])) {
 
@@ -310,6 +327,7 @@
 
 	  		$isKomen   	 	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message'])) . "istextempty";
 	  		$fromPage   	= $_POST['frompage'];
+	  		$allNumberPhone = [];
 
 	  		$queryDailyStd = mysqli_query($con, "
 		        SELECT id FROM daily_siswa_approved WHERE id IN (
@@ -550,30 +568,138 @@
 				  	}
 
 	  			} else if ($isKomen != "istextempty") {
-	  				
-	  				$isKomen 	= str_replace(["istextempty"], "", $isKomen);
-	  				$isi_komen	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
 
-	  				date_default_timezone_set("Asia/Jakarta");
-				  	$arrTgl               = [];
-					
-				  	$countDataChat = 0;
+	  				$apiFonnte 	= "https://api.fonnte.com/send";
 
-				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+	  				if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
 
-			  		$sesi 		= 1;
-			  		$sqlInsertChat  = mysqli_query($con, "
-						INSERT INTO tbl_komentar 
-						SET 
-						code_user 		= '$nisotm', 
-						isi_komentar  	= '$isi_komen', 
-						room_id   		= '$roomKey'
-					");
+				  	// Find Number Phone Kepsek
+				  	$queryGetNumberPhone = mysqli_query($con, "
+			  			SELECT no_hp FROM guru WHERE nip = '$nipKepsek'
+				  	");
 
-					if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
-					    
-						$getDataKomenOther = mysqli_query($con, "
+				  	$isNumberHeadMaster = mysqli_fetch_array($queryGetNumberPhone)['no_hp'];
+
+				  	// Find Number Phone Teacher
+				  	$queryGetNumberPhoneTeacher = mysqli_query($con, "
+				  		SELECT no_hp FROM guru WHERE nip = '$nipGuru'
+				  	");
+
+				  	$isNumberTeacher = mysqli_fetch_array($queryGetNumberPhoneTeacher)['no_hp'];
+
+				  	// Find Number Phone Parents
+				  	$queryGetNumberPhoneParent = mysqli_query($con, "
+				  		SELECT no_hp FROM akses_otm WHERE nis_siswa = '$_SESSION[c_otm]'
+				  	");
+
+				  	$isNumberPhoneOTM 	= mysqli_fetch_array($queryGetNumberPhoneParent)['no_hp'];
+
+				  	$allNumberPhone[] 	= $isNumberHeadMaster;
+				  	$allNumberPhone[] 	= $isNumberTeacher;
+
+				  	// Kirim Notif Pesan baru group daily ke Kepsek, guru Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
+					$curl = curl_init();
+
+		          	$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+		          	// var_dump($tampungFormatNoHP);exit;
+		          	$destination_number 	= implode(',', $allNumberPhone);
+
+		          	// Yang akan di kirimkan notif daily siswa, nomer Kepsek SD atau TK, guru yang membuat daily, dan OTM sesuai siswa yang di buat daily nya oleh guru
+		          	$target = $destination_number;
+		          	// echo $target;exit;
+		          	$pesan  = "*ADA PESAN BARU DARI DAILY SISWA _" . $nama . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+		          	curl_setopt_array($curl, array(
+			            CURLOPT_URL => $apiFonnte,
+			            CURLOPT_RETURNTRANSFER => true,
+			            CURLOPT_ENCODING => '',
+			            CURLOPT_MAXREDIRS => 10,
+			            CURLOPT_TIMEOUT => 0,
+			            CURLOPT_FOLLOWLOCATION => true,
+			            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			            CURLOPT_CUSTOMREQUEST => 'POST',
+			            CURLOPT_POSTFIELDS => array(
+			              'target' => $target,
+			              'message' => $pesan
+			            ),
+			            CURLOPT_HTTPHEADER => array(
+			              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+			            ),
+		          	));
+
+		          	$response = curl_exec($curl);
+
+		          	if ($response == true) {
+
+		          		$isKomen 	= str_replace(["istextempty"], "", $isKomen);
+		  				$isi_komen	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
+
+		  				date_default_timezone_set("Asia/Jakarta");
+					  	$arrTgl               = [];
+						
+					  	$countDataChat = 0;
+
+					  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+					  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+				  		$sesi 		= 1;
+				  		$sqlInsertChat  = mysqli_query($con, "
+							INSERT INTO tbl_komentar 
+							SET 
+							code_user 		= '$nisotm', 
+							isi_komentar  	= '$isi_komen', 
+							room_id   		= '$roomKey'
+						");
+
+						if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
+						    
+							$getDataKomenOther = mysqli_query($con, "
+						      SELECT 
+						      tbl_komentar.room_id as r_id,
+						      tbl_komentar.code_user as fromnip,
+						      guru.nama as nama_guru,
+						      siswa.nama as nama_siswa,
+						      kepala_sekolah.nama as nama_kepsek,
+						      tbl_komentar.stamp as tanggal_kirim,
+						      tbl_komentar.isi_komentar as pesan
+						      FROM 
+						      tbl_komentar 
+						      LEFT JOIN ruang_pesan
+						      ON tbl_komentar.room_id = ruang_pesan.room_key
+						      LEFT JOIN guru
+						      ON tbl_komentar.code_user = guru.nip
+						      LEFT JOIN daily_siswa_approved
+						      ON ruang_pesan.daily_id = daily_siswa_approved.id
+						      LEFT JOIN akses_otm
+						      ON tbl_komentar.code_user = akses_otm.nis_siswa
+						      LEFT JOIN siswa
+						      ON akses_otm.nis_siswa = siswa.nis
+						      LEFT JOIN kepala_sekolah
+						      ON tbl_komentar.code_user = kepala_sekolah.nip
+						      WHERE
+						      ruang_pesan.room_key LIKE '%$roomKey%'
+						      ORDER BY tbl_komentar.id
+						    ");
+
+						    $countDataChat = mysqli_num_rows($getDataKomenOther);
+						    // echo $countDataChat;exit;
+
+						}
+
+				  		if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
+
+		          	} else {
+
+		          		$getDataKomenOther = mysqli_query($con, "
 					      SELECT 
 					      tbl_komentar.room_id as r_id,
 					      tbl_komentar.code_user as fromnip,
@@ -602,21 +728,18 @@
 					    ");
 
 					    $countDataChat = mysqli_num_rows($getDataKomenOther);
-					    // echo $countDataChat;exit;
 
-					}
+					    if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
 
-			  		if ($tglOri < $tglSkrngAwal) {
-				  		$sesiKomen = 0;
-				  	} else {
-				  		$sesiKomen = 1;
-				  	}
+		          		$_SESSION['data'] = 'server_err';
 
-				  	if ($foundDataSD == 1) {
-				  		$nipKepsek = "2019032";
-				  	} else if ($foundDataPAUD == 1) {
-				  		$nipKepsek = "2019034";
-				  	}
+		          	}
+
+		          	curl_close($curl);
 
 	  			}
 
@@ -680,39 +803,68 @@
 
 		    $isGroup = true;
 
-		    if (!empty(isset($_GET['q']))) {
+		    // Cek jika nis otm merupakan anggota group kelas tersebut
+		    $tampungDataNis = [];
+		    $queryGetAllNis = mysqli_query($con, "
+		    	SELECT nis FROM siswa WHERE group_kelas = '$nisOrIdGroup'
+		    ");
 
-  				$countDataChat = mysqli_num_rows($getDataKomenOther);
+		    foreach ($queryGetAllNis as $data_nis) {
+		    	$tampungDataNis[] = $data_nis['nis'];
+		    }
 
-		  		date_default_timezone_set("Asia/Jakarta");
-			  	$arrTgl               = [];
-				  
-			  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-			  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+		    $matching_data_nis_in_group = 0;
 
-			  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+		    for ($i=0; $i < count($tampungDataNis); $i++) { 
 
-			  	if ($tglOri < $tglSkrngAwal) {
-			  		$sesiKomen = 0;
-			  	} else {
-			  		$sesiKomen = 1;
-			  	}
+		    	if ($tampungDataNis[$i] == $nisotm) {
+		    		$matching_data_nis_in_group = 1;
+		    	}
 
-			  	if ($foundDataSD == 1) {
-			  		$nipKepsek = "2019032";
-			  	} else if ($foundDataPAUD == 1) {
-			  		$nipKepsek = "2019034";
-			  	}
+		    }
 
-		  		$key_room   = $roomKey;
+		    if ($matching_data_nis_in_group == 1) {
 
-	  		} else {
+		    	if (!empty(isset($_GET['q']))) {
 
-	  			$sesi = 0;
-	  			$isGroup = "noparams";
-  				$_SESSION['data'] = 'nodata';
+	  				$countDataChat = mysqli_num_rows($getDataKomenOther);
 
-	  		}
+			  		date_default_timezone_set("Asia/Jakarta");
+				  	$arrTgl               = [];
+					  
+				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
+
+				  	$fromPage   = htmlspecialchars($_POST['frompage_lookdaily']);
+
+				  	if ($tglOri < $tglSkrngAwal) {
+				  		$sesiKomen = 0;
+				  	} else {
+				  		$sesiKomen = 1;
+				  	}
+
+				  	if ($foundDataSD == 1) {
+				  		$nipKepsek = "2019032";
+				  	} else if ($foundDataPAUD == 1) {
+				  		$nipKepsek = "2019034";
+				  	}
+
+			  		$key_room   = $roomKey;
+
+		  		} else {
+
+		  			$sesi = 0;
+		  			$isGroup = "noparams";
+	  				$_SESSION['data'] = 'nodata';
+
+		  		}
+
+		    } else {
+
+		    	$_SESSION['data'] = 'user_invalid';
+	  			$sesi = 2 ;
+
+		    }
 
 	  	} else if (isset($_POST['send_mssg_grp'])) {
 
@@ -834,28 +986,12 @@
 			        WHERE nis_siswa IN (
 			          SELECT nis FROM siswa
 			          WHERE group_kelas = '$nisOrIdGroup'
-			        )
+			        ) AND nis_siswa <> '$_SESSION[c_otm]'
 		      	");
 
 		        $tampungNoHP 		= [];
 		        $tampungNoHpOtm		= [];
 	  			$allDataNumber 		= [];
-
-		        foreach ($getAllNumberOTM as $data) {
-		          $tampungNoHP[] = $data['no_hp'];
-		        }
-
-		        for ($i=0; $i < count($tampungNoHP); $i++) { 
-
-		          $noHp = substr($tampungNoHP[$i], 0, 2);
-
-		          if ($noHp == '08') {
-		            $change2 = substr($tampungNoHP[$i], 2, 12);
-		            $thisNumberPhoneOTM = "628" . $change2;
-		            // $allDataNumber[] = $tampungNoHP[$i];
-		          }
-
-		        }
 
 		        // echo $destination_array;exit;
 	          	if ($foundDataSD == 1) {
@@ -890,7 +1026,26 @@
 			  			// Gabungan Nomer HP / WA OTM, Kepsek, Dan Guru
 			  			$allDataNumber[] 	= $isNumberHeadMaster;
 			  			$allDataNumber[] 	= $isNumberTeacher;
-			  			$allDataNumber[] 	= "0895329874975";
+
+			  			foreach ($getAllNumberOTM as $data) {
+				          $tampungNoHP[] = $data['no_hp'];
+				        }
+
+				        for ($i=0; $i < count($tampungNoHP); $i++) { 
+
+				          $noHp = substr($tampungNoHP[$i], 0, 2);
+
+				          if ($noHp == '08') {
+				            $change2 = substr($tampungNoHP[$i], 2, 12);
+				            // $thisNumberPhoneOTM = "628" . $change2;
+				            $allDataNumber[] = $tampungNoHP[$i];
+				          }
+
+				        }
+
+			  			// $destination_number 	= implode(',', $allDataNumber);
+
+			  			// echo $destination_number;exit;
 
 			  			if ($isKomen != "kosongx") {
 
@@ -915,7 +1070,7 @@
 					          	// Yang akan di kirimkan notif group, nomer Kepsek SD atau TK, guru yang membuat daily, dan semua OTM yang ada di anggota group
 					          	$target = $destination_number;
 					          	// echo $target;exit;
-					          	$pesan  = "*ADA PESAN BARU DARI DAILY GROUP " . $getGroupName . " YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+					          	$pesan  = "*ADA PESAN BARU DARI DAILY GROUP _" . $getGroupName . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
 					          	curl_setopt_array($curl, array(
 						            CURLOPT_URL => $apiFonnte,
@@ -931,7 +1086,7 @@
 						              'message' => $pesan
 						            ),
 						            CURLOPT_HTTPHEADER => array(
-						              'Authorization:v5UjWfsmUcB1SQMBeyxR' //change TOKEN to your actual token
+						              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
 						            ),
 					          	));
 
@@ -1251,7 +1406,7 @@
         <?php } ?>
 
         <?php if(isset($_SESSION['data']) && $_SESSION['data'] == 'server_err'){?>
-      		<div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> Maaf Saat Ini Server Sedang dalam Gangguan  ! </span> 
+      		<div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> Maaf saat ini tidak bisa mengirim notif via Whatsapp ! Karena Server Sedang dalam Gangguan ! </span> 
              	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
              	<?php 
 	             	unset($_SESSION['data']);
@@ -1552,7 +1707,7 @@
 								              <span id="namasiswa" class="direct-chat-name pull-right"> <?= strtoupper($data['nama_siswa']); ?> </span>
 								              <span id="datesend" class="direct-chat-timestamp pull-left"> <?= tgl_indo($data['tanggal_kirim']) .' '. substr($data['tanggal_kirim'], 11, 19); ?> </span>
 								          	</div>
-								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/icon_chat.png" alt="Message User Image">
+								          	<img class="direct-chat-img" src="<?= $base; ?>imgstatis/df.jpg" alt="Message User Image">
 								          	<div class="direct-chat-text"> <?= htmlspecialchars($data['pesan']); ?> </div>
 							          	</div>
 
@@ -1783,6 +1938,24 @@
 		    </div>
 		</div>
 
+	<?php elseif($sesi == 2): ?>
+
+		<div class="row">
+		    <div class="col-xs-12 col-md-12 col-lg-12">
+
+		        <?php if(isset($_SESSION['data']) && $_SESSION['data'] == 'user_invalid'){?>
+		          <div style="display: none;" class="alert alert-danger alert-dismissable"> AKSES DI ALIHKAN ! 
+		             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		             <?php
+		             	$nisOrIdGroup = 2;
+		             	unset($_SESSION['data']);
+		             ?>
+		          </div>
+		        <?php } ?>
+
+		    </div>
+		</div>
+
 	<?php endif ?>
 
 <script type="text/javascript">
@@ -1913,6 +2086,7 @@
 		}
 
     	if (`<?= $nisOrIdGroup; ?>` == 0) {
+
 			if (`<?= $isGroup; ?>` == "noparams") {
 				setTimeout(() => {
 					location.href = `<?= $basewam; ?>querydailygroup`
@@ -1922,6 +2096,19 @@
 					location.href = `<?= $basewam; ?>querydailystudent`
 				}, 1000);
 			}
+
+		} else if (`<?= $nisOrIdGroup; ?>` == 2) {
+
+			Swal.fire({
+			  title: "Perhatian !",
+			  text: "Akses Dialihkan !",
+			  icon: "warning"
+			});
+
+			setTimeout(() => {
+				location.href = `<?= $basewam; ?>`
+			}, 2500);	
+
 		} else {
 
 			$('#comments-box').scrollTop($('#comments-box')[0].scrollHeight);

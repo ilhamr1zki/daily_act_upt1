@@ -120,7 +120,7 @@
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label> NOMER HP / WA </label>
-                        <input type="text" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="12" required class="form-control" name="nohp" placeholder="Ex : 08xx xxxx xxxx" value="<?= $getNumberPhone; ?>" id="nohp">
+                        <input type="text" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="13" required class="form-control" name="nohp" placeholder="Ex : 08xx xxxx xxxx" value="<?= $getNumberPhone; ?>" id="nohp">
                     </div>
                 </div>
 

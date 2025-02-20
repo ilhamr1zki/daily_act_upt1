@@ -30,6 +30,17 @@
   $foundDataPAUD  = preg_match($is_PAUD, $_SESSION['c_guru']);
   $foundDataAll   = preg_match($is_All, $_SESSION['c_guru']);
   $isGuru         = "";
+  $isWalas        = 0;
+
+  $getNipWalas = mysqli_num_rows(mysqli_query($con, "SELECT nip FROM group_kelas WHERE nip = '$_SESSION[nip_guru]' "));
+
+  if ($getNipWalas == 1) {
+
+    $getNameGroupClass = mysqli_fetch_array(mysqli_query($con, "SELECT nama_group_kelas FROM group_kelas WHERE nip = '$_SESSION[nip_guru]' "));
+
+  }
+
+  // echo $getNipWalas;exit;
 
   if ($foundDataSD == 1) {
 
@@ -486,6 +497,11 @@
       font-size: 12px;
     }
 
+    #cdastd {
+      font-size: 17px;
+      margin-left: -4px;
+    }
+
     @media only screen and (max-width: 600px) {
 
       .cobasidebar {
@@ -517,7 +533,7 @@
       }
 
       #cdastd {
-        font-size: 13px;
+        font-size: 12px;
         margin-left: -4px;
       }
 
@@ -736,15 +752,6 @@
 
     }
 
-    @media only screen and (min-width: 375px) {
-
-      #cdastd {
-        font-size: 13px;
-        margin-left: -4px;
-      }
-
-    }
-
     /* The Modal (background) */
     .modal-error {
       display: none; /* Hidden by default */
@@ -938,6 +945,7 @@ oncontextmenu="return false">
           <input type="hidden" id="df_nis_lookdaily" name="nis_or_idgroup_lookdaily"> 
           <input type="hidden" id="df_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily"> 
           <input type="hidden" id="df_guru_lookdaily" name="guru_lookdaily">
+          <input type="hidden" id="df_nipguru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="df_img_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="df_tglappr_lookdaily" name="tgl_posting_lookdaily">
           <input type="hidden" id="df_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
@@ -1105,6 +1113,7 @@ oncontextmenu="return false">
           <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily">
+          <input type="hidden" id="hg_nipguru_lookdaily" name="nipguru_lookdaily" value="<?= $_SESSION['nip_guru']; ?>">
           <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily">
@@ -1413,6 +1422,7 @@ oncontextmenu="return false">
           <input type="hidden" id="inpage_frompage_lookdaily" name="frompage_lookdaily" value="status_approved">
           <input type="hidden" id="inpage_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="inpage_nama_guru_lookdaily" name="guru_lookdaily">
+          <input type="hidden" id="inpage_nipguru_lookdaily" name="nipguru_lookdaily" value="<?= $_SESSION['nip_guru']; ?>">
           <input type="hidden" id="inpage_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="inpage_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="inpage_foto_upload_lookdaily" name="foto_upload_lookdaily">
@@ -1689,9 +1699,11 @@ oncontextmenu="return false">
                 <li> 
                   <a href="<?= $basegu; ?>createdailystudent" id="create_data"><i class="fa-solid fa-user text-primary"></i> <span style="margin-left: 9px;"> Student </span> </a>
                 </li>
-                <li> 
-                  <a href="<?= $basegu; ?>createdailygroup" id="createdailygroup"><i class="fa-solid fa-users text-primary" style="margin-left: -3px;"></i> <span style="margin-left: 6px;"> Group Class </span> </a>
-                </li>
+                <?php if ($getNipWalas == 1): ?>
+                  <li> 
+                    <a href="<?= $basegu; ?>createdailygroup" id="createdailygroup"><i class="fa-solid fa-users text-primary" style="margin-left: -3px;"></i> <span style="margin-left: 6px;"> Group Class </span> </a>
+                  </li>
+                <?php endif ?>
               </ul>
             </li>
 
@@ -1703,9 +1715,11 @@ oncontextmenu="return false">
                 <li> 
                   <a href="<?= $basegu; ?>querydailystudent" id="query_data_siswa"><i class="fa fa-user text-primary"></i> <span style="margin-left: 1px;" id="sub_isiList1"> Student </span> </a>
                 </li>
-                <li> 
-                  <a href="<?= $basegu; ?>querydailygroup" id="query_data_group"><i class="fa fa-users text-primary"></i> <span style="margin-left: 1px;" id="sub_isiList2group"> Group Class </span> </a>
-                </li>
+                <?php if ($getNipWalas == 1): ?>
+                  <li> 
+                    <a href="<?= $basegu; ?>querydailygroup" id="query_data_group"><i class="fa fa-users text-primary"></i> <span style="margin-left: 1px;" id="sub_isiList2group"> Group Class </span> </a>
+                  </li>
+                <?php endif ?>
               </ul>
             </li>
 
@@ -1728,6 +1742,24 @@ oncontextmenu="return false">
 
           </ul>
         </li>
+
+        <?php if ($getNipWalas == 1): ?>
+
+          <!-- GROUP CLASS -->
+          <li>
+            <a href="#" id="isgroupclass">
+              <i class="fa-solid fa-users"></i> <span style="margin-left: 2px;"> GROUP CLASS </span>
+            </a>
+            <ul class="treeview-menu">
+              
+              <li>
+                <a href="<?= $basegu; ?>groupclass/<?= $getNameGroupClass['nama_group_kelas']; ?>" id="is_groupclass"><i class="glyphicon glyphicon-list-alt text-primary"></i> <span id="g_kls"> GROUP CLASS <?= $getNameGroupClass['nama_group_kelas']; ?> </span> </a>
+              </li>
+
+            </ul>
+          </li>
+          
+        <?php endif ?>
 
         <!-- MAINTENANCE -->
         <li>
@@ -1820,6 +1852,15 @@ oncontextmenu="return false">
       require 'view/daily/create/group/index.php';
     } elseif($act == 'teachercreategroupdaily') {
       require 'view/daily/query/teachercreategroupdaily.php';
+    }
+
+    #region group class if teacher is walas
+    elseif($act == 'groupclass') {
+      require 'view/groupclass/index.php';
+    } 
+
+    elseif($act == 'addtogroupclass') {
+      require 'view/groupclass/addtogroup.php';
     }
 
     #region form maintenance
@@ -2067,6 +2108,7 @@ oncontextmenu="return false">
               let dataSender        = $(this).data('pengirim');
               let dataGuru          = $(this).data('nama_guru_lengkap');
               let dataNisSiswa      = $(this).data('nis_siswa_was_appr');
+              let dataSiswaOrGroup  = $(this).data('siswaorgroup_was_appr');
               let dataSiswa         = $(this).data('siswa_was_appr');
               let dataTglAppr       = $(this).data('tgl_approved');
               let dataTglUploadAppr = $(this).data('tgl_upload');
@@ -2076,6 +2118,7 @@ oncontextmenu="return false">
               let dataRoomKey       = $(this).data('room_key');
               let dataDfTglOri      = $(this).data('tgl_ori');
               let grouporstd        = $(this).data('group_or_std');
+              let dataNip           = $(this).data('nipguru');
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']");
 
               // alert(`<?= $thisPage; ?>`)
@@ -2104,7 +2147,15 @@ oncontextmenu="return false">
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
 
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>groupclass/${dataSiswaOrGroup}`) {
+
+                $('#formDfAppr').attr('action', `<?= $basegu; ?>lookactivity/${dataRoomKey}`);
+
               } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changepassword`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changenumberphone`) {
 
                 $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
 
@@ -2140,6 +2191,7 @@ oncontextmenu="return false">
               $("#df_nis_lookdaily").val(dataNisSiswa);
               $("#df_siswa_lookdaily").val(dataSiswa);
               $("#df_guru_lookdaily").val(dataGuru);
+              $("#df_nipguru_lookdaily").val(dataNip);
               $("#df_img_lookdaily").val(dataImageAprr);
               $("#df_tglappr_lookdaily").val(dataTglAppr);
               $("#df_jdl_lookdaily").val(dataTitleAppr);

@@ -6,7 +6,7 @@
 
     $timeIsOut 		= 0;
 
-    $dataSiswa   		= mysqli_query($con, "SELECT * FROM siswa_ujicoba");
+    $dataSiswa   		= mysqli_query($con, "SELECT * FROM siswa_edit1");
     $countDataSiswa  	= mysqli_num_rows($dataSiswa);
     $c_klp 				= "";
     $dataKsg   			= [];
@@ -177,7 +177,7 @@
 
 							if ($countDataSiswa != 0) {
 
-								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_ujicoba WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
 								$cariData = mysqli_fetch_array($queryFindData)['nama'];
 								$sameData = mysqli_num_rows($queryFindData);
 								// echo $jenjangSekolah . " " . $Row[1];exit;
@@ -224,7 +224,7 @@
 							      	$kodseq = $kode."".$invID;
 
 							      	$queryInsertSiswa = mysqli_query($con, "
-								        INSERT INTO siswa_ujicoba 
+								        INSERT INTO siswa_edit
 								        set 
 								        c_siswa         = '$kodseq', 
 								        c_kelas         = '$c_kelas',
@@ -255,8 +255,8 @@
 							      	");
 
 							      	if ($queryInsertSiswa) {
-							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_ujicoba");
-								        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut'  where kode='$kode2' ");
+							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit");
+								        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut' where kode='$kode2' ");
 								        $_SESSION['import_success'] = 'berhasil';
 								        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
 								        $dataKsg[] = $nama_ayah;
@@ -265,7 +265,7 @@
 							      	} else {
 
 								        $_SESSION['import_success'] = 'gagal';
-								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_ujicoba");
+								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit");
 
 							      	}
 
@@ -277,84 +277,92 @@
 
 							} else if ($countDataSiswa == 0) {
 
-								$queryDataPendaftarSiswa = mysqli_query($con, "
-									INSERT INTO siswa
-									SET
-									pendaftaran_kelas 									= '1SD',
-									nama_calon_siswa  									= '$calonNamaSiswa',
-									panggilan_calon_siswa								= '$panggilanClnSiswa',
-									nisn 												= '$nisnCalonSiswa',
-									asal_sekolah 										= '$asalSklhClnSiswa',
-									jenis_kelamin          								= '$jkClnSiswa',
-									tempat_lahir 										= '$tmptLhrClnSiswa',
-									tanggal_lahir  										= '$tglLhrClnSiswa',
-									anak_ke 											= '$anak_ke',
-									dari_berapa_saudara 								= '$dariBrpSdr',
-									kk_atau_adik_di_aiis 								= '$kkAdikDiAiis',
-									tingkat_kelas_kk_atau_adik  						= '$tngktKelaskkAdik',
-									nama_kk_atau_adik 									= '$nama_kk_atau_adik',
-									riwayat_penyakit 									= '$riwayat_penyakit',
-									bacaan_tahsin 										= '$bacaan_tahsin',
-									jumlah_juz_dihafal 									= '$jumlah_juz_dihafal',
-									juz_dihafal   										= '$juz_dihafal',
-									hafalan_surat 										= '$hafalan_surat',
-									dapat_berjalan_pada_usia 							= '$berjalanPdUsia',
-									dapat_berbicara_bermakna_pada_usia					= '$bicaraPdUsia',
-									pernah_menjalani_terapi 							= '$pernahTrapi',
-									jenis_terapi 										= '$jenisTerapi',
-									alasan_menjalani_terapi 							= '$alasanTrapi',
-									durasi_terapi 										= '$durasiTerapi',
-									waktu_mulai_dan_waktu_selesai_terapi				= '$wktAwAkhirTrapi',
-									saat_ini_masih_menjalani_terapi 					= '$masihTerapi',
-									keterlambatan_perkembangan 							= '$lmbtPerkembangan',
-									terbiasa_solat_lima_waktu 							= '$trbSolat',
-									orangtua_sudah_lancar_dalam_tahsin					= '$tahsinOrtua',
-									hafalan_tahfidz_orangtua							= '$tahfidzOrtua',
-									peran_orangtua_membantu_anak_menghafal				= '$peranOrtua',
-									anak_terbiasa_menonton_tv_atau_gadget 				= '$terbiasaGadget',
-									berapa_lama_menonton_tv_atau_gadget_dalam_sehari	= '$brpLamaGadget',
-									nama_ayah 											= '$nama_ayah',
-									tempat_lahir_ayah 									= '$tempat_lahir_ayah',
-									tanggal_lahir_ayah 									= '$tanggal_lahir_ayah',
-									agama_ayah 											= '$agama_ayah',
-									pendidikan_terakhir_ayah							= '$pendAy',
-									pekerjaan_ayah 										= '$pekerjaan_ayah',
-									domisili_ayah_saat_ini 								= '$domisiliAyah',
-									nomor_hp_ayah 										= '$hpAyah',
-									nama_ibu 											= '$nama_ibu',
-									tempat_lahir_ibu 									= '$tempat_lahir_ibu',
-									tanggal_lahir_ibu 									= '$tanggal_lahir_ibu',
-									agama_ibu 											= '$agama_ibu',
-									pendidikan_terakhir_ibu								= '$pendIbu',
-									pekerjaan_ibu 										= '$pekerjaan_ibu',
-									domisili_ibu_saat_ini 								= '$domisili_ibu',
-									nomor_hp_ibu 										= '$hpIbu',
-									pendapatan_orangtua 								= '$pendapatanOrtu',
-									rencana_mutasi 										= '$rencana_mutasi',
-									file_pdf_akte 										= '$file_pdf_akte',
-									file_pdf_kk 										= '$file_pdf_kk',
-									ktp_ayah 											= '$ktp_ayah',
-									ktp_ibu 											= '$ktp_ibu',
-									sertif_tahsin  										= '$sertif_tahsin',
-									sertif_tahfidz  									= '$sertif_tahfidz',
-									nominal_infaq										= '$nominalInfaq',
-									nominal_terbilang 									= '$nominalTerbilang',
-									tanggal_formulir_dibuat 							= '$tanggalDibuat'
-								");
+								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit1 WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+								$cariData = mysqli_fetch_array($queryFindData)['nama'];
+								$sameData = mysqli_num_rows($queryFindData);
 
-								if ($queryDataPendaftarSiswa) {
+								$is_sd = "/SD/i";
+								$is_tk = "KB";
 
-									$dataSiswaKeseluruhan = mysqli_num_rows(mysqli_query($con, "SELECT * FROM status_data_pendaftaran_siswa"));
-									// echo "Import data berhasil";
-									$total = $dataSiswaKeseluruhan;
-									$_SESSION['import_success'] = "berhasil";
-									$success_sess = 1;
+								$getFirstWord = substr($jenjangSekolah, 0, 1);
+								// echo $getFirstWord;exit;
+
+								$findWordSD 	= preg_match($is_sd, $jenjangSekolah);
+
+								// echo "Sini " . $findWordSD;exit;
+								$isKB 			= $findWordSD;
+
+								if ($findWordSD == 1) {
+									// echo "KE SINI";exit;
+
+									$kode   = "SD";
+							        $kode2  = "SD";
+							        $c_klp   = 1;
+
+							        $c_kelas = $getFirstWord . $kode;
+
+						      	} else if ($findWordSD == 0) {
 									
-								} else {
-									mysqli_error($con);
-									error_reporting(1);
-									echo "Gagal";
-								}
+									$kode   = "TK";
+							        $kode2  = "PTK";
+							        $c_klp	= "KB";
+
+							        $c_kelas = $isKB;							        
+
+						      	}
+
+						      	$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoranmas_ujicoba where kode='$kode2' limit 1 "));
+						      	$nomorurut = $seqc_sis['nourut'] ?? 0;
+
+						      	$invID = str_pad($nomorurut, 4, '0', STR_PAD_LEFT);
+
+						      	$kodseq = $kode."".$invID;
+
+						      	$queryInsertSiswa = mysqli_query($con, "
+							        INSERT INTO siswa_edit1
+							        set 
+							        c_siswa         = '$kodseq', 
+							        c_kelas         = '$c_kelas',
+							        nisn            = '$nisnCalonSiswa',
+							        nama            = '$calonNamaSiswa',
+							        jk              = '$jkClnSiswa',
+							        tempat_lahir    = '$tmptLhrClnSiswa',
+							        tanggal_lahir   = '$tglLhrClnSiswa', 
+							        tahun_join      = '$yearPlusOne', 
+							        panggilan       = '$panggilanClnSiswa', 
+							        c_klp           = '$c_klp', 
+							        berat_badan     = NULL,
+							        tinggi_badan    = NULL, 
+							        ukuran_baju     = NULL, 
+							        alamat          = '$domisiliAyah', 
+							        telp            = NULL, 
+							        hp              = '$combinedNumber',
+							        email           = NULL, 
+							        nama_ayah       = '$nama_ayah', 
+							        pendidikan_ayah = '$pendAy', 
+							        pekerjaan_ayah  = '$pekerjaan_ayah',
+							        ttl_ayah        = '$fatherBirth', 
+							        nama_ibu        = '$nama_ibu', 
+							        pendidikan_ibu  = '$pendIbu', 
+							        pekerjaan_ibu   = '$pekerjaan_ibu',
+							        ttl_ibu         = '$motherBirth', 
+							        nis             = '$nisCalonSiswa' 
+						      	");
+
+						      	if ($queryInsertSiswa) {
+						      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
+							        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut'  where kode='$kode2' ");
+							        $_SESSION['import_success'] = 'berhasil';
+							        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
+							        $dataKsg[] = $nama_ayah;
+							        $total = count($dataKsg);
+
+						      	} else {
+
+							        $_SESSION['import_success'] = 'gagal';
+							        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
+
+						      	}
 
 							}
 
@@ -460,7 +468,7 @@
 
 							if ($countDataSiswa != 0) {
 
-								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_ujicoba WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit1 WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
 								$cariData = mysqli_fetch_array($queryFindData)['nama'];
 								$sameData = mysqli_num_rows($queryFindData);
 								// echo $calonNamaSiswa . " " . $tmptLhrClnSiswa . ", " . $tglLhrClnSiswa;exit;
@@ -507,7 +515,7 @@
 							      	$kodseq = $kode."".$invID;
 
 							      	$queryInsertSiswa = mysqli_query($con, "
-								        INSERT INTO siswa_ujicoba 
+								        INSERT INTO siswa_edit1
 								        set 
 								        c_siswa         = '$kodseq', 
 								        c_kelas         = '$c_kelas',
@@ -538,7 +546,7 @@
 							      	");
 
 							      	if ($queryInsertSiswa) {
-							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_ujicoba");
+							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
 								        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut'  where kode='$kode2' ");
 								        $_SESSION['import_success'] = 'berhasil';
 								        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
@@ -548,7 +556,7 @@
 							      	} else {
 
 								        $_SESSION['import_success'] = 'gagal';
-								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_ujicoba");
+								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
 
 							      	}
 

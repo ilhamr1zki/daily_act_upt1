@@ -181,7 +181,7 @@
 	    <div class="row" style="float: right; margin-top: 10px; margin-right: 5px;">
 					
 			<div class="col-sm-3">
-        		<button class="btn btn-sm btn-primary" id="backto_querydailygroup"> <span class="glyphicon glyphicon-log-out"></span> Kembali </button>	
+        		<button class="btn btn-sm btn-primary" id="backto_querydailygroup"> <span class="glyphicon glyphicon-log-out" style="transform: scaleX(-1);"></span> Kembali </button>	
 				<br>
 			</div>
 

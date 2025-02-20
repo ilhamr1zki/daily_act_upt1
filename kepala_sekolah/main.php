@@ -16,7 +16,9 @@
     header("location:../"); //Redirect ke halaman login  
   }
 
-  $nama_role = $_SESSION['id_kepsek'];
+  $nama_role  = $_SESSION['id_kepsek'];
+  $thisPage   = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+  // echo $thisPage;exit;
 
   // echo $_SESSION['id_kepsek'];exit;
 
@@ -932,13 +934,13 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="hg_close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="formHgAppr" method="post">
           <input type="hidden" id="hg_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="hg_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="hg_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="hg_nama_guru_lookdaily" name="guru_lookdaily">
           <input type="hidden" id="hg_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
-          <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
+          <input type="hidden" id="hg_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="hg_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="hg_tgl_posting_lookdaily" name="tgl_posting_lookdaily">
           <input type="hidden" id="hg_tglori_posting_lookdaily" name="tglori_posting_lookdaily">
@@ -1153,6 +1155,7 @@ oncontextmenu="return false">
 
             <form role="form" id="forms">
               <input type="hidden" id="inpage_id_daily_waiiting_wt_appr">
+              <input type="hidden" id="inpage_nip_daily_waiiting_wt_appr">
               <div class="row">
                 <div class="col-sm-8">
                   <div class="form-group">
@@ -1306,12 +1309,12 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="inpage_close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="form_inpage_appr" method="post">
           <input type="hidden" id="inpage_frompage_lookdaily" name="frompage_lookdaily" value="status_approved">
           <input type="hidden" id="inpage_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="inpage_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="inpage_nama_guru_lookdaily" name="guru_lookdaily">
-          <input type="hidden" id="inpage_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
+          <input type="hidden" id="inpage_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="inpage_nis_siswa_lookdaily" name="nis_or_idgroup_lookdaily">
           <input type="hidden" id="inpage_foto_upload_lookdaily" name="foto_upload_lookdaily">
           <input type="hidden" id="inpage_tgl_posting_lookdaily" name="tgl_posting_lookdaily">
@@ -1498,11 +1501,11 @@ oncontextmenu="return false">
       </div>
       <div class="modal-footer">
         <button type="button" id="close_approve" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-        <form action="lookactivity" method="post">
+        <form id="formDfAppr" method="post">
           <input type="hidden" id="df_frompage_lookdaily" name="frompage_lookdaily" value="homepage">
           <input type="hidden" id="df_roomkey_lookdaily" name="roomkey_lookdaily">
           <input type="hidden" id="df_nis_or_idgroup_lookdaily" name="nis_or_idgroup_lookdaily">
-          <input type="hidden" id="df_nama_siswa_lookdaily" name="nama_siswa_lookdaily">
+          <input type="hidden" id="df_nama_siswa_lookdaily" name="nama_siswa_or_groupkelas_lookdaily">
           <input type="hidden" id="df_nip_guru_lookdaily" name="nipguru_lookdaily">
           <input type="hidden" id="df_nama_guru_lookdaily" name="guru_lookdaily">
           <input type="hidden" id="df_foto_upload_lookdaily" name="foto_upload_lookdaily">
@@ -1834,6 +1837,10 @@ oncontextmenu="return false">
               <a href="<?= $basekepsek; ?>changepassword" id="changepassword"><i class="glyphicon glyphicon-wrench text-primary" id="create"></i> <span id="isiList4"> Change Password </span> </a>
             </li>
 
+            <li>
+              <a href="<?= $basekepsek; ?>changenumberphone" id="changenumberphone"><i class="glyphicon glyphicon-phone text-primary" id="create"></i> <span id="isiList4"> Change Number Phone </span> </a>
+            </li>
+
           </ul>
         </li>
 
@@ -1944,6 +1951,11 @@ oncontextmenu="return false">
     #region change password
     else if ($act == 'changepassword') {
       require 'view/maintenance/change_password/index.php';
+    }
+
+    #region change password
+    else if ($act == 'changenumberphone') {
+      require 'view/maintenance/change_number_phone/index.php';
     }
 
     else{
@@ -2124,7 +2136,8 @@ oncontextmenu="return false">
         type : "POST",
         data : {
           daily_id_not_appr  : $("#id_daily_waiiting").val(),
-          is_reason          : $("#reason_modal_default").val()
+          is_reason          : $("#reason_modal_default").val(),
+          nipguru            : $("#nip_daily_waiiting").val()
         },
         success:function(data) {
 
@@ -2173,8 +2186,9 @@ oncontextmenu="return false">
         url  : `<?= $basekepsek; ?>data`,
         type : "POST",
         data : {
-          daily_id_not_appr  : $("#highlight_id_daily_waiiting").val(),
-          is_reason          : $("#hightlight_reason").val()
+          daily_id_not_appr   : $("#highlight_id_daily_waiiting").val(),
+          is_reason           : $("#hightlight_reason").val(),
+          nipguru             : $("#highlight_nip_daily_waiiting").val()
         },
         success:function(data) {
 
@@ -2204,7 +2218,8 @@ oncontextmenu="return false">
         type : "POST",
         data : {
           daily_id_not_appr  : $("#inpage_id_daily_waiiting_wt_appr").val(),
-          is_reason          : $("#inpage_reason").val()
+          is_reason          : $("#inpage_reason").val(),
+          nipguru            : $("#inpage_nip_daily_waiiting_wt_appr").val()
         },
         success:function(data) {
 
@@ -2326,7 +2341,8 @@ oncontextmenu="return false">
         url  : `<?= $basekepsek; ?>data`,
         type : "POST",
         data : {
-          daily_id  : $("#inpage_id_daily_waiiting_wt_appr").val()
+          daily_id  : $("#inpage_id_daily_waiiting_wt_appr").val(),
+          nip_guru  : $("#inpage_nip_daily_waiiting_wt_appr").val()
         },
         success:function(data) {
 
@@ -2513,7 +2529,7 @@ oncontextmenu="return false">
               let dataNipGuru       = $(this).data('nip_guru');
               let dataGuru          = $(this).data('nama_guru_lengkap');
               let dataNisSiswa      = $(this).data('nis_siswa_was_appr');
-              let dataSiswa         = $(this).data('siswa_was_appr');
+              let dataSiswaOrGroup  = $(this).data('siswaorgroup_was_appr');
               let dataTglAppr       = $(this).data('tgl_approved');
               let dataTglUploadAppr = $(this).data('tgl_upload');
               let dataImageAprr     = $(this).data('img');
@@ -2525,20 +2541,86 @@ oncontextmenu="return false">
 
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']"); 
 
+              if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>lookactivity/${dataDfRoomKey}`) {
+
+                $('#formDfAppr').attr('action', `${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>querydailystudent`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>teachercreatedaily`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>teachercreategroupdaily`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>querydailyteacher`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>createdailybyteacher`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>status_waiting_approval`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>status_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>status_not_approved`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>listgroup`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>groupclass/${dataSiswaOrGroup}`) {
+
+                $('#formDfAppr').attr('action', `<?= $basekepsek; ?>lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>changepassword`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` == `<?= $basekepsek; ?>changenumberphone`) {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              } else if (`<?= $thisPage; ?>` != `<?= $basekepsek; ?>`) {
+                
+                $('#formDfAppr').attr('action', `<?= $basekepsek; ?>lookactivity/${dataDfRoomKey}`);
+
+              } else {
+
+                $('#formDfAppr').attr('action', `lookactivity/${dataDfRoomKey}`);
+
+              }
+
               if (grouporstd == 'group') {
                 $("#lbl_std_or_gp_df_appr").text('GROUP');
+                $("#df_lookdaily_appr").attr('name', 'daily_group');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_group_lookdaily');
               } else {
                 $("#lbl_std_or_gp_df_appr").text('STUDENT');
+                $("#df_lookdaily_appr").attr('name', 'redirectLookDaily');
+                $("#df_roomkey_lookdaily").attr('name', 'roomkey_lookdaily');
               }
 
               $("#date_approved").val(dataTglAppr);
               $("#pengirim_appr").val(dataSender);
               $("#tanggal_upload_appr").val(dataTglUploadAppr);
-              $("#siswa_daily_appr").val(dataSiswa);
+              $("#siswa_daily_appr").val(dataSiswaOrGroup);
               $("#df_lookdaily_appr").val(dataDailyId);
               $("#df_nama_guru_lookdaily").val(dataGuru);
               $("#df_nis_or_idgroup_lookdaily").val(dataNisSiswa);
-              $("#df_nama_siswa_lookdaily").val(dataSiswa);
+              $("#df_nama_siswa_lookdaily").val(dataSiswaOrGroup);
               $("#df_foto_upload_lookdaily").val(dataImageAprr);
               $("#df_tgl_posting").val(dataTglAppr);
               $("#df_jdl_posting_lookdaily").val(dataTitleAppr);
@@ -2774,7 +2856,7 @@ oncontextmenu="return false">
 //angka 500 dibawah ini artinya pesan akan muncul dalam 0,5 detik setelah document ready
 $(document).ready(function(){setTimeout(function(){$(".alert").fadeIn('fast');}, 100);});
 //angka 3000 dibawah ini artinya pesan akan hilang dalam 3 detik setelah muncul
-// setTimeout(function(){$(".alert").fadeOut('fast');}, 3000);
+setTimeout(function(){$(".alert").fadeOut('fast');}, 3000);
 </script>
 </body>
 </html>
