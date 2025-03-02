@@ -988,19 +988,9 @@ oncontextmenu="return false">
       require 'view/a-kelas.php';
     }
 
-    #region checkpembayaraninputdata
-    else if ($act == 'checkpembayarandaninputdata') {
-      require 'view/spp/check_pembayaran/check_pembayaran_dan_inputdata.php';
-    }
-
-    #region edit data
-    elseif ($act == 'editdata') {
-      require 'view/spp/edit_data/editdata.php';
-    }
-
-    #region import data
-    elseif($act == 'upload') {
-      require 'view/spp/upload/uploadfile.php';
+    #region eksport data wali murid
+    else if ($act == 'ekspordatawalimurid') {
+      require 'view/dashboard/ekspordatawalimurid.php';
     }
 
     #region dashboard

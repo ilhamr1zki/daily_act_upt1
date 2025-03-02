@@ -144,44 +144,78 @@
 
       $kodseq = $kode."".$invID;
 
-      $queryInsertSiswa = mysqli_query($con, "
-        INSERT INTO siswa 
-        set 
-        c_siswa         = '$kodseq', 
-        c_kelas         = '$c_kelas',
-        nisn            = '$nisn',
-        nama            = '$nama',
-        jk              = '$jk',
-        tempat_lahir    = '$alamatlahir',
-        tanggal_lahir   = '$tl', 
-        tahun_join      = '$thnjoin', 
-        panggilan       = '$panggilan', 
-        c_klp           = '$c_klp', 
-        berat_badan     = '$bbadan',
-        tinggi_badan    = '$tbadan', 
-        ukuran_baju     = '$ukuran_baju', 
-        alamat          = '$alamat', 
-        telp            = '$telp', 
-        hp              = '$hp',
-        email           = '$email', 
-        nama_ayah       = '$nama_ayah', 
-        pendidikan_ayah = '$pendidikan_a', 
-        pekerjaan_ayah  = '$pekerjaan_a',
-        ttl_ayah        = '$ttl_a', 
-        nama_ibu        = '$nama_ibu', 
-        pendidikan_ibu  = '$pendidikan_i', 
-        pekerjaan_ibu   = '$pekerjaan_i',
-        ttl_ibu         = '$ttl_i', 
-        nis             = '$nis' 
-      ");
+      $formatNumber = substr($hp, 0, 2);
 
-      if ($queryInsertSiswa) {
-        $penomoran=mysqli_query($con,"UPDATE penomoranmas set nourut='$nomorurut'  where kode='$kode2' ");
-        $_SESSION['insert_siswa'] = 'berhasil';
+      if ($formatNumber == "08") {
+
+        $queryInsertSiswa = mysqli_query($con, "
+          INSERT INTO siswa 
+          set 
+          c_siswa         = '$kodseq', 
+          c_kelas         = '$c_kelas',
+          nisn            = '$nisn',
+          nama            = '$nama',
+          jk              = '$jk',
+          tempat_lahir    = '$alamatlahir',
+          tanggal_lahir   = '$tl', 
+          tahun_join      = '$thnjoin', 
+          panggilan       = '$panggilan', 
+          c_klp           = '$c_klp', 
+          berat_badan     = '$bbadan',
+          tinggi_badan    = '$tbadan', 
+          ukuran_baju     = '$ukuran_baju', 
+          alamat          = '$alamat', 
+          telp            = '$telp', 
+          hp              = '$hp',
+          email           = '$email', 
+          nama_ayah       = '$nama_ayah', 
+          pendidikan_ayah = '$pendidikan_a', 
+          pekerjaan_ayah  = '$pekerjaan_a',
+          ttl_ayah        = '$ttl_a', 
+          nama_ibu        = '$nama_ibu', 
+          pendidikan_ibu  = '$pendidikan_i', 
+          pekerjaan_ibu   = '$pekerjaan_i',
+          ttl_ibu         = '$ttl_i', 
+          nis             = '$nis' 
+        ");
+
+        if ($queryInsertSiswa) {
+
+          $penomoran=mysqli_query($con,"UPDATE penomoranmas set nourut='$nomorurut'  where kode='$kode2' ");
+
+          if ($penomoran) {
+
+            $rand_pass = random(5);
+
+            $queryInsertAksesOTM = mysqli_query($con, "
+              INSERT INTO akses_otm
+              set 
+              nis_siswa = '$nis',
+              password  = '$rand_pass',
+              no_hp     = '$hp'
+            ");
+
+            if ($queryInsertAksesOTM) {
+              $_SESSION['insert_siswa'] = 'berhasil';
+            } else {
+              $_SESSION['insert_siswa'] = 'gagal_akses_otm';
+            } 
+
+          } else {
+
+            $_SESSION['insert_siswa'] = 'gagal_update_penomoran';
+
+          }
+
+        } else {
+
+          $_SESSION['insert_siswa'] = 'gagal';
+
+        }
 
       } else {
 
-        $_SESSION['insert_siswa'] = 'gagal';
+        $_SESSION['insert_number_phone'] = 'format_number_invalid';
 
       }
 
@@ -190,6 +224,13 @@
   }
   
 ?>
+
+<?php if(isset($_SESSION['insert_number_phone']) && $_SESSION['insert_number_phone'] == 'format_number_invalid'){?>
+  <div style="color: yellow;" class="alert alert-danger alert-dismissable"> FORMAT NO HP INVALID
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <?php unset($_SESSION['insert_number_phone']); ?>
+  </div>
+<?php } ?>
 
 <?php if(isset($_SESSION['insert_siswa']) && $_SESSION['insert_siswa'] == 'berhasil'){?>
   <div style="display: none;" class="alert alert-warning alert-dismissable"> <span style="color: white;"> BERHASIL MENAMBAHKAN SISWA BARU </span>
@@ -202,6 +243,24 @@
 
 <?php if(isset($_SESSION['insert_siswa']) && $_SESSION['insert_siswa'] == 'gagal'){?>
   <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: white;"> GAGAL MENAMBAHKAN SISWA BARU </span>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <?php 
+        unset($_SESSION['insert_siswa']);
+    ?>
+  </div>
+<?php } ?>
+
+<?php if(isset($_SESSION['insert_siswa']) && $_SESSION['insert_siswa'] == 'gagal_akses_otm'){?>
+  <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: white;"> GAGAL MENAMBAHKAN DATA BARU AKSES OTM </span>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <?php 
+        unset($_SESSION['insert_siswa']);
+    ?>
+  </div>
+<?php } ?>
+
+<?php if(isset($_SESSION['insert_siswa']) && $_SESSION['insert_siswa'] == 'gagal_update_penomoran'){?>
+  <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: white;"> GAGAL UPDATE PENOMORAN SISWA </span>
      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
      <?php 
         unset($_SESSION['insert_siswa']);

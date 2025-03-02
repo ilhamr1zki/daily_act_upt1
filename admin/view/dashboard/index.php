@@ -89,6 +89,9 @@
 
     <div class="box-body table-responsive">
 
+      <a href="<?= $basead; ?>ekspordatawalimurid" class="btn btn-sm btn-success"> <i class="glyphicon glyphicon-export"></i> EKSPOR AKSES LOGIN WALI MURID (OTM) </a>
+      <br><br>
+
       <table id="hightlight_list_siswa" style="text-align: center;" class="table table-bordered table-hover">
 
         <thead>

@@ -48,24 +48,32 @@
 
     if ($checkDataSD == 1) {
 
+      // $dataGroupDaily = mysqli_query($con, "
+      //   SELECT id, nama_group_kelas, walas
+      //   FROM group_kelas
+      //   WHERE nip IN (
+      //     SELECT nip FROM guru WHERE c_jabatan LIKE '%SD%'
+      //   )
+      //   ORDER BY nama_group_kelas ASC
+      // ");
+
       $dataGroupDaily = mysqli_query($con, "
-        SELECT id, nama_group_kelas, walas
-        FROM group_kelas
-        WHERE nip IN (
-          SELECT nip FROM guru WHERE c_jabatan LIKE '%SD%'
-        )
-        ORDER BY nama_group_kelas ASC
+        SELECT id, nama_group_kelas, walas FROM group_kelas WHERE nip = '$_SESSION[nip_guru]'
       ");
 
     } else if ($checkDataPAUD == 1) {
 
+      // $dataGroupDaily = mysqli_query($con, "
+      //   SELECT id, nama_group_kelas, walas
+      //   FROM group_kelas
+      //   WHERE nip IN (
+      //     SELECT nip FROM guru WHERE c_jabatan LIKE '%PAUD%'
+      //   )
+      //   ORDER BY nama_group_kelas ASC
+      // ");
+
       $dataGroupDaily = mysqli_query($con, "
-        SELECT id, nama_group_kelas, walas
-        FROM group_kelas
-        WHERE nip IN (
-          SELECT nip FROM guru WHERE c_jabatan LIKE '%PAUD%'
-        )
-        ORDER BY nama_group_kelas ASC
+        SELECT id, nama_group_kelas, walas FROM group_kelas WHERE nip = '$_SESSION[nip_guru]'
       ");
 
     }

@@ -2121,51 +2121,59 @@ oncontextmenu="return false">
               let dataNip           = $(this).data('nipguru');
               let imageAppr         = document.querySelector("img[id='foto_upload_appr']");
 
-              // alert(`<?= $thisPage; ?>`)
+              // if (`<?= $thisPage; ?>` == `<?= $basegu; ?>lookactivity/${dataRoomKey}`) {
+
+              //   $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailystudent`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailygroup`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_waiting_approval`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_approved`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_not_approved`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changepassword`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changenumberphone`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` != `<?= $basegu; ?>`) {
+
+              //   $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>groupclass/${dataSiswaOrGroup}`) {
+
+              //   $('#formDfAppr').attr('action', `<?= $basegu; ?>lookactivity/${dataRoomKey}`);
+
+              // } else {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // }
 
               if (`<?= $thisPage; ?>` == `<?= $basegu; ?>lookactivity/${dataRoomKey}`) {
 
                 $('#formDfAppr').attr('action', `${dataRoomKey}`);
 
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailystudent`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>createdailygroup`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_waiting_approval`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_approved`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>status_not_approved`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>groupclass/${dataSiswaOrGroup}`) {
-
-                $('#formDfAppr').attr('action', `<?= $basegu; ?>lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changepassword`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basegu; ?>changenumberphone`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` != `<?= $basegu; ?>`) {
-
-                $('#formDfAppr').attr('action', `${dataRoomKey}`);
-
               } else {
 
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+                $('#formDfAppr').attr('action', `<?= $basegu; ?>lookactivity/${dataRoomKey}`);
 
               }
 

@@ -10,6 +10,41 @@
     $countDataSiswa  	= mysqli_num_rows($dataSiswa);
     $c_klp 				= "";
     $dataKsg   			= [];
+    $dataNIS  			= [];
+    $dataNoHP 			= [];
+
+    $jenjangSekolah 	= "";
+    $calonNamaSiswa 	= "";
+    $panggilanClnSiswa 	= "";
+    $nisnCalonSiswa 	= "";
+    $asalSklhClnSiswa 	= "";
+    $jkClnSiswa 		= "";
+    $tmptLhrClnSiswa	= "";
+    $tglLhrClnSiswa 	= "";
+    $nama_ayah 			= "";
+    $tempat_lahir_ayah  = "";
+    $tanggal_lahir_ayah = "";
+    $pendAy 			= "";
+    $pekerjaan_ayah 	= "";
+    $domisiliAyah 		= "";
+    $hpAyah 			= "";
+    $nama_ibu 			= "";
+    $tempat_lahir_ibu 	= "";
+    $tanggal_lahir_ibu  = "";
+    $pendIbu 			= "";
+    $pekerjaan_ibu  	= "";
+    $domisili_ibu 		= "";
+    $hpIbu 				= "";
+    $nisCalonSiswa 		= "";
+    $tanggalDibuat 		= "";
+    $fatherBirth 		= "";
+    $motherBirth 		= "";
+    $c_kelas 			= "";
+    $kode 				= "";
+    $getYear 			= "";
+    $isYear 			= "";
+    $yearPlusOne 		= "";
+
     error_reporting(1);
 
     function tgl_indo($date){  
@@ -175,9 +210,14 @@
 							$combinedNumber = $hpAyah . ' / ' . $hpIbu;
 							$combinedNumber = mysqli_real_escape_string($con, htmlspecialchars($combinedNumber));
 
+							$dataNIS[] 		= $nisCalonSiswa;
+							$dataNoHP[] 	= $hpIbu;
+
+							$generate_password = random(5);
+
 							if ($countDataSiswa != 0) {
 
-								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+								$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit1 WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
 								$cariData = mysqli_fetch_array($queryFindData)['nama'];
 								$sameData = mysqli_num_rows($queryFindData);
 								// echo $jenjangSekolah . " " . $Row[1];exit;
@@ -224,7 +264,7 @@
 							      	$kodseq = $kode."".$invID;
 
 							      	$queryInsertSiswa = mysqli_query($con, "
-								        INSERT INTO siswa_edit
+								        INSERT INTO siswa_edit1
 								        set 
 								        c_siswa         = '$kodseq', 
 								        c_kelas         = '$c_kelas',
@@ -254,18 +294,28 @@
 								        nis             = '$nisCalonSiswa' 
 							      	");
 
-							      	if ($queryInsertSiswa) {
-							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit");
+							      	$generatePassword = random(5);
+
+							      	$queryInsertAksesOTM = mysqli_query($con, "
+							      		INSERT INTO akses_otm
+							      		SET
+							      		nis_siswa 	= '$nisCalonSiswa',
+							      		password 	= '$generate_password',
+							      		no_hp 		= '$hpIbu'
+							      	");
+
+							      	if ($queryInsertSiswa && $queryInsertAksesOTM) {
+							      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
 								        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut' where kode='$kode2' ");
 								        $_SESSION['import_success'] = 'berhasil';
 								        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
-								        $dataKsg[] = $nama_ayah;
-								        $total = count($dataKsg);
+								        $dataKsg[] 	= $nama_ayah;
+								        $total 		= count($dataKsg);
 
 							      	} else {
 
 								        $_SESSION['import_success'] = 'gagal';
-								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit");
+								        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
 
 							      	}
 
@@ -355,6 +405,7 @@
 							        $_SESSION['import_success'] = 'berhasil';
 							        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
 							        $dataKsg[] = $nama_ayah;
+							        $dataNIS[] 	= $nisCalonSiswa;
 							        $total = count($dataKsg);
 
 						      	} else {
