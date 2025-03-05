@@ -21,6 +21,8 @@
   $tampungData      = [];
   $tampungDataTrue  = [];
 
+  $j_kelas = ["1SD", "2SD", "3SD", "4SD", "5SD", "6SD"];
+
   $symbol = ",";
 
   $queryAllStudent = mysqli_query($con, 
@@ -48,6 +50,7 @@
       SELECT 
       siswa.nis as nis,
       siswa.nama as nama,
+      siswa.nisn as nisn,
       siswa.c_kelas as c_kelas,
       siswa.group_kelas as group_kelas,
       group_kelas.nama_group_kelas as nama_group
@@ -327,11 +330,15 @@
 
       $nama     = mysqli_real_escape_string($con, strtoupper(htmlspecialchars($_POST['nama_siswa'])));
       $nis      = htmlspecialchars($_POST['nis']);
+      $nisn     = htmlspecialchars($_POST['nisn']);
+      $c_kelas  = htmlspecialchars($_POST['c_kelas']);
 
       $queryUpdateSiswa = mysqli_query($con, "
         UPDATE siswa 
         SET
-        nama        = '$nama'
+        nama        = '$nama',
+        nisn        = '$nisn',
+        c_kelas     = '$c_kelas'
         WHERE nis   = '$nis'
       ");
 
@@ -342,6 +349,7 @@
         $queryAllDataStudents = mysqli_query($con, "
           SELECT 
           siswa.nis as nis,
+          siswa.nisn as nisn,
           siswa.nama as nama,
           siswa.c_kelas as c_kelas,
           siswa.group_kelas as group_kelas,
@@ -362,6 +370,7 @@
           SELECT 
           siswa.nis as nis,
           siswa.nama as nama,
+          siswa.nisn as nisn,
           siswa.c_kelas as c_kelas,
           siswa.group_kelas as group_kelas,
           group_kelas.nama_group_kelas as nama_group
@@ -464,7 +473,8 @@
                 `<?= $data['nis']; ?>`, 
                 `<?= $data['nama']; ?>`, 
                 `<?= $data['c_kelas']; ?>`,
-                `<?= $data['nama_group']; ?>`
+                `<?= $data['nama_group']; ?>`,
+                `<?= $data['nisn']; ?>`
               )"> EDIT </button> | 
               <button class="btn btn-sm btn-danger" data-target="#hapus<?= $data['nis']; ?>" data-toggle="modal"> DELETE </button>
 
@@ -526,10 +536,33 @@
           <br>
           <div class="row">
             <div class="col-sm-2">
+              <label> NISN </label>
+            </div>
+            <div class="col-sm-4" style="top: -4px;">
+              <input type="text" name="nisn" id="nisn" class="form-control" value="" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="11">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-2">
               <label> NAMA </label>
             </div>
             <div class="col-sm-10" style="top: -4px;">
-              <input type="text" name="nama_siswa" id="nama_siswa" class="form-control" value="ajdnajsdn">
+              <input type="text" name="nama_siswa" id="nama_siswa" class="form-control" value="">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-2">
+              <label> KELAS </label>
+            </div>
+            <div class="col-sm-2" style="top: -4px;">
+              <!-- <input type="text" name="c_kelas" id="c_kelas" class="form-control" value=""> -->
+              <select class="form-control" name="c_kelas" id="c_kelas">
+                <?php foreach ($j_kelas as $kelas): ?>
+                  <option value="<?= $kelas; ?>"> <?= str_replace(["SD"], " SD", $kelas); ?> </option>
+                <?php endforeach ?>
+              </select>
             </div>
           </div>
           <br>
@@ -586,12 +619,16 @@
     $('#nm_walas').val(localStorage.getItem('namawalas'));
   }
 
-  function editModal(nis, nama, c_kelas, g_kelas) {
+  function editModal(nis, nama, c_kelas, g_kelas, nisn) {
 
     $("#nis").val(nis);
     $("#nama_siswa").val(nama);
-    $("#c_kelas").val(c_kelas);
+    $('select').each(function() {
+      $(this).find(`option[value="${c_kelas}"]`).prop('selected', true);
+    });
+
     $('#modalsiswa').modal("show");
+    $("#nisn").val(nisn);
 
   }
 
@@ -599,5 +636,13 @@
     $("#modalsiswa").modal('hide');
   }
 
+  function onlyNumberKey(evt) {
+
+    // Only ASCII character in that range allowed
+    let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+        return false;
+    return true;
+  }
 
 </script>

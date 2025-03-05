@@ -19,6 +19,8 @@
 	$tglSkrngAwal 	= "";
 	$tglSkrngAkhir 	= "";
 
+	$fonnte_err 	= 0;
+
 	function tgl_indo($date){  
 	    $tanggal_indo = date_create($date);
 	    date_timezone_set($tanggal_indo,timezone_open("Asia/Jakarta"));
@@ -577,129 +579,29 @@
 				  		$nipKepsek = "2019034";
 				  	}
 
-				  	// Find Number Phone Kepsek
-				  	$queryGetNumberPhone = mysqli_query($con, "
-			  			SELECT no_hp FROM guru WHERE nip = '$nipKepsek'
-				  	");
+				  	$isKomen 	= str_replace(["istextempty"], "", $isKomen);
+	  				$isi_komen	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
 
-				  	$isNumberHeadMaster = mysqli_fetch_array($queryGetNumberPhone)['no_hp'];
+	  				date_default_timezone_set("Asia/Jakarta");
+				  	$arrTgl               = [];
+					
+				  	$countDataChat = 0;
 
-				  	// Find Number Phone Teacher
-				  	$queryGetNumberPhoneTeacher = mysqli_query($con, "
-				  		SELECT no_hp FROM guru WHERE nip = '$nipGuru'
-				  	");
+				  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
+				  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
 
-				  	$isNumberTeacher = mysqli_fetch_array($queryGetNumberPhoneTeacher)['no_hp'];
+			  		$sesi 		= 1;
+			  		$sqlInsertChat  = mysqli_query($con, "
+						INSERT INTO tbl_komentar 
+						SET 
+						code_user 		= '$nisotm', 
+						isi_komentar  	= '$isi_komen', 
+						room_id   		= '$roomKey'
+					");
 
-				  	// Find Number Phone Parents
-				  	$queryGetNumberPhoneParent = mysqli_query($con, "
-				  		SELECT no_hp FROM akses_otm WHERE nis_siswa = '$_SESSION[c_otm]'
-				  	");
-
-				  	$isNumberPhoneOTM 	= mysqli_fetch_array($queryGetNumberPhoneParent)['no_hp'];
-
-				  	$allNumberPhone[] 	= $isNumberHeadMaster;
-				  	$allNumberPhone[] 	= $isNumberTeacher;
-
-				  	// Kirim Notif Pesan baru group daily ke Kepsek, guru Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
-					$curl = curl_init();
-
-		          	$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
-
-		          	// var_dump($tampungFormatNoHP);exit;
-		          	$destination_number 	= implode(',', $allNumberPhone);
-
-		          	// Yang akan di kirimkan notif daily siswa, nomer Kepsek SD atau TK, guru yang membuat daily, dan OTM sesuai siswa yang di buat daily nya oleh guru
-		          	$target = $destination_number;
-		          	// echo $target;exit;
-		          	$pesan  = "*ADA PESAN BARU DARI DAILY SISWA _" . $nama . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
-
-		          	curl_setopt_array($curl, array(
-			            CURLOPT_URL => $apiFonnte,
-			            CURLOPT_RETURNTRANSFER => true,
-			            CURLOPT_ENCODING => '',
-			            CURLOPT_MAXREDIRS => 10,
-			            CURLOPT_TIMEOUT => 0,
-			            CURLOPT_FOLLOWLOCATION => true,
-			            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			            CURLOPT_CUSTOMREQUEST => 'POST',
-			            CURLOPT_POSTFIELDS => array(
-			              'target' => $target,
-			              'message' => $pesan
-			            ),
-			            CURLOPT_HTTPHEADER => array(
-			              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
-			            ),
-		          	));
-
-		          	$response = curl_exec($curl);
-
-		          	if ($response == true) {
-
-		          		$isKomen 	= str_replace(["istextempty"], "", $isKomen);
-		  				$isi_komen	= mysqli_real_escape_string($con, htmlspecialchars($_POST['message']));
-
-		  				date_default_timezone_set("Asia/Jakarta");
-					  	$arrTgl               = [];
-						
-					  	$countDataChat = 0;
-
-					  	$tglSkrngAwal         = date("Y-m-d") . " 00:00:00";
-					  	$tglSkrngAkhir        = date("Y-m-d") . " 23:59:59";
-
-				  		$sesi 		= 1;
-				  		$sqlInsertChat  = mysqli_query($con, "
-							INSERT INTO tbl_komentar 
-							SET 
-							code_user 		= '$nisotm', 
-							isi_komentar  	= '$isi_komen', 
-							room_id   		= '$roomKey'
-						");
-
-						if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
-						    
-							$getDataKomenOther = mysqli_query($con, "
-						      SELECT 
-						      tbl_komentar.room_id as r_id,
-						      tbl_komentar.code_user as fromnip,
-						      guru.nama as nama_guru,
-						      siswa.nama as nama_siswa,
-						      kepala_sekolah.nama as nama_kepsek,
-						      tbl_komentar.stamp as tanggal_kirim,
-						      tbl_komentar.isi_komentar as pesan
-						      FROM 
-						      tbl_komentar 
-						      LEFT JOIN ruang_pesan
-						      ON tbl_komentar.room_id = ruang_pesan.room_key
-						      LEFT JOIN guru
-						      ON tbl_komentar.code_user = guru.nip
-						      LEFT JOIN daily_siswa_approved
-						      ON ruang_pesan.daily_id = daily_siswa_approved.id
-						      LEFT JOIN akses_otm
-						      ON tbl_komentar.code_user = akses_otm.nis_siswa
-						      LEFT JOIN siswa
-						      ON akses_otm.nis_siswa = siswa.nis
-						      LEFT JOIN kepala_sekolah
-						      ON tbl_komentar.code_user = kepala_sekolah.nip
-						      WHERE
-						      ruang_pesan.room_key LIKE '%$roomKey%'
-						      ORDER BY tbl_komentar.id
-						    ");
-
-						    $countDataChat = mysqli_num_rows($getDataKomenOther);
-						    // echo $countDataChat;exit;
-
-						}
-
-				  		if ($tglOri < $tglSkrngAwal) {
-					  		$sesiKomen = 0;
-					  	} else {
-					  		$sesiKomen = 1;
-					  	}
-
-		          	} else {
-
-		          		$getDataKomenOther = mysqli_query($con, "
+					if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
+					    
+						$getDataKomenOther = mysqli_query($con, "
 					      SELECT 
 					      tbl_komentar.room_id as r_id,
 					      tbl_komentar.code_user as fromnip,
@@ -735,11 +637,147 @@
 					  		$sesiKomen = 1;
 					  	}
 
-		          		$_SESSION['data'] = 'server_err';
+					  	// // Find Number Phone Kepsek
+					  	// $queryGetNumberPhone = mysqli_query($con, "
+				  		// 	SELECT no_hp FROM guru WHERE nip = '$nipKepsek'
+					  	// ");
 
-		          	}
+					  	// $isNumberHeadMaster = mysqli_fetch_array($queryGetNumberPhone)['no_hp'];
 
-		          	curl_close($curl);
+					  	// // Find Number Phone Teacher
+					  	// $queryGetNumberPhoneTeacher = mysqli_query($con, "
+					  	// 	SELECT no_hp FROM guru WHERE nip = '$nipGuru'
+					  	// ");
+
+					  	// $isNumberTeacher = mysqli_fetch_array($queryGetNumberPhoneTeacher)['no_hp'];
+
+					  	// // Find Number Phone Parents
+					  	// $queryGetNumberPhoneParent = mysqli_query($con, "
+					  	// 	SELECT no_hp FROM akses_otm WHERE nis_siswa = '$_SESSION[c_otm]'
+					  	// ");
+
+					  	// $isNumberPhoneOTM 	= mysqli_fetch_array($queryGetNumberPhoneParent)['no_hp'];
+
+					  	// $allNumberPhone[] 	= $isNumberHeadMaster;
+					  	// $allNumberPhone[] 	= $isNumberTeacher;
+
+					  	// // Kirim Notif Pesan baru group daily ke Kepsek, guru Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
+						// $curl = curl_init();
+
+			          	// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+			          	// $destination_number 	= implode(',', $allNumberPhone);
+
+			          	// // Yang akan di kirimkan notif daily siswa, nomer Kepsek SD atau TK, guru yang membuat daily, dan OTM sesuai siswa yang di buat daily nya oleh guru
+			          	// $target = $destination_number;
+
+			          	// $pesan  = "*ADA PESAN BARU DARI DAILY SISWA _" . $nama . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+			          	// curl_setopt_array($curl, array(
+				        //     CURLOPT_URL => $apiFonnte,
+				        //     CURLOPT_RETURNTRANSFER => true,
+				        //     CURLOPT_ENCODING => '',
+				        //     CURLOPT_MAXREDIRS => 10,
+				        //     CURLOPT_TIMEOUT => 0,
+				        //     CURLOPT_FOLLOWLOCATION => true,
+				        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				        //     CURLOPT_CUSTOMREQUEST => 'POST',
+				        //     CURLOPT_POSTFIELDS => array(
+				        //       'target' => $target,
+				        //       'message' => $pesan
+				        //     ),
+				        //     CURLOPT_HTTPHEADER => array(
+				        //       'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+				        //     ),
+			          	// ));
+
+			          	// $response = curl_exec($curl);
+
+			          	// if ($response == false) {
+
+			          	// 	$getDataKomenOther = mysqli_query($con, "
+						//       SELECT 
+						//       tbl_komentar.room_id as r_id,
+						//       tbl_komentar.code_user as fromnip,
+						//       guru.nama as nama_guru,
+						//       siswa.nama as nama_siswa,
+						//       kepala_sekolah.nama as nama_kepsek,
+						//       tbl_komentar.stamp as tanggal_kirim,
+						//       tbl_komentar.isi_komentar as pesan
+						//       FROM 
+						//       tbl_komentar 
+						//       LEFT JOIN ruang_pesan
+						//       ON tbl_komentar.room_id = ruang_pesan.room_key
+						//       LEFT JOIN guru
+						//       ON tbl_komentar.code_user = guru.nip
+						//       LEFT JOIN daily_siswa_approved
+						//       ON ruang_pesan.daily_id = daily_siswa_approved.id
+						//       LEFT JOIN akses_otm
+						//       ON tbl_komentar.code_user = akses_otm.nis_siswa
+						//       LEFT JOIN siswa
+						//       ON akses_otm.nis_siswa = siswa.nis
+						//       LEFT JOIN kepala_sekolah
+						//       ON tbl_komentar.code_user = kepala_sekolah.nip
+						//       WHERE
+						//       ruang_pesan.room_key LIKE '%$roomKey%'
+						//       ORDER BY tbl_komentar.id
+						//     ");
+
+						//     $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+						//     if ($tglOri < $tglSkrngAwal) {
+						//   		$sesiKomen = 0;
+						//   	} else {
+						//   		$sesiKomen = 1;
+						//   	}
+
+			          	// 	$_SESSION['data'] = 'server_err';
+
+			          	// }
+
+			          	// curl_close($curl);
+
+					} else {
+
+						$_SESSION['fail_comment'] = "comment_err";
+
+						$getDataKomenOther = mysqli_query($con, "
+					      SELECT 
+					      tbl_komentar.room_id as r_id,
+					      tbl_komentar.code_user as fromnip,
+					      guru.nama as nama_guru,
+					      siswa.nama as nama_siswa,
+					      kepala_sekolah.nama as nama_kepsek,
+					      tbl_komentar.stamp as tanggal_kirim,
+					      tbl_komentar.isi_komentar as pesan
+					      FROM 
+					      tbl_komentar 
+					      LEFT JOIN ruang_pesan
+					      ON tbl_komentar.room_id = ruang_pesan.room_key
+					      LEFT JOIN guru
+					      ON tbl_komentar.code_user = guru.nip
+					      LEFT JOIN daily_siswa_approved
+					      ON ruang_pesan.daily_id = daily_siswa_approved.id
+					      LEFT JOIN akses_otm
+					      ON tbl_komentar.code_user = akses_otm.nis_siswa
+					      LEFT JOIN siswa
+					      ON akses_otm.nis_siswa = siswa.nis
+					      LEFT JOIN kepala_sekolah
+					      ON tbl_komentar.code_user = kepala_sekolah.nip
+					      WHERE
+					      ruang_pesan.room_key LIKE '%$roomKey%'
+					      ORDER BY tbl_komentar.id
+					    ");
+
+					    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+					    if ($tglOri < $tglSkrngAwal) {
+					  		$sesiKomen = 0;
+					  	} else {
+					  		$sesiKomen = 1;
+					  	}
+
+					}
 
 	  			}
 
@@ -1018,244 +1056,161 @@
 
 			  	$formatNumberTeacher = substr($isNumberTeacher, 0, 2);
 
-			  	// Jika Format Number Phone Kepsek Benar
-			  	if ($formatNumberHeadMaster == "08") {
+			  	// Jika Sudah Ada Nomer WA dan siap di pakai nyalakan kembali komentar di baris 1277 dan hapus di baris 1060
+			  	if ($isKomen != "kosongx") {
 
-			  		if ($formatNumberTeacher == "08") {
+		  			$sqlInsertChat  = mysqli_query($con, "
+						INSERT INTO tbl_komentar 
+						SET 
+						code_user 		= '$users', 
+						isi_komentar  	= '$isKomen', 
+						room_id   		= '$roomKey'
+					");
 
-			  			// Gabungan Nomer HP / WA OTM, Kepsek, Dan Guru
-			  			$allDataNumber[] 	= $isNumberHeadMaster;
-			  			$allDataNumber[] 	= $isNumberTeacher;
+					if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
 
-			  			foreach ($getAllNumberOTM as $data) {
-				          $tampungNoHP[] = $data['no_hp'];
-				        }
+						// Kirim Notif Pesan baru group daily ke Kepsek Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
+						// $curl = curl_init();
 
-				        for ($i=0; $i < count($tampungNoHP); $i++) { 
+			          	// $tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
 
-				          $noHp = substr($tampungNoHP[$i], 0, 2);
+			          	// // var_dump($tampungFormatNoHP);exit;
+			          	// $destination_number 	= implode(',', $allDataNumber);
 
-				          if ($noHp == '08') {
-				            $change2 = substr($tampungNoHP[$i], 2, 12);
-				            // $thisNumberPhoneOTM = "628" . $change2;
-				            $allDataNumber[] = $tampungNoHP[$i];
-				          }
+			          	// // Yang akan di kirimkan notif group, nomer Kepsek SD atau TK, guru yang membuat daily, dan semua OTM yang ada di anggota group
+			          	// $target = $destination_number;
+			          	// // echo $target;exit;
+			          	// $pesan  = "*ADA PESAN BARU DARI DAILY GROUP _" . $getGroupName . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
 
-				        }
+			          	// curl_setopt_array($curl, array(
+				        //     CURLOPT_URL => $apiFonnte,
+				        //     CURLOPT_RETURNTRANSFER => true,
+				        //     CURLOPT_ENCODING => '',
+				        //     CURLOPT_MAXREDIRS => 10,
+				        //     CURLOPT_TIMEOUT => 0,
+				        //     CURLOPT_FOLLOWLOCATION => true,
+				        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				        //     CURLOPT_CUSTOMREQUEST => 'POST',
+				        //     CURLOPT_POSTFIELDS => array(
+				        //       'target' => $target,
+				        //       'message' => $pesan
+				        //     ),
+				        //     CURLOPT_HTTPHEADER => array(
+				        //       'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+				        //     ),
+			          	// ));
 
-			  			// $destination_number 	= implode(',', $allDataNumber);
+			          	// $response = curl_exec($curl);
 
-			  			// echo $destination_number;exit;
+			          	// if ($response == false) {
 
-			  			if ($isKomen != "kosongx") {
+			          	// 	// Jika Server Fonnte Bermasalah
+			          	// 	$getDataKomenOther = mysqli_query($con, "
+						//       SELECT 
+						//       tbl_komentar.room_id as r_id,
+						//       tbl_komentar.code_user as fromnip,
+						//       guru.nama as nama_guru,
+						//       siswa.nama as nama_siswa,
+						//       kepala_sekolah.nama as nama_kepsek,
+						//       tbl_komentar.stamp as tanggal_kirim,
+						//       tbl_komentar.isi_komentar as pesan
+						//       FROM 
+						//       tbl_komentar 
+						//       LEFT JOIN ruang_pesan
+						//       ON tbl_komentar.room_id = ruang_pesan.room_key
+						//       LEFT JOIN guru
+						//       ON tbl_komentar.code_user = guru.nip
+						//       LEFT JOIN daily_siswa_approved
+						//       ON ruang_pesan.daily_id = daily_siswa_approved.id
+						//       LEFT JOIN akses_otm
+						//       ON tbl_komentar.code_user = akses_otm.nis_siswa
+						//       LEFT JOIN siswa
+						//       ON akses_otm.nis_siswa = siswa.nis
+						//       LEFT JOIN kepala_sekolah
+						//       ON tbl_komentar.code_user = kepala_sekolah.nip
+						//       WHERE
+						//       ruang_pesan.room_key LIKE '%$roomKey%'
+						//       ORDER BY tbl_komentar.id
+						//     ");
 
-				  			$sqlInsertChat  = mysqli_query($con, "
-								INSERT INTO tbl_komentar 
-								SET 
-								code_user 		= '$users', 
-								isi_komentar  	= '$isKomen', 
-								room_id   		= '$roomKey'
-							");
+						//     $countDataChat = mysqli_num_rows($getDataKomenOther);
 
-							if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
+						//     if ($tglOri < $tglSkrngAwal) {
+						//   		$sesiKomen = 0;
+						//   	} else {
+						//   		$sesiKomen = 1;
+						//   	}
 
-								// Kirim Notif Pesan baru group daily ke Kepsek Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
-								$curl = curl_init();
+						//   	$_SESSION['data'] = 'server_err';	
 
-					          	$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+			          	// } else {
 
-					          	// var_dump($tampungFormatNoHP);exit;
-					          	$destination_number 	= implode(',', $allDataNumber);
+			          	// 	$getDataKomenOther = mysqli_query($con, "
+						//       SELECT 
+						//       tbl_komentar.room_id as r_id,
+						//       tbl_komentar.code_user as fromnip,
+						//       guru.nama as nama_guru,
+						//       siswa.nama as nama_siswa,
+						//       kepala_sekolah.nama as nama_kepsek,
+						//       tbl_komentar.stamp as tanggal_kirim,
+						//       tbl_komentar.isi_komentar as pesan
+						//       FROM 
+						//       tbl_komentar 
+						//       LEFT JOIN ruang_pesan
+						//       ON tbl_komentar.room_id = ruang_pesan.room_key
+						//       LEFT JOIN guru
+						//       ON tbl_komentar.code_user = guru.nip
+						//       LEFT JOIN daily_siswa_approved
+						//       ON ruang_pesan.daily_id = daily_siswa_approved.id
+						//       LEFT JOIN akses_otm
+						//       ON tbl_komentar.code_user = akses_otm.nis_siswa
+						//       LEFT JOIN siswa
+						//       ON akses_otm.nis_siswa = siswa.nis
+						//       LEFT JOIN kepala_sekolah
+						//       ON tbl_komentar.code_user = kepala_sekolah.nip
+						//       WHERE
+						//       ruang_pesan.room_key LIKE '%$roomKey%'
+						//       ORDER BY tbl_komentar.id
+						//     ");
 
-					          	// Yang akan di kirimkan notif group, nomer Kepsek SD atau TK, guru yang membuat daily, dan semua OTM yang ada di anggota group
-					          	$target = $destination_number;
-					          	// echo $target;exit;
-					          	$pesan  = "*ADA PESAN BARU DARI DAILY GROUP _" . $getGroupName . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+						//     $countDataChat = mysqli_num_rows($getDataKomenOther);
 
-					          	curl_setopt_array($curl, array(
-						            CURLOPT_URL => $apiFonnte,
-						            CURLOPT_RETURNTRANSFER => true,
-						            CURLOPT_ENCODING => '',
-						            CURLOPT_MAXREDIRS => 10,
-						            CURLOPT_TIMEOUT => 0,
-						            CURLOPT_FOLLOWLOCATION => true,
-						            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-						            CURLOPT_CUSTOMREQUEST => 'POST',
-						            CURLOPT_POSTFIELDS => array(
-						              'target' => $target,
-						              'message' => $pesan
-						            ),
-						            CURLOPT_HTTPHEADER => array(
-						              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
-						            ),
-					          	));
+						//     if ($tglOri < $tglSkrngAwal) {
+						//   		$sesiKomen = 0;
+						//   	} else {
+						//   		$sesiKomen = 1;
+						//   	}
 
-					          	$response = curl_exec($curl);
+			          	// }
 
-					          	if ($response == false) {
+			          	// curl_close($curl);
 
-					          		// Jika Server Fonnte Bermasalah
-					          		$getDataKomenOther = mysqli_query($con, "
-								      SELECT 
-								      tbl_komentar.room_id as r_id,
-								      tbl_komentar.code_user as fromnip,
-								      guru.nama as nama_guru,
-								      siswa.nama as nama_siswa,
-								      kepala_sekolah.nama as nama_kepsek,
-								      tbl_komentar.stamp as tanggal_kirim,
-								      tbl_komentar.isi_komentar as pesan
-								      FROM 
-								      tbl_komentar 
-								      LEFT JOIN ruang_pesan
-								      ON tbl_komentar.room_id = ruang_pesan.room_key
-								      LEFT JOIN guru
-								      ON tbl_komentar.code_user = guru.nip
-								      LEFT JOIN daily_siswa_approved
-								      ON ruang_pesan.daily_id = daily_siswa_approved.id
-								      LEFT JOIN akses_otm
-								      ON tbl_komentar.code_user = akses_otm.nis_siswa
-								      LEFT JOIN siswa
-								      ON akses_otm.nis_siswa = siswa.nis
-								      LEFT JOIN kepala_sekolah
-								      ON tbl_komentar.code_user = kepala_sekolah.nip
-								      WHERE
-								      ruang_pesan.room_key LIKE '%$roomKey%'
-								      ORDER BY tbl_komentar.id
-								    ");
-
-								    $countDataChat = mysqli_num_rows($getDataKomenOther);
-
-								    if ($tglOri < $tglSkrngAwal) {
-								  		$sesiKomen = 0;
-								  	} else {
-								  		$sesiKomen = 1;
-								  	}
-
-								  	$_SESSION['data'] = 'server_err';	
-
-					          	} else {
-
-					          		$getDataKomenOther = mysqli_query($con, "
-								      SELECT 
-								      tbl_komentar.room_id as r_id,
-								      tbl_komentar.code_user as fromnip,
-								      guru.nama as nama_guru,
-								      siswa.nama as nama_siswa,
-								      kepala_sekolah.nama as nama_kepsek,
-								      tbl_komentar.stamp as tanggal_kirim,
-								      tbl_komentar.isi_komentar as pesan
-								      FROM 
-								      tbl_komentar 
-								      LEFT JOIN ruang_pesan
-								      ON tbl_komentar.room_id = ruang_pesan.room_key
-								      LEFT JOIN guru
-								      ON tbl_komentar.code_user = guru.nip
-								      LEFT JOIN daily_siswa_approved
-								      ON ruang_pesan.daily_id = daily_siswa_approved.id
-								      LEFT JOIN akses_otm
-								      ON tbl_komentar.code_user = akses_otm.nis_siswa
-								      LEFT JOIN siswa
-								      ON akses_otm.nis_siswa = siswa.nis
-								      LEFT JOIN kepala_sekolah
-								      ON tbl_komentar.code_user = kepala_sekolah.nip
-								      WHERE
-								      ruang_pesan.room_key LIKE '%$roomKey%'
-								      ORDER BY tbl_komentar.id
-								    ");
-
-								    $countDataChat = mysqli_num_rows($getDataKomenOther);
-
-								    if ($tglOri < $tglSkrngAwal) {
-								  		$sesiKomen = 0;
-								  	} else {
-								  		$sesiKomen = 1;
-								  	}
-
-					          	}
-
-					          	curl_close($curl);
-
-							} else {
-
-								$sesi = 0;
-				  				$_SESSION['data'] = 'nodata';
-
-							}
-
-				  		} else {
-
-				  			$getDataKomenOther = mysqli_query($con, "
-						      SELECT 
-						      tbl_komentar.room_id as r_id,
-						      tbl_komentar.code_user as fromnip,
-						      guru.nama as nama_guru,
-						      siswa.nama as nama_siswa,
-						      kepala_sekolah.nama as nama_kepsek,
-						      tbl_komentar.stamp as tanggal_kirim,
-						      tbl_komentar.isi_komentar as pesan
-						      FROM 
-						      tbl_komentar 
-						      LEFT JOIN ruang_pesan
-						      ON tbl_komentar.room_id = ruang_pesan.room_key
-						      LEFT JOIN guru
-						      ON tbl_komentar.code_user = guru.nip
-						      LEFT JOIN daily_siswa_approved
-						      ON ruang_pesan.daily_id = daily_siswa_approved.id
-						      LEFT JOIN akses_otm
-						      ON tbl_komentar.code_user = akses_otm.nis_siswa
-						      LEFT JOIN siswa
-						      ON akses_otm.nis_siswa = siswa.nis
-						      LEFT JOIN kepala_sekolah
-						      ON tbl_komentar.code_user = kepala_sekolah.nip
-						      WHERE
-						      ruang_pesan.room_key LIKE '%$roomKey%'
-						      ORDER BY tbl_komentar.id
-						    ");
-
-						    $countDataChat = mysqli_num_rows($getDataKomenOther);
-
-						    if ($tglOri < $tglSkrngAwal) {
-						  		$sesiKomen = 0;
-						  	} else {
-						  		$sesiKomen = 1;
-						  	}
-
-						  	if ($foundDataSD == 1) {
-						  		$nipKepsek = "2019032";
-						  	} else if ($foundDataPAUD == 1) {
-						  		$nipKepsek = "2019034";
-						  	}
-
-				  		}
-
-			  		} else {
-
-			  			$getDataKomenOther = mysqli_query($con, "
-					      	SELECT 
-					      		tbl_komentar.room_id as r_id,
-						      	tbl_komentar.code_user as fromnip,
-					      		guru.nama as nama_guru,
-						      	siswa.nama as nama_siswa,
-						      	kepala_sekolah.nama as nama_kepsek,
-						      	tbl_komentar.stamp as tanggal_kirim,
-						      	tbl_komentar.isi_komentar as pesan
-					      	FROM 
-					      	tbl_komentar 
-					      	LEFT JOIN ruang_pesan
-					      	ON tbl_komentar.room_id = ruang_pesan.room_key
-					      	LEFT JOIN guru
-					      	ON tbl_komentar.code_user = guru.nip
-					      	LEFT JOIN daily_siswa_approved
-					      	ON ruang_pesan.daily_id = daily_siswa_approved.id
-					      	LEFT JOIN akses_otm
-					      	ON tbl_komentar.code_user = akses_otm.nis_siswa
-					      	LEFT JOIN siswa
-					      	ON akses_otm.nis_siswa = siswa.nis
-					      	LEFT JOIN kepala_sekolah
-					      	ON tbl_komentar.code_user = kepala_sekolah.nip
-					      	WHERE
-					      		ruang_pesan.room_key LIKE '%$roomKey%'
-					      	ORDER BY tbl_komentar.id
+						$getDataKomenOther = mysqli_query($con, "
+					      SELECT 
+					      tbl_komentar.room_id as r_id,
+					      tbl_komentar.code_user as fromnip,
+					      guru.nama as nama_guru,
+					      siswa.nama as nama_siswa,
+					      kepala_sekolah.nama as nama_kepsek,
+					      tbl_komentar.stamp as tanggal_kirim,
+					      tbl_komentar.isi_komentar as pesan
+					      FROM 
+					      tbl_komentar 
+					      LEFT JOIN ruang_pesan
+					      ON tbl_komentar.room_id = ruang_pesan.room_key
+					      LEFT JOIN guru
+					      ON tbl_komentar.code_user = guru.nip
+					      LEFT JOIN daily_siswa_approved
+					      ON ruang_pesan.daily_id = daily_siswa_approved.id
+					      LEFT JOIN akses_otm
+					      ON tbl_komentar.code_user = akses_otm.nis_siswa
+					      LEFT JOIN siswa
+					      ON akses_otm.nis_siswa = siswa.nis
+					      LEFT JOIN kepala_sekolah
+					      ON tbl_komentar.code_user = kepala_sekolah.nip
+					      WHERE
+					      ruang_pesan.room_key LIKE '%$roomKey%'
+					      ORDER BY tbl_komentar.id
 					    ");
 
 					    $countDataChat = mysqli_num_rows($getDataKomenOther);
@@ -1266,45 +1221,41 @@
 					  		$sesiKomen = 1;
 					  	}
 
-					  	if ($foundDataSD == 1) {
-					  		$nipKepsek = "2019032";
-					  	} else if ($foundDataPAUD == 1) {
-					  		$nipKepsek = "2019034";
-					  	}
+					} else {
 
-					  	$_SESSION['data'] = 'invalid_number_teacher';
+						$sesi = 0;
+		  				$_SESSION['data'] = 'nodata';
 
-			  		}
+					}
 
-			  	} else {
+		  		} else {
 
-			  		// Jika Format Number Kepsek Salah
-			  		$getDataKomenOther = mysqli_query($con, "
-				      	SELECT 
-				      		tbl_komentar.room_id as r_id,
-					      	tbl_komentar.code_user as fromnip,
-				      		guru.nama as nama_guru,
-					      	siswa.nama as nama_siswa,
-					      	kepala_sekolah.nama as nama_kepsek,
-					      	tbl_komentar.stamp as tanggal_kirim,
-					      	tbl_komentar.isi_komentar as pesan
-				      	FROM 
-				      	tbl_komentar 
-				      	LEFT JOIN ruang_pesan
-				      	ON tbl_komentar.room_id = ruang_pesan.room_key
-				      	LEFT JOIN guru
-				      	ON tbl_komentar.code_user = guru.nip
-				      	LEFT JOIN daily_siswa_approved
-				      	ON ruang_pesan.daily_id = daily_siswa_approved.id
-				      	LEFT JOIN akses_otm
-				      	ON tbl_komentar.code_user = akses_otm.nis_siswa
-				      	LEFT JOIN siswa
-				      	ON akses_otm.nis_siswa = siswa.nis
-				      	LEFT JOIN kepala_sekolah
-				      	ON tbl_komentar.code_user = kepala_sekolah.nip
-				      	WHERE
-				      		ruang_pesan.room_key LIKE '%$roomKey%'
-				      	ORDER BY tbl_komentar.id
+		  			$getDataKomenOther = mysqli_query($con, "
+				      SELECT 
+				      tbl_komentar.room_id as r_id,
+				      tbl_komentar.code_user as fromnip,
+				      guru.nama as nama_guru,
+				      siswa.nama as nama_siswa,
+				      kepala_sekolah.nama as nama_kepsek,
+				      tbl_komentar.stamp as tanggal_kirim,
+				      tbl_komentar.isi_komentar as pesan
+				      FROM 
+				      tbl_komentar 
+				      LEFT JOIN ruang_pesan
+				      ON tbl_komentar.room_id = ruang_pesan.room_key
+				      LEFT JOIN guru
+				      ON tbl_komentar.code_user = guru.nip
+				      LEFT JOIN daily_siswa_approved
+				      ON ruang_pesan.daily_id = daily_siswa_approved.id
+				      LEFT JOIN akses_otm
+				      ON tbl_komentar.code_user = akses_otm.nis_siswa
+				      LEFT JOIN siswa
+				      ON akses_otm.nis_siswa = siswa.nis
+				      LEFT JOIN kepala_sekolah
+				      ON tbl_komentar.code_user = kepala_sekolah.nip
+				      WHERE
+				      ruang_pesan.room_key LIKE '%$roomKey%'
+				      ORDER BY tbl_komentar.id
 				    ");
 
 				    $countDataChat = mysqli_num_rows($getDataKomenOther);
@@ -1321,9 +1272,312 @@
 				  		$nipKepsek = "2019034";
 				  	}
 
-				  	$_SESSION['data'] = 'invalid_number_kepsek';
+		  		}
 
-			  	}
+			  	// Jika Format Number Phone Kepsek Benar
+			  	// if ($formatNumberHeadMaster == "08") {
+
+			  	// 	if ($formatNumberTeacher == "08") {
+
+			  	// 		// Gabungan Nomer HP / WA OTM, Kepsek, Dan Guru
+			  	// 		$allDataNumber[] 	= $isNumberHeadMaster;
+			  	// 		$allDataNumber[] 	= $isNumberTeacher;
+
+			  	// 		foreach ($getAllNumberOTM as $data) {
+				//           $tampungNoHP[] = $data['no_hp'];
+				//         }
+
+				//         for ($i=0; $i < count($tampungNoHP); $i++) { 
+
+				//           $noHp = substr($tampungNoHP[$i], 0, 2);
+
+				//           if ($noHp == '08') {
+				//             $change2 = substr($tampungNoHP[$i], 2, 12);
+				//             // $thisNumberPhoneOTM = "628" . $change2;
+				//             $allDataNumber[] = $tampungNoHP[$i];
+				//           }
+
+				//         }
+
+			  	// 		$destination_number 	= implode(',', $allDataNumber);
+
+			  	// 		if ($isKomen != "kosongx") {
+
+				//   			$sqlInsertChat  = mysqli_query($con, "
+				// 				INSERT INTO tbl_komentar 
+				// 				SET 
+				// 				code_user 		= '$users', 
+				// 				isi_komentar  	= '$isKomen', 
+				// 				room_id   		= '$roomKey'
+				// 			");
+
+				// 			if ($sqlInsertChat === TRUE) {	    // echo "Message saved successfully!";
+
+				// 				// Kirim Notif Pesan baru group daily ke Kepsek Yang dengan Nomer Fonnte OTM beserta Account token nya yang ada di menu setting di website fonnte
+				// 				$curl = curl_init();
+
+				// 	          	$tkn    = "ao8uKDiJPQ7sMKHxidDJFwKPhFu7bLFjahKdhbpV";
+
+				// 	          	// var_dump($tampungFormatNoHP);exit;
+				// 	          	$destination_number 	= implode(',', $allDataNumber);
+
+				// 	          	// Yang akan di kirimkan notif group, nomer Kepsek SD atau TK, guru yang membuat daily, dan semua OTM yang ada di anggota group
+				// 	          	$target = $destination_number;
+				// 	          	// echo $target;exit;
+				// 	          	$pesan  = "*ADA PESAN BARU DARI DAILY GROUP _" . $getGroupName . "_ YANG BELUM DI BACA !!!*" . "\n" . "\n" . $base . $roomKey. "\n" . "\n" . "_*AKHYAR INTERNATIONAL ISLAMIC SCHOOL*_";
+
+				// 	          	curl_setopt_array($curl, array(
+				// 		            CURLOPT_URL => $apiFonnte,
+				// 		            CURLOPT_RETURNTRANSFER => true,
+				// 		            CURLOPT_ENCODING => '',
+				// 		            CURLOPT_MAXREDIRS => 10,
+				// 		            CURLOPT_TIMEOUT => 0,
+				// 		            CURLOPT_FOLLOWLOCATION => true,
+				// 		            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				// 		            CURLOPT_CUSTOMREQUEST => 'POST',
+				// 		            CURLOPT_POSTFIELDS => array(
+				// 		              'target' => $target,
+				// 		              'message' => $pesan
+				// 		            ),
+				// 		            CURLOPT_HTTPHEADER => array(
+				// 		              'Authorization:a3vjVjL3S6xHpDg7NiaE' //change TOKEN to your actual token
+				// 		            ),
+				// 	          	));
+
+				// 	          	$response = curl_exec($curl);
+
+				// 	          	if ($response == false) {
+
+				// 	          		// Jika Server Fonnte Bermasalah
+				// 	          		$getDataKomenOther = mysqli_query($con, "
+				// 				      SELECT 
+				// 				      tbl_komentar.room_id as r_id,
+				// 				      tbl_komentar.code_user as fromnip,
+				// 				      guru.nama as nama_guru,
+				// 				      siswa.nama as nama_siswa,
+				// 				      kepala_sekolah.nama as nama_kepsek,
+				// 				      tbl_komentar.stamp as tanggal_kirim,
+				// 				      tbl_komentar.isi_komentar as pesan
+				// 				      FROM 
+				// 				      tbl_komentar 
+				// 				      LEFT JOIN ruang_pesan
+				// 				      ON tbl_komentar.room_id = ruang_pesan.room_key
+				// 				      LEFT JOIN guru
+				// 				      ON tbl_komentar.code_user = guru.nip
+				// 				      LEFT JOIN daily_siswa_approved
+				// 				      ON ruang_pesan.daily_id = daily_siswa_approved.id
+				// 				      LEFT JOIN akses_otm
+				// 				      ON tbl_komentar.code_user = akses_otm.nis_siswa
+				// 				      LEFT JOIN siswa
+				// 				      ON akses_otm.nis_siswa = siswa.nis
+				// 				      LEFT JOIN kepala_sekolah
+				// 				      ON tbl_komentar.code_user = kepala_sekolah.nip
+				// 				      WHERE
+				// 				      ruang_pesan.room_key LIKE '%$roomKey%'
+				// 				      ORDER BY tbl_komentar.id
+				// 				    ");
+
+				// 				    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				// 				    if ($tglOri < $tglSkrngAwal) {
+				// 				  		$sesiKomen = 0;
+				// 				  	} else {
+				// 				  		$sesiKomen = 1;
+				// 				  	}
+
+				// 				  	$_SESSION['data'] = 'server_err';	
+
+				// 	          	} else {
+
+				// 	          		$getDataKomenOther = mysqli_query($con, "
+				// 				      SELECT 
+				// 				      tbl_komentar.room_id as r_id,
+				// 				      tbl_komentar.code_user as fromnip,
+				// 				      guru.nama as nama_guru,
+				// 				      siswa.nama as nama_siswa,
+				// 				      kepala_sekolah.nama as nama_kepsek,
+				// 				      tbl_komentar.stamp as tanggal_kirim,
+				// 				      tbl_komentar.isi_komentar as pesan
+				// 				      FROM 
+				// 				      tbl_komentar 
+				// 				      LEFT JOIN ruang_pesan
+				// 				      ON tbl_komentar.room_id = ruang_pesan.room_key
+				// 				      LEFT JOIN guru
+				// 				      ON tbl_komentar.code_user = guru.nip
+				// 				      LEFT JOIN daily_siswa_approved
+				// 				      ON ruang_pesan.daily_id = daily_siswa_approved.id
+				// 				      LEFT JOIN akses_otm
+				// 				      ON tbl_komentar.code_user = akses_otm.nis_siswa
+				// 				      LEFT JOIN siswa
+				// 				      ON akses_otm.nis_siswa = siswa.nis
+				// 				      LEFT JOIN kepala_sekolah
+				// 				      ON tbl_komentar.code_user = kepala_sekolah.nip
+				// 				      WHERE
+				// 				      ruang_pesan.room_key LIKE '%$roomKey%'
+				// 				      ORDER BY tbl_komentar.id
+				// 				    ");
+
+				// 				    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				// 				    if ($tglOri < $tglSkrngAwal) {
+				// 				  		$sesiKomen = 0;
+				// 				  	} else {
+				// 				  		$sesiKomen = 1;
+				// 				  	}
+
+				// 	          	}
+
+				// 	          	curl_close($curl);
+
+				// 			} else {
+
+				// 				$sesi = 0;
+				//   				$_SESSION['data'] = 'nodata';
+
+				// 			}
+
+				//   		} else {
+
+				//   			$getDataKomenOther = mysqli_query($con, "
+				// 		      SELECT 
+				// 		      tbl_komentar.room_id as r_id,
+				// 		      tbl_komentar.code_user as fromnip,
+				// 		      guru.nama as nama_guru,
+				// 		      siswa.nama as nama_siswa,
+				// 		      kepala_sekolah.nama as nama_kepsek,
+				// 		      tbl_komentar.stamp as tanggal_kirim,
+				// 		      tbl_komentar.isi_komentar as pesan
+				// 		      FROM 
+				// 		      tbl_komentar 
+				// 		      LEFT JOIN ruang_pesan
+				// 		      ON tbl_komentar.room_id = ruang_pesan.room_key
+				// 		      LEFT JOIN guru
+				// 		      ON tbl_komentar.code_user = guru.nip
+				// 		      LEFT JOIN daily_siswa_approved
+				// 		      ON ruang_pesan.daily_id = daily_siswa_approved.id
+				// 		      LEFT JOIN akses_otm
+				// 		      ON tbl_komentar.code_user = akses_otm.nis_siswa
+				// 		      LEFT JOIN siswa
+				// 		      ON akses_otm.nis_siswa = siswa.nis
+				// 		      LEFT JOIN kepala_sekolah
+				// 		      ON tbl_komentar.code_user = kepala_sekolah.nip
+				// 		      WHERE
+				// 		      ruang_pesan.room_key LIKE '%$roomKey%'
+				// 		      ORDER BY tbl_komentar.id
+				// 		    ");
+
+				// 		    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				// 		    if ($tglOri < $tglSkrngAwal) {
+				// 		  		$sesiKomen = 0;
+				// 		  	} else {
+				// 		  		$sesiKomen = 1;
+				// 		  	}
+
+				// 		  	if ($foundDataSD == 1) {
+				// 		  		$nipKepsek = "2019032";
+				// 		  	} else if ($foundDataPAUD == 1) {
+				// 		  		$nipKepsek = "2019034";
+				// 		  	}
+
+				//   		}
+
+			  	// 	} else {
+
+			  	// 		$getDataKomenOther = mysqli_query($con, "
+				// 	      	SELECT 
+				// 	      		tbl_komentar.room_id as r_id,
+				// 		      	tbl_komentar.code_user as fromnip,
+				// 	      		guru.nama as nama_guru,
+				// 		      	siswa.nama as nama_siswa,
+				// 		      	kepala_sekolah.nama as nama_kepsek,
+				// 		      	tbl_komentar.stamp as tanggal_kirim,
+				// 		      	tbl_komentar.isi_komentar as pesan
+				// 	      	FROM 
+				// 	      	tbl_komentar 
+				// 	      	LEFT JOIN ruang_pesan
+				// 	      	ON tbl_komentar.room_id = ruang_pesan.room_key
+				// 	      	LEFT JOIN guru
+				// 	      	ON tbl_komentar.code_user = guru.nip
+				// 	      	LEFT JOIN daily_siswa_approved
+				// 	      	ON ruang_pesan.daily_id = daily_siswa_approved.id
+				// 	      	LEFT JOIN akses_otm
+				// 	      	ON tbl_komentar.code_user = akses_otm.nis_siswa
+				// 	      	LEFT JOIN siswa
+				// 	      	ON akses_otm.nis_siswa = siswa.nis
+				// 	      	LEFT JOIN kepala_sekolah
+				// 	      	ON tbl_komentar.code_user = kepala_sekolah.nip
+				// 	      	WHERE
+				// 	      		ruang_pesan.room_key LIKE '%$roomKey%'
+				// 	      	ORDER BY tbl_komentar.id
+				// 	    ");
+
+				// 	    $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				// 	    if ($tglOri < $tglSkrngAwal) {
+				// 	  		$sesiKomen = 0;
+				// 	  	} else {
+				// 	  		$sesiKomen = 1;
+				// 	  	}
+
+				// 	  	if ($foundDataSD == 1) {
+				// 	  		$nipKepsek = "2019032";
+				// 	  	} else if ($foundDataPAUD == 1) {
+				// 	  		$nipKepsek = "2019034";
+				// 	  	}
+
+				// 	  	$_SESSION['data'] = 'invalid_number_teacher';
+
+			  	// 	}
+
+			  	// } else {
+
+			  	// 	// Jika Format Number Kepsek Salah
+			  	// 	$getDataKomenOther = mysqli_query($con, "
+				//       	SELECT 
+				//       		tbl_komentar.room_id as r_id,
+				// 	      	tbl_komentar.code_user as fromnip,
+				//       		guru.nama as nama_guru,
+				// 	      	siswa.nama as nama_siswa,
+				// 	      	kepala_sekolah.nama as nama_kepsek,
+				// 	      	tbl_komentar.stamp as tanggal_kirim,
+				// 	      	tbl_komentar.isi_komentar as pesan
+				//       	FROM 
+				//       	tbl_komentar 
+				//       	LEFT JOIN ruang_pesan
+				//       	ON tbl_komentar.room_id = ruang_pesan.room_key
+				//       	LEFT JOIN guru
+				//       	ON tbl_komentar.code_user = guru.nip
+				//       	LEFT JOIN daily_siswa_approved
+				//       	ON ruang_pesan.daily_id = daily_siswa_approved.id
+				//       	LEFT JOIN akses_otm
+				//       	ON tbl_komentar.code_user = akses_otm.nis_siswa
+				//       	LEFT JOIN siswa
+				//       	ON akses_otm.nis_siswa = siswa.nis
+				//       	LEFT JOIN kepala_sekolah
+				//       	ON tbl_komentar.code_user = kepala_sekolah.nip
+				//       	WHERE
+				//       		ruang_pesan.room_key LIKE '%$roomKey%'
+				//       	ORDER BY tbl_komentar.id
+				//     ");
+
+				//     $countDataChat = mysqli_num_rows($getDataKomenOther);
+
+				//     if ($tglOri < $tglSkrngAwal) {
+				//   		$sesiKomen = 0;
+				//   	} else {
+				//   		$sesiKomen = 1;
+				//   	}
+
+				//   	if ($foundDataSD == 1) {
+				//   		$nipKepsek = "2019032";
+				//   	} else if ($foundDataPAUD == 1) {
+				//   		$nipKepsek = "2019034";
+				//   	}
+
+				//   	$_SESSION['data'] = 'invalid_number_kepsek';
+
+			  	// }
 
 	  		} 
 
@@ -1406,10 +1660,17 @@
         <?php } ?>
 
         <?php if(isset($_SESSION['data']) && $_SESSION['data'] == 'server_err'){?>
-      		<div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> Maaf saat ini tidak bisa mengirim notif via Whatsapp ! Karena Server Sedang dalam Gangguan ! </span> 
+        	<?php 
+             	unset($_SESSION['data']);
+             	$fonnte_err = 1;
+         	?>
+        <?php } ?>
+
+        <?php if(isset($_SESSION['fail_comment']) && $_SESSION['fail_comment'] == 'comment_err'){?>
+      		<div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> Gagal Mengirim Komentar ! </span> 
              	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
              	<?php 
-	             	unset($_SESSION['data']);
+	             	unset($_SESSION['fail_comment']);
              	?>
           	</div>
         <?php } ?>
@@ -1965,6 +2226,7 @@
 	let nip_guru    = `<?= $nipGuru; ?>`
 	let komenSes 	= `<?= $sesiKomen; ?>`
 	let emptyKomen  = `<?= $empty; ?>`
+	let fonnteError = `<?= $fonnte_err; ?>`
 
     function firstLoad(rmId) {
 	    $.ajax({
@@ -2069,6 +2331,10 @@
 	}
 
 	$(document).ready( function () {
+
+		if (fonnteError == 1) {
+			console.log("Server Fonnte Sedang Bermasalah !")
+		}
 
 		if(emptyKomen == 'empty_comment') {
 

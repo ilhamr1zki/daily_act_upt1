@@ -6,8 +6,8 @@
 
 	if (isset($_POST['is_out'])) {
 		if ($_POST['is_out'] == true) {
-			session_destroy();
-			unset($_SESSION['expire']);
+			$_SESSION['expire'] = 0;
+			// unset($_SESSION['expire']);
 			$arr['is_val'] = true;
 		}
 

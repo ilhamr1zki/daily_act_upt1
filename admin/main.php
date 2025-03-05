@@ -927,6 +927,10 @@ oncontextmenu="return false">
             <i class="glyphicon glyphicon-cog"></i> <span id="titleList2"> MAINTENANCE </span>
           </a>
           <ul class="treeview-menu">
+
+            <li>
+              <a href="<?= $basead; ?>changepassword" id="changepassword"><i class="glyphicon glyphicon-wrench text-primary" id="create"></i> <span id="isiList4"> Change Password </span> </a>
+            </li>
             
             <li>
               <a href="<?= $basead; ?>tahunajaran" id="tahunajaran"><i class="glyphicon glyphicon-text-width text-primary" id="create"></i> <span id="isiList3"> Tahun Ajaran </span> </a>
@@ -1043,6 +1047,10 @@ oncontextmenu="return false">
     }
 
     #region form maintenance
+    elseif($act == 'changepassword') {
+      require 'view/maintenance/password/changepassword.php';
+    }
+
     elseif ($act == 'tahunajaran') {
       require 'view/maintenance/tahun_ajaran/index.php';
     } 

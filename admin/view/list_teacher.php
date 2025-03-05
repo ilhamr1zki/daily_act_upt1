@@ -427,12 +427,14 @@
       $nama     = mysqli_real_escape_string($con, strtoupper(htmlspecialchars($_POST['nama_guru'])));
       $nip      = htmlspecialchars($_POST['nip']);
       $jabatan  = mysqli_real_escape_string($con, htmlspecialchars($_POST['jabatan']));
+      $nohpwa   = htmlspecialchars($_POST['nohpwa']);
 
       $queryUpdateGuru = mysqli_query($con, "
         UPDATE guru 
         SET
         nama        = '$nama',
-        c_jabatan   = '$jabatan'
+        c_jabatan   = '$jabatan',
+        no_hp       = '$nohpwa'
         WHERE nip = '$nip'
       ");
 
@@ -542,8 +544,13 @@
 
   <div class="box-body table-responsive">
 	
-	<a href="<?= $basead; ?>addteacher" class="btn btn-sm btn-warning"> TAMBAH GURU </a>
-	<br><br>
+  <div class="isflex" style="display: flex; gap: 10px; margin-bottom: 30px;">
+
+  	<a href="<?= $basead; ?>ekspordataguru" class="btn btn-sm btn-success"> <i class="glyphicon glyphicon-export"></i> EKSPOR AKSES LOGIN GURU </a>
+
+    <a href="<?= $basead; ?>addteacher" class="btn btn-sm btn-warning"> TAMBAH GURU </a>
+
+  </div>
 
     <table id="hightlight_list_siswa" style="text-align: center;" class="table table-bordered table-hover">
 
@@ -571,7 +578,7 @@
 
             <td style="text-align: center;"> 
 
-              <button class="btn btn-sm btn-primary" onclick="editModal(`<?= $data['nama']; ?>`, `<?= $data['nip']; ?>`, `<?= $data['c_jabatan']; ?>`)"> EDIT </button> | 
+              <button class="btn btn-sm btn-primary" onclick="editModal(`<?= $data['nama']; ?>`, `<?= $data['nip']; ?>`, `<?= $data['c_jabatan']; ?>`, `<?= $data['no_hp']; ?>`)"> EDIT </button> | 
               <button class="btn btn-sm btn-danger" data-target="#hapus<?= $data['nip']; ?>" data-toggle="modal"> DELETE </button>
 
             </td>
@@ -622,7 +629,7 @@
       <form method="post">
         <div class="modal-body">
         	<div class="row">
-        		<div class="col-sm-2">
+        		<div class="col-sm-3">
           		<label> NIP </label>
         		</div>
           	<div class="col-sm-4" style="top: -4px;">
@@ -631,20 +638,29 @@
         	</div>
           <br>
           <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-3">
               <label> NAMA </label>
             </div>
-            <div class="col-sm-10" style="top: -4px;">
+            <div class="col-sm-9" style="top: -4px;">
               <input type="text" name="nama_guru" id="nama_guru" class="form-control" value="ajdnajsdn">
             </div>
           </div>
           <br>
           <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-3">
               <label> JABATAN </label>
             </div>
-            <div class="col-sm-10" style="top: -4px;">
+            <div class="col-sm-9" style="top: -4px;">
               <input type="text" name="jabatan" id="jabatan" class="form-control" value="ajdnajsdn">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-3">
+              <label> NO HP/WA </label>
+            </div>
+            <div class="col-sm-9" style="top: -4px;">
+              <input type="text" name="nohpwa" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="13" id="nohpwa" class="form-control" value="">
             </div>
           </div>
         </div>
@@ -698,11 +714,12 @@
     $('#nm_walas').val(localStorage.getItem('namawalas'));
   }
 
-  function editModal(nama, nip, jabat) {
+  function editModal(nama, nip, jabat, nohp) {
 
     $("#nip").val(nip);
     $("#nama_guru").val(nama);
     $("#jabatan").val(jabat);
+    $("#nohpwa").val(nohp);
     $("#walas").val(nip.replace(",  ", ", "));
     $('#modalsiswa').modal("show");
 
@@ -710,6 +727,14 @@
 
   function closeModal() {
     $("#modalsiswa").modal('hide');
+  }
+
+  function onlyNumberKey(evt) {
+    // Only ASCII character in that range allowed
+    let ASCIICode = (evt.which) ? evt.which : evt.keyCode
+    if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+        return false;
+    return true;
   }
 
 </script>
