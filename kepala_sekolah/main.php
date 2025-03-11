@@ -2009,38 +2009,40 @@ oncontextmenu="return false">
   let createDailys  = `<?= $createDaily; ?>`
 
   $("#sg_out").click(function(){
+
     $.ajax({
-      url   : `<?= $basekepsek; ?>logout`,
-      type  : 'POST',
-      data  : {
-        is_out : true,
-      },
-      success:function(data){
-        
-        let callBack = JSON.parse(data).is_val
-        if (callBack == true) {
-          localStorage.removeItem("showpopup");
+      url : `<?= $basekepsek; ?>a-control/<?= md5('logout_act1_headmaster'); ?>/access`,
+      type : 'GET',
+      success:function(data) {
+        let response_data = JSON.parse(data)[0];
+        if (response_data == "is_logout") {
           Swal.fire({
             title: 'LOG OUT',
             icon: "success"
           });
 
-          setTimeout(isLogOut, 1500);
-          
-        } else if(callBack == false) {
-
-          Swal.fire({
-            title: 'LOG OUT',
-            icon: "warning"
-          });
-
+          showPopUpLogOut();
         }
-
       }
-    })
+    });
+
   })
 
   function isLogOut() {
+    document.location.href = `<?= $base; ?>`
+  }
+
+  function showPopUpLogOut() {
+    Swal.fire({
+      title: 'LOG OUT',
+      icon: "warning"
+    });
+
+    setTimeout(redirectPage, 1200);
+    
+  }
+
+  function redirectPage() {
     document.location.href = `<?= $base; ?>`
   }
 

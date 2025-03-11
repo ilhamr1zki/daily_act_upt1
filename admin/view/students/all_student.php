@@ -48,17 +48,17 @@
 
     $queryAllDataStudents = mysqli_query($con, "
       SELECT 
-      siswa.nis as nis,
-      siswa.nama as nama,
-      siswa.nisn as nisn,
-      siswa.c_kelas as c_kelas,
-      siswa.group_kelas as group_kelas,
+      siswa_edit1.nis as nis,
+      siswa_edit1.nama as nama,
+      siswa_edit1.nisn as nisn,
+      siswa_edit1.c_kelas as c_kelas,
+      siswa_edit1.group_kelas as group_kelas,
       group_kelas.nama_group_kelas as nama_group
       FROM
-      siswa
+      siswa_edit1
       LEFT JOIN group_kelas
-      ON siswa.group_kelas = group_kelas.id
-      WHERE c_kelas <> 'TKBLULUS'
+      ON siswa_edit1.group_kelas = group_kelas.id
+      WHERE siswa_edit1.c_kelas <> 'TKBLULUS'
       ORDER BY nama ASC
     ");
 

@@ -1994,6 +1994,26 @@ oncontextmenu="return false">
     // alert(role)
     let showNotif         = document.getElementById('notifMasuk')
 
+    $("#sg_out").click(function(){
+
+      $.ajax({
+        url : `<?= $basegu; ?>a-control/<?= md5('logout_act1_guru'); ?>/access`,
+        type : 'GET',
+        success:function(data) {
+          let response_data = JSON.parse(data)[0];
+          if (response_data == "is_logout") {
+            Swal.fire({
+              title: 'LOG OUT',
+              icon: "success"
+            });
+
+            showPopUpLogOut();
+          }
+        }
+      });
+
+    })
+
     const loadData = () => {
 
       setInterval(function(){
@@ -2263,39 +2283,21 @@ oncontextmenu="return false">
 
     loadData();
 
-    $("#sg_out").click(function(){
-      $.ajax({
-        url   : `<?= $basegu; ?>logout`,
-        type  : 'POST',
-        data  : {
-          is_out : true,
-        },
-        success:function(data){
-          
-          let callBack = JSON.parse(data).is_val
-          if (callBack == true) {
-            localStorage.removeItem("showpopup");
-            Swal.fire({
-              title: 'LOG OUT',
-              icon: "success"
-            });
-
-            setTimeout(isLogOut, 1500);
-            
-          } else if(callBack == false) {
-
-            Swal.fire({
-              title: 'LOG OUT',
-              icon: "warning"
-            });
-
-          }
-
-        }
-      })
-    })
-
   })
+
+  function showPopUpLogOut() {
+    Swal.fire({
+      title: 'LOG OUT',
+      icon: "warning"
+    });
+
+    setTimeout(redirectPage, 1200);
+    
+  }
+
+  function redirectPage() {
+    document.location.href = `<?= $base; ?>`
+  }
 
   function isLogOut() {
     document.location.href = `<?= $base; ?>`

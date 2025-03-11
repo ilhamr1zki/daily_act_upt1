@@ -290,9 +290,10 @@
                       $smk=mysqli_query($con,"SELECT * FROM siswa where c_kelas='$_GET[q]' order by nama asc ");
                     } else {
 
-                        if ($jenjangPendidikan == 'SD') {
+                        if ($jenjangPendidikan == 'SD') { 
 
-                          $queryGetAllDataSiswa      = "SELECT * FROM siswa WHERE c_kelas LIKE '%SD%' ORDER BY c_kelas asc ";
+                          // $queryGetAllDataSiswa      = "SELECT * FROM siswa WHERE c_kelas LIKE '%SD%' ORDER BY c_kelas asc ";
+                          $queryGetAllDataSiswa      = "SELECT * FROM siswa WHERE group_kelas <> '' ORDER BY c_kelas asc";
                           $execqueryGetAllDataSiswa  = mysqli_query($con, $queryGetAllDataSiswa);
 
                         } else if ($jenjangPendidikan == "PAUD") {

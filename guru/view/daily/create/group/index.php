@@ -119,6 +119,14 @@
         </div>
       <?php } ?>
 
+      <?php if(isset($_SESSION['create_room_group']) && $_SESSION['create_room_group'] == 'gagal'){?>
+        <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> GAGAL MEMBUAT DAILY </span>
+           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+           <?php 
+              unset($_SESSION['create_room_group']);
+          ?>
+        </div>
+      <?php } ?>
 
       <?php if(isset($_SESSION['main_daily_empty']) && $_SESSION['main_daily_empty'] == 'gagal'){?>
         <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> HARAP TULIS DAILY ! </span>

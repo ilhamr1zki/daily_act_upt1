@@ -1497,6 +1497,24 @@ oncontextmenu="return false">
 
     });
 
+    $("#sg_out").click(function(){
+      $.ajax({
+        url : `<?= $basewam; ?>a-control/<?= md5('logout_act1_parent'); ?>/access`,
+        type : 'GET',
+        success:function(data) {
+          let response_data = JSON.parse(data)[0];
+          if (response_data == "is_logout") {
+            Swal.fire({
+              title: 'LOG OUT',
+              icon: "success"
+            });
+
+            showPopUpLogOut();
+          }
+        }
+      });
+    })
+
     const loadData = () => {
 
       setInterval(function(){
@@ -1782,41 +1800,23 @@ oncontextmenu="return false">
 
     loadData()
 
-    $("#sg_out").click(function(){
-      $.ajax({
-        url   : `<?= $basewam; ?>logout`,
-        type  : 'POST',
-        data  : {
-          is_out : true,
-        },
-        success:function(data){
-          
-          let callBack = JSON.parse(data).is_val
-          if (callBack == true) {
-            localStorage.removeItem("jumlah_byr");
-            Swal.fire({
-              title: 'LOG OUT',
-              icon: "success"
-            });
-
-            setTimeout(isLogOut, 1500);
-            
-          } else if(callBack == false) {
-
-            Swal.fire({
-              title: 'LOG OUT',
-              icon: "warning"
-            });
-
-          }
-
-        }
-      })
-    })
-
   })
 
   function isLogOut() {
+    document.location.href = `<?= $base; ?>`
+  }
+
+  function showPopUpLogOut() {
+    Swal.fire({
+      title: 'LOG OUT',
+      icon: "warning"
+    });
+
+    setTimeout(redirectPage, 1200);
+    
+  }
+
+  function redirectPage() {
     document.location.href = `<?= $base; ?>`
   }
 

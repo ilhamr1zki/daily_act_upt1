@@ -23,6 +23,8 @@
 
   $createDaily  = 0; 
 
+  // echo $_SESSION['key_admin'];exit;
+
   $check = mysqli_num_rows(mysqli_query($con, "SELECT * FROM tahun_ajaran WHERE status = 'aktif' AND c_role = '$_SESSION[key_admin]' "));
 
   if ($check != 0) {
@@ -842,6 +844,7 @@ oncontextmenu="return false">
                 </div>
                 <div class="pull-right">
                   <button onclick="logout()" class="btn btn-default btn-flat"> Sign Out </button>
+                  <!-- <a href="<?= $basead; ?>a-control/<?php echo md5('logout_act1'); ?>/access" class="btn btn-default btn-flat"><i class="glyphicon glyphicon-off"></i> Sign out</a> -->
                 </div>
               </li>
             </ul>
@@ -1221,7 +1224,16 @@ oncontextmenu="return false">
 
   function logout() {
 
-    setTimeout(showPopUpLogOut, 1000);
+    $.ajax({
+      url : `<?= $basead; ?>a-control/<?= md5('logout_act1'); ?>/access`,
+      type : 'GET',
+      success:function(data) {
+        let response_data = JSON.parse(data)[0];
+        if (response_data == "is_logout") {
+          showPopUpLogOut();
+        }
+      }
+    });
 
   }
 
@@ -1231,30 +1243,13 @@ oncontextmenu="return false">
       icon: "warning"
     });
 
-    setTimeout(clearSession, 1200);
+    setTimeout(redirectPage, 1200);
     
   }
 
-  function clearSession() {
-    $.ajax({
-      url : basead,
-      type : 'POST',
-      data : {
-        is_out : true
-      },
-      success:function(data) {
-        let checkDataOut = JSON.parse(data).clear
-        if(checkDataOut == true) {
-          document.location.href = `<?= $base; ?>login`
-        } else {
-          document.location.href = `<?= $basead; ?>`
-        }
-      }
-
-    })
+  function redirectPage() {
+    document.location.href = `<?= $base; ?>`
   }
-
-  
 
   $(function () {
 
