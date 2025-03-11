@@ -296,7 +296,7 @@
             </div>
               <div class="col-sm-2">
                   <div class="form-group">
-                    <label>NISN<sup style="color: red;">*</sup> </label>
+                    <label>NISN<sup style="color: red;">*</sup>(Jika Ada) </label>
                     <input type="text" placeholder="Hanya Boleh Angka" id="inp_nisn" name="nisn" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="10" class="form-control">
                   </div>
               </div>
@@ -396,16 +396,16 @@
                     <input type="text" class="form-control" id="_alamatrumah" name="_alamatrumah">
                 </div>
             </div>
-            <div class="col-sm-2">
+            <!-- <div class="col-sm-2">
                   <div class="form-group">
                     <label>Telp.</label>
                     <input type="text" class="form-control" id="_telp" name="_telp" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="12">
                 </div>
-            </div>
+            </div> -->
             <div class="col-sm-2">
                   <div class="form-group">
                     <label>HP</label>
-                    <input type="text" class="form-control" id="_hp" name="_hp" pattern="[0-9]*" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="12">
+                    <input type="text" class="form-control" id="_hp" name="_hp" pattern="[0-9]*" placeholder="Ex : 08xx xxxx xxxx" inputmode="numeric" onkeypress="return onlyNumberKey(event)" maxlength="12">
                 </div>
             </div>
             <div class="col-sm-4">

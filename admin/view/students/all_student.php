@@ -48,17 +48,17 @@
 
     $queryAllDataStudents = mysqli_query($con, "
       SELECT 
-      siswa_edit1.nis as nis,
-      siswa_edit1.nama as nama,
-      siswa_edit1.nisn as nisn,
-      siswa_edit1.c_kelas as c_kelas,
-      siswa_edit1.group_kelas as group_kelas,
+      siswa.nis as nis,
+      siswa.nama as nama,
+      siswa.nisn as nisn,
+      siswa.c_kelas as c_kelas,
+      siswa.group_kelas as group_kelas,
       group_kelas.nama_group_kelas as nama_group
       FROM
-      siswa_edit1
+      siswa
       LEFT JOIN group_kelas
-      ON siswa_edit1.group_kelas = group_kelas.id
-      WHERE siswa_edit1.c_kelas <> 'TKBLULUS'
+      ON siswa.group_kelas = group_kelas.id
+      WHERE siswa.c_kelas <> 'TKBLULUS'
       ORDER BY nama ASC
     ");
 
@@ -301,7 +301,11 @@
           DELETE FROM siswa WHERE nis = '$nis_std' 
         ");
 
-        if ($queryExecDel) {
+        $queryDelAksesOTM = mysqli_query($con, "
+          DELETE FROM akses_otm WHERE nis_siswa = '$nis_std'
+        ");
+
+        if ($queryExecDel && $queryDelAksesOTM) {
 
           $queryAllDataStudents = mysqli_query($con, "
             SELECT 
@@ -320,6 +324,26 @@
 
           $_SESSION['data_siswa_hapus'] = "berhasil";
           $siswaHapus = $getNamaSiswa;
+
+        } else {
+
+          $queryAllDataStudents = mysqli_query($con, "
+            SELECT 
+            siswa.nis as nis,
+            siswa.nama as nama,
+            siswa.c_kelas as c_kelas,
+            siswa.group_kelas as group_kelas,
+            group_kelas.nama_group_kelas as nama_group
+            FROM
+            siswa
+            LEFT JOIN group_kelas
+            ON siswa.group_kelas = group_kelas.id
+            WHERE c_kelas <> 'TKBLULUS'
+            ORDER BY nama ASC
+          ");
+
+          $_SESSION['data_siswa_hapus'] = "gagal";
+
         }
 
       }
@@ -411,7 +435,16 @@
 <?php } ?>
 
 <?php if(isset($_SESSION['data_siswa_hapus']) && $_SESSION['data_siswa_hapus'] == 'berhasil'){?>
-  <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: white;"> DATA SISWA <?= strtoupper($siswaHapus); ?> BERHASIL DI HAPUS ! </span>
+  <div style="display: none;" class="alert alert-warning alert-dismissable"> <span style="color: white;"> DATA SISWA <?= strtoupper($siswaHapus); ?> BERHASIL DI HAPUS ! </span>
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <?php 
+        unset($_SESSION['data_siswa_hapus']);
+    ?>
+  </div>
+<?php } ?>
+
+<?php if(isset($_SESSION['data_siswa_hapus']) && $_SESSION['data_siswa_hapus'] == 'gagal'){?>
+  <div style="display: none;" class="alert alert-danger alert-dismissable"> <span style="color: yellow;"> DATA SISWA GAGAL DI HAPUS ! </span>
      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
      <?php 
         unset($_SESSION['data_siswa_hapus']);
@@ -486,10 +519,10 @@
               <div class="modal-content">
                 <div class="modal-header bg-red">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="myModalLabel"> <i class="glyphicon glyphicon-trash"></i> Konfirmasi Hapus Data Guru </h4>
+                  <h4 class="modal-title" id="myModalLabel"> <i class="glyphicon glyphicon-trash"></i> Konfirmasi Hapus Data Siswa </h4>
                 </div>
                 <div class="modal-body">
-                  <h4> <b> Anda Yakin Ingin Menghapus Data Guru <?= strtoupper($data['nama']); ?> ? </b> </h4>
+                  <h4> <b> Anda Yakin Ingin Menghapus Data Siswa <?= strtoupper($data['nama']); ?> ? </b> </h4>
                   <p>Jika Anda Menghapus Data Ini, Akan Berpengaruh Pada : </p>
                   <ul>
                     <li><b> Data Group Kelas Terhapus </b></li>

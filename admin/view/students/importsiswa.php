@@ -6,7 +6,7 @@
 
     $timeIsOut 		= 0;
 
-    $dataSiswa   		= mysqli_query($con, "SELECT * FROM siswa_edit1");
+    $dataSiswa   		= mysqli_query($con, "SELECT * FROM siswa");
     $countDataSiswa  	= mysqli_num_rows($dataSiswa);
     $c_klp 				= "";
     $dataKsg   			= [];
@@ -215,7 +215,7 @@
 
 						if ($countDataSiswa != 0) {
 
-							$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit1 WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+							$queryFindData = mysqli_query($con, "SELECT * FROM siswa WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
 							$cariData = mysqli_fetch_array($queryFindData)['nama'];
 							$sameData = mysqli_num_rows($queryFindData);
 							// echo $jenjangSekolah . " " . $Row[1];exit;
@@ -255,7 +255,7 @@
 
 						      	// echo $getFirstWord . " & " . $kode2;exit;
 
-						      	$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoranmas_ujicoba where kode='$kode2' limit 1 "));
+						      	$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoranmas where kode='$kode2' limit 1 "));
 						      	$nomorurut = $seqc_sis['nourut'] ?? 0;
 
 						      	$invID = str_pad($nomorurut, 4, '0', STR_PAD_LEFT);
@@ -263,7 +263,7 @@
 						      	$kodseq = $kode."".$invID;
 
 						      	$queryInsertSiswa = mysqli_query($con, "
-							        INSERT INTO siswa_edit1
+							        INSERT INTO siswa
 							        set 
 							        c_siswa         = '$kodseq', 
 							        c_kelas         = '$jenjangSekolah',
@@ -304,8 +304,8 @@
 						      	");
 
 						      	if ($queryInsertSiswa && $queryInsertAksesOTM) {
-						      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
-							        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut' where kode='$kode2' ");
+						      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa");
+							        $penomoran=mysqli_query($con,"UPDATE penomoranmas set nourut='$nomorurut' where kode='$kode2' ");
 							        $_SESSION['import_success'] = 'berhasil';
 							        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
 							        $dataKsg[] 	= $nama_ayah;
@@ -314,7 +314,7 @@
 						      	} else {
 
 							        $_SESSION['import_success'] = 'gagal';
-							        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
+							        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa");
 
 						      	}
 
@@ -326,7 +326,7 @@
 
 						} else if ($countDataSiswa == 0) {
 
-							$queryFindData = mysqli_query($con, "SELECT * FROM siswa_edit1 WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
+							$queryFindData = mysqli_query($con, "SELECT * FROM siswa WHERE nama = '$Row[1]' AND tanggal_lahir = '$tglLhrClnSiswa' AND nis = '$nisCalonSiswa' ");
 							$cariData = mysqli_fetch_array($queryFindData)['nama'];
 							$sameData = mysqli_num_rows($queryFindData);
 
@@ -360,7 +360,7 @@
 
 					      	}
 
-					      	$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoranmas_ujicoba where kode='$kode2' limit 1 "));
+					      	$seqc_sis=mysqli_fetch_array(mysqli_query($con,"SELECT (nourut + 1) as nourut FROM penomoranmas where kode='$kode2' limit 1 "));
 					      	$nomorurut = $seqc_sis['nourut'] ?? 0;
 
 					      	$invID = str_pad($nomorurut, 4, '0', STR_PAD_LEFT);
@@ -368,7 +368,7 @@
 					      	$kodseq = $kode."".$invID;
 
 					      	$queryInsertSiswa = mysqli_query($con, "
-						        INSERT INTO siswa_edit1
+						        INSERT INTO siswa
 						        set 
 						        c_siswa         = '$kodseq', 
 						        c_kelas         = '$c_kelas',
@@ -399,8 +399,8 @@
 					      	");
 
 					      	if ($queryInsertSiswa) {
-					      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
-						        $penomoran=mysqli_query($con,"UPDATE penomoranmas_ujicoba set nourut='$nomorurut'  where kode='$kode2' ");
+					      		$dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa");
+						        $penomoran=mysqli_query($con,"UPDATE penomoranmas set nourut='$nomorurut'  where kode='$kode2' ");
 						        $_SESSION['import_success'] = 'berhasil';
 						        // $total = $dataSiswaKeseluruhan - $countDataSiswa;
 						        $dataKsg[] = $nama_ayah;
@@ -410,7 +410,7 @@
 					      	} else {
 
 						        $_SESSION['import_success'] = 'gagal';
-						        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa_edit1");
+						        $dataSiswaKeseluruhan = mysqli_query($con, "SELECT * FROM siswa");
 
 					      	}
 

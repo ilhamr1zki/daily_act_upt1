@@ -750,7 +750,8 @@
 
 	  		} else {
 
-	  			date_default_timezone_set("Asia/Jakarta");
+	  			date_default_timezone_set("Asia/Bangkok");
+
 			  	$arrTgl               = [];
 				
 			  	$countDataChat = 0;
@@ -1165,7 +1166,8 @@
 
 	  			$apiFonnte 	= "https://api.fonnte.com/send";
 
-	  			date_default_timezone_set("Asia/Jakarta");
+	  			date_default_timezone_set("Asia/Bangkok");
+	  			
 			  	$arrTgl               = [];
 				
 			  	$countDataChat = 0;

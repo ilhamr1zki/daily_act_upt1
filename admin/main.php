@@ -939,6 +939,10 @@ oncontextmenu="return false">
               <a href="<?= $basead; ?>tahunajaran" id="tahunajaran"><i class="glyphicon glyphicon-text-width text-primary" id="create"></i> <span id="isiList3"> Tahun Ajaran </span> </a>
             </li>
 
+            <li>
+              <a href="<?= $basead; ?>resetdata" id="resetdata"><i class="glyphicon glyphicon-retweet text-primary" id="create"></i> <span id="isiList3"> Reset </span> </a>
+            </li>
+
           </ul>
         </li>
 
@@ -1056,6 +1060,10 @@ oncontextmenu="return false">
 
     elseif ($act == 'tahunajaran') {
       require 'view/maintenance/tahun_ajaran/index.php';
+    } 
+
+     elseif ($act == 'resetdata') {
+      require 'view/maintenance/reset/index.php';
     } 
 
     else{
