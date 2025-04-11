@@ -82,6 +82,9 @@
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css">
+
 <div class="box box-info">
 
   <center> 
@@ -93,7 +96,7 @@
   <br>
 
   <div class="box-body table-responsive">
-    <table id="list_group" style="text-align: center;" class="table table-bordered table-hover">
+    <table id="list_group" class="display nowrap" style="width:100%">
 
       <thead>
         <tr style="background-color: lightyellow; font-weight: bold;">
@@ -134,6 +137,7 @@
 
 </div>
    
+<script src="<?= $basegu; ?>view/daily/query/dataTables1.js"></script>
 <script type="text/javascript">
 
   let titleLists1   = document.getElementById('titleList1').innerHTML
@@ -144,6 +148,7 @@
   newIcon.classList.add("fa-users");
 
   let getTitleList1 = document.getElementById('isiList2').innerHTML;
+  var table = new DataTable('#list_group');
 
   $(document).ready(function() {
 

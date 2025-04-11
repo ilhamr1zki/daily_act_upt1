@@ -136,6 +136,9 @@
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css">
+
 <div class="box box-info">
 
 	<div class="box-header with-border">
@@ -150,12 +153,12 @@
 
   	<div class="box-body table-responsive">
 
-	    <table id="hightlight_list_siswa" style="text-align: center;" class="table table-bordered table-hover">
+	    <table id="hightlight_list_siswa1" class="display nowrap" style="width:100%">
 	      	<thead>
 		        <tr style="background-color: lightyellow; font-weight: bold;">
 		          <th style="text-align: center; border: 1px solid black;" width="5%">NO</th>
 		          <th style="text-align: center; border: 1px solid black;"> DAILY </th>
-		          <th style="text-align: center; border: 1px solid black;"> DAILY TITLE </th>
+		          <th style="text-align: center; border: 1px solid black;"> TITLE </th>
 		          <th style="text-align: center; border: 1px solid black;"> DATE POSTED </th>
 		          <th style="text-align: center; border: 1px solid black;"> STATUS </th>
 		          <!-- <th style="text-align: center;"> DAILY </th> -->
@@ -208,9 +211,19 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> GROUP <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
@@ -237,9 +250,19 @@
 			      			`<?= $appr['isi_daily']; ?>`,
 			      			`<?= $appr['isi_alasan']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> GROUP <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 		        			<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
@@ -261,9 +284,19 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> GROUP <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i class="glyphicon glyphicon-ok"></i> </td>
@@ -292,9 +325,19 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
@@ -321,9 +364,19 @@
 			      			`<?= $appr['isi_daily']; ?>`,
 			      			`<?= $appr['isi_alasan']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 		        			<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
@@ -345,9 +398,19 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 		      			)">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> <?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?> </td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+				        		
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i class="glyphicon glyphicon-ok"></i> </td>
@@ -370,6 +433,7 @@
 
 </div>
 
+<script src="view/daily/query/dataTables1.js"></script>
 <script type="text/javascript">
 
 	let grouporstd      = "";
@@ -404,7 +468,7 @@
           	$("#hightlight_pengirim").val(dataHgSender);
           	$("#hightlight_siswa_daily").val(dataHgSiswa);
           	$("#hightlight_tanggal_upload").val(dataHgTglUpload);
-          	$("#hightlight_title_daily").val(dataHgJudul);
+          	$("#hightlight_title_daily").html(dataHgJudul);
           	$("#highlight_id_daily_waiiting").val(dataHgRoomKey);
           	hgImage.setAttribute("src", `../image_uploads/${dataHgImage}`);
           	$("#hightlight_main_daily").html(dataHgDaily);
@@ -440,7 +504,7 @@
 	      	$("#hg_cancel_not_approve").hide();
 	      	$("#hg_pengirim_appr").val(dataHgSender);
 	      	$("#hg_tanggal_upload_appr").val(dataHgTglUpload);
-	      	$("#hg_title_daily_appr").val(dataHgJudul);
+	      	$("#hg_title_daily_appr").html(dataHgJudul);
 	      	$("#highlight_id_daily_waiiting").val(dataHgRoomKey);
 
 	      	// Isi Input Pada Modal
@@ -448,7 +512,7 @@
 	      	$("#nama_siswa_lookdaily").val(siswa);
 	      	$("#nama_guru_lookdaily").val(from);
 	      	$("#hg_siswa_daily_appr").val(siswa);
-	      	$("#hg_title_daily_appr").val(title);
+	      	$("#hg_title_daily_appr").html(title);
 	      	$("#hg_main_daily_appr").html(main);
 
 	      	$("#hg_nama_guru_lookdaily").val(from);
@@ -474,7 +538,7 @@
 			$("#hg_pengirim_notappr").val(from);
 			$("#hg_tanggal_upload_notappr").val(datePosted);
 			$("#hg_siswa_daily_notappr").val(siswa);
-			$("#hg_title_daily_notappr").val(title);
+			$("#hg_title_daily_notappr").html(title);
 
 			let hgImage     = document.querySelector("img[id='hg_foto_upload_notappr']");
 			hgImage.setAttribute("src", `../image_uploads/${imgUpload}`);
@@ -499,7 +563,9 @@
 		}
 
   	}
-		
+	
+	var table = new DataTable('#hightlight_list_siswa1');
+
 	$(document).ready(function(){
 
 		$("#dashboard").css({

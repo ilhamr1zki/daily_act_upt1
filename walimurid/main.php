@@ -16,10 +16,16 @@
   $nama_role = $_SESSION['c_otm'];
 
   $nama_user = $_SESSION['username_otm'];
-  $usrnm     = explode(" ", $nama_user);
+  // $usrnm     = explode(" ", $nama_user);
   // echo $usrnm[0];exit;
 
-  // echo $nama_role;exit;
+  $pangjangKarakter = strlen($nama_user);
+
+  if ($pangjangKarakter >= 20) {
+    $usrnm = substr($nama_user, 0, 20) . " ...";
+  } else {
+    $usrnm = $nama_user;
+  }
 
   $thisPage =  (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
@@ -191,6 +197,29 @@
       font-family:arial;
     }
 
+    #main_daily,
+    #hightlight_main_daily,
+    #main_daily_appr,
+    #main_daily_notappr,
+    #hg_main_daily_appr,
+    #hg_main_daily_notappr,
+    #inpage_main_daily_wt_appr,
+    #inpage_main_daily_appr,
+    #inpage_main_daily_notappr,
+    #reason_notappr,
+    #hg_reason_notappr,
+    #inpage_reason_notappr,
+    #title_daily_appr,
+    #siswa_daily_appr,
+    #hg_title_daily_appr,
+    #all_title_daily_appr,
+    #all_main_daily_appr,
+    #all_siswa_daily_appr,
+    #hg_siswa_daily_appr {
+      height: auto !important;
+      overflow-wrap: break-word;
+    }
+
     #tr_dashboard {
       cursor: pointer;
     }
@@ -254,12 +283,6 @@
       width: 25% !important;
       font-size: 10px !important;
       font-weight: bold;
-    }
-
-    #spp1 {
-      width: 20%;
-      margin-right: 10px;
-      text-align: end;
     }
 
     #tombol-cetak {
@@ -338,32 +361,6 @@
     #tanggal_upload_appr,
     #hg_tanggal_upload_appr {
       width: 213px;
-    }
-
-    .uang_spp, 
-    .uang_pangkal, 
-    .uang_regis,
-    .uang_seragam,
-    .uang_buku,
-    .uang_kegiatan,
-    .lain2 {
-      width: 20%;
-      margin-right: 10px; 
-      text-align: end;
-    }
-
-    .ket_uang_spp, 
-    .ket_uang_pangkal, 
-    .ket_uang_regis,
-    .ket_uang_seragam,
-    .ket_uang_buku,
-    .ket_uang_kegiatan,
-    .ket_lain2 {
-      width: 25%;
-    }
-
-    #spp2 {
-      width: 25%;
     }
 
     .judul {
@@ -460,33 +457,13 @@
 
     @media only screen and (max-width: 600px) {
 
-      .cobasidebar {
-        margin-top: 17%;
-      }
-
-      #cobacontent {
-        min-height: 250px !important;
-        margin-right: auto !important;
-        margin-left: auto !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
+      .customsidebar {
+        margin-top: 3%;
       }
 
     }
 
     @media only screen and (max-width: 768px) {
-
-      .uang_spp, 
-      .uang_pangkal, 
-      .uang_regis,
-      .uang_seragam,
-      .uang_buku,
-      .uang_kegiatan,
-      .lain2 {
-        width: 40%;
-        margin-right: 10px; 
-        text-align: end;
-      }
 
       .center h4 {
         font-size: 10px;
@@ -505,19 +482,37 @@
         margin-top: 4px;
       }
 
+      #namasiswa {
+        font-size: 9px;
+        margin-top: 3px;
+      }
+
+      #datesend {
+        font-size: 12px;
+      }
+
+      .headmaster-chat {
+        margin-top: 10px;
+      }
+
+      .parents-chat,
+      .teacher-chat {
+        margin-top: 3px;
+      }
+
       #namakepsek,
       #namaguruchat,
-      #kepsekchat {
-        font-size: 10px;
+      #kepsekchat,
+      #chatparents {
+        font-size: 9px;
       }
 
       #namakepsek {
-        margin-top: 1px
+        margin-top: 3px
       }
 
       #tglpublish,
-      #namasiswa,
-      #datesend {
+      #tglsendguru {
         font-size: 9px;
       }
 
@@ -604,16 +599,6 @@
         flex-direction: column;
         margin-right: 50px;
       }
-
-      .ket_uang_spp, 
-      .ket_uang_pangkal, 
-      .ket_uang_regis,
-      .ket_uang_seragam,
-      .ket_uang_buku,
-      .ket_uang_kegiatan,
-      .ket_lain2 {
-        width: 53%;
-      }
       
       #tombol {
         width: 100%;
@@ -641,16 +626,6 @@
 
       #jun22 {
         margin-left: 180px;
-      }      
-
-      #spp1 {
-        width: 30%;
-        margin-right: 10px;
-        text-align: end;
-      }
-
-      #spp2 {
-        width: 63%;
       }
 
       .flex-container {
@@ -787,7 +762,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="siswa_daily_appr" id="lbl_std_or_group_df_appr">STUDENT</label>
-                <input type="text" id="siswa_daily_appr" name="siswa_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="siswa_daily_appr" name="siswa_daily_appr" readonly class="form-control"> -->
+                <div id="siswa_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group gambar_banner_appr">
@@ -798,7 +776,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="title_daily_appr" name="title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="title_daily_appr" name="title_daily_appr" readonly class="form-control"> -->
+                <div id="title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -885,7 +866,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="all_title_daily_appr" name="title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="all_title_daily_appr" name="title_daily_appr" readonly class="form-control"> -->
+                <div id="all_title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -988,7 +972,9 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="siswa_daily_appr" id="lbl_std_or_group">STUDENT</label>
-                <input type="text" id="hg_siswa_daily_appr" name="hg_siswa_daily_appr" readonly class="form-control">
+                <div id="hg_siswa_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group gambar_banner_appr">
@@ -999,7 +985,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="hg_title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="hg_title_daily_appr" name="hg_title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="hg_title_daily_appr" name="hg_title_daily_appr" readonly class="form-control"> -->
+                <div id="hg_title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1225,14 +1214,22 @@ oncontextmenu="return false">
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar cobasidebar">
+    <section class="sidebar customsidebar">
       <!-- Sidebar user panel -->
-      <div class="user-panel">
+      <div class="user-panel" style="width: 96%;">
         <div class="pull-left image">
             <img src="<?php echo $base; ?>imgstatis/df.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p> <?= ucfirst($usrnm[0]); ?> </p>
+          <?php if ($pangjangKarakter > 25): ?>
+
+            <p style="font-size: 11px;"> <?= ucfirst($usrnm); ?> </p>
+
+          <?php else: ?>
+
+            <p> <?= ucfirst($usrnm); ?> </p>
+            
+          <?php endif ?>
           <i class="glyphicon glyphicon-time"></i> <?php echo tgl(date('d-m-Y')); ?>
         </div>
       </div>
@@ -1324,21 +1321,6 @@ oncontextmenu="return false">
     $act=($_GET['on']);
     if($act=='kelas'){
       require 'view/a-kelas.php';
-    }
-
-    #region checkpembayaraninputdata
-    else if ($act == 'checkpembayarandaninputdata') {
-      require 'view/spp/check_pembayaran/check_pembayaran_dan_inputdata.php';
-    }
-
-    #region edit data
-    elseif ($act == 'editdata') {
-      require 'view/spp/edit_data/editdata.php';
-    }
-
-    #region import data
-    elseif($act == 'upload') {
-      require 'view/spp/upload/uploadfile.php';
     }
 
     #region dashboard
@@ -1566,55 +1548,65 @@ oncontextmenu="return false">
               let dataNipGuru       = $(this).data('nip_guru');
               let dataStdOrGroup    = $(this).data('group_or_std');
 
+              // if (`<?= $thisPage; ?>` == `<?= $basewam; ?>lookactivity/${dataRoomKey}`) {
+
+              //   $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailystudent`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailygroup`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailystudent`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+              //   $('#df_frompage_lookdaily').val("querydailystudent");
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailygroup`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+              //   $('#df_frompage_lookdaily').val("querydailygroup");
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_waiting_approval`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_approved`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_not_approved`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changepassword`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changenumberphone`) {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // } else if (`<?= $thisPage; ?>` != `<?= $basewam; ?>`) {
+
+              //   $('#formDfAppr').attr('action', `${dataRoomKey}`);
+
+              // } else {
+
+              //   $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+
+              // }
+
               if (`<?= $thisPage; ?>` == `<?= $basewam; ?>lookactivity/${dataRoomKey}`) {
-
-                $('#formDfAppr').attr('action', `${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailystudent`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>createdailygroup`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailystudent`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-                $('#df_frompage_lookdaily').val("querydailystudent");
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>querydailygroup`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-                $('#df_frompage_lookdaily').val("querydailygroup");
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_waiting_approval`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_approved`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>status_not_approved`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changepassword`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` == `<?= $basewam; ?>changenumberphone`) {
-
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
-
-              } else if (`<?= $thisPage; ?>` != `<?= $basewam; ?>`) {
 
                 $('#formDfAppr').attr('action', `${dataRoomKey}`);
 
               } else {
 
-                $('#formDfAppr').attr('action', `lookactivity/${dataRoomKey}`);
+                $('#formDfAppr').attr('action', `<?= $basewam; ?>lookactivity/${dataRoomKey}`);
 
               }
 
@@ -1632,12 +1624,12 @@ oncontextmenu="return false">
 
               $("#date_approved").val(dataTglAppr);
               $("#pengirim_appr").val(dataUsernameGuru);
-              $("#siswa_daily_appr").val(dataSiswa);
+              $("#siswa_daily_appr").html(dataSiswa);
               $("#tanggal_upload_appr").val(dataTglUploadAppr);
 
               imageAppr.setAttribute("src", `../image_uploads/${dataImageAprr}`);
 
-              $("#title_daily_appr").val(dataTitleAppr);
+              $("#title_daily_appr").html(dataTitleAppr);
               $("#main_daily_appr").html(dataIsiAppr);
               $("#df_nis_siswa_lookdaily").val(dataNisSiswa);
               $("#df_nama_siswa_lookdaily").val(dataSiswa);
@@ -1669,7 +1661,16 @@ oncontextmenu="return false">
               let allNisOrIdGroup     = $(this).data('nisoridgroup');
               let allDateOri          = $(this).data('tgl_ori');
 
-              $('#formDfAllDaily').attr('action', `lookactivity/${room_key}`);
+              if (`<?= $thisPage; ?>` == `<?= $basewam; ?>lookactivity/${room_key}`) {
+
+                $('#formDfAllDaily').attr('action', `${room_key}`);
+
+              } else {
+
+                $('#formDfAllDaily').attr('action', `<?= $basewam; ?>lookactivity/${room_key}`);
+
+              }
+
               let allImageAppr         = document.querySelector("img[id='all_foto_upload_appr']");
 
               allImageAppr.setAttribute("src", `../image_uploads/${allImageUpload}`);
@@ -1694,7 +1695,7 @@ oncontextmenu="return false">
                 $("#mdl_tglori_posting_lookdaily").val(allDateOri);
 
                 $("#mdl_jdl_posting_lookdaily").val(allTitleDaily);
-                $("#all_title_daily_appr").val(allTitleDaily);
+                $("#all_title_daily_appr").html(allTitleDaily);
 
                 $("#mdl_isi_posting_lookdaily").val(allDescriptionDaily);
                 $("#all_main_daily_appr").html(allDescriptionDaily);
@@ -1720,15 +1721,13 @@ oncontextmenu="return false">
                 $("#mdl_tglori_posting_lookdaily").val(allDateOri);
 
                 $("#mdl_jdl_posting_lookdaily").val(allTitleDaily);
-                $("#all_title_daily_appr").val(allTitleDaily);
+                $("#all_title_daily_appr").html(allTitleDaily);
 
                 $("#mdl_isi_posting_lookdaily").val(allDescriptionDaily);
                 $("#all_main_daily_appr").html(allDescriptionDaily);
                 $("#mdl_all_daily").attr('name', 'redirectLookDaily');
 
               }
-
-              
 
             });
 

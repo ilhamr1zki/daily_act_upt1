@@ -36,7 +36,15 @@
 							");
 
 							if ($queryDeleteKomentar) {
-								$res[] = "success";
+
+								$queryDeleteReason = mysqli_query($con, "
+									DELETE FROM reason
+								");
+
+								if ($queryDeleteReason) {
+									$res[] = "success";
+								}
+								
 							}
 
 						}

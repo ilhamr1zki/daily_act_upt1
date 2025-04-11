@@ -16,13 +16,13 @@ $con=mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
 ($GLOBALS["___mysqli_ston"] = mysqli_connect($dbhost, $dbuser, $dbpass));mysqli_select_db($GLOBALS["___mysqli_ston"], $dbname);
 /* css.plugin.hancon <?php echo $base; ?> */
 
-$base='http://localhost/daily_act_upt1/';
-$base1='http://localhost/daily_act_upt1/';
-$basead='http://localhost/daily_act_upt1/admin/';
-$basegu='http://localhost/daily_act_upt1/guru/';
-$basekepsek='http://localhost/daily_act_upt1/kepala_sekolah/';
-$basekepsek1='http://localhost/daily_act_upt1/kepala_sekolah/';
-$basewam='http://localhost/daily_act_upt1/walimurid/';
+$base='http://10.10.10.102/daily_act_upt1/';
+$base1='http://10.10.10.102/daily_act_upt1/';
+$basead='http://10.10.10.102/daily_act_upt1/admin/';
+$basegu='http://10.10.10.102/daily_act_upt1/guru/';
+$basekepsek='http://10.10.10.102/daily_act_upt1/kepala_sekolah/';
+$basekepsek1='http://10.10.10.102/daily_act_upt1/kepala_sekolah/';
+$basewam='http://10.10.10.102/daily_act_upt1/walimurid/';
 
 $aplikasi=mysqli_fetch_array(mysqli_query($con,"SELECT * FROM aplikasi limit 1"));
 // $ata=mysqli_fetch_array(mysqli_query($con,"SELECT * FROM tahun_ajaran where status='aktif' ")); 

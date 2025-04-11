@@ -269,7 +269,17 @@
               <tr style="background-color: aqua; font-weight: bold;">
                 <td style="text-align: center;">  <?= $no++; ?> </td>
                 <td style="text-align: center;">  <?= strtoupper($data['nama_guru']); ?> </td>
-                <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
+                
+                <?php if (strlen($data['judul_daily']) > 50): ?>
+
+                  <td style="text-align: center;">  <?= substr($data['judul_daily'], 0, 50); ?> <strong> ... </strong> </td>
+
+                <?php else: ?>
+
+                  <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
+                  
+                <?php endif ?>
+
                 <td style="text-align: center;">  <?= formatDateEnglish($data['tgl_posted']); ?> </td>
                 <td style="text-align: center;">
                   <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
@@ -278,7 +288,7 @@
                     <input type="hidden" name="nis" value="<?= strtoupper($data['nis_or_id_group_kelas']); ?>">
                     <input type="hidden" name="nama" value="<?= strtoupper($data['nama_siswa_or_group']); ?>">
                     <input type="hidden" name="guru" value="<?= strtoupper($data['nama_guru']); ?>">
-                    <input type="hidden" name="foto" value="<?= strtoupper($data['foto_upload']); ?>">
+                    <input type="hidden" name="foto" value="<?= $data['foto_upload']; ?>">
                     <input type="hidden" name="tglpost" value="<?= format_tgl_indo($data['tgl_posted']); ?>">
                     <input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
                     <input type="hidden" name="tglori" value="<?= $data['tgl_posted']; ?>">

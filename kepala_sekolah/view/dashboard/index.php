@@ -204,6 +204,9 @@
 
 ?>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css">
+
 <div class="box box-info">
 
 	<div class="box-header with-border">
@@ -218,7 +221,7 @@
 
   	<div class="box-body table-responsive">
 
-	    <table id="hightlight_list_siswa" style="text-align: center;" class="table table-bordered table-hover">
+	    <table id="dashboard_daily" class="display nowrap" style="width:100%">
 	      	<thead>
 		        <tr style="background-color: lightyellow; font-weight: bold;">
 		          <th style="text-align: center; border: 1px solid black;" width="5%">NO</th>
@@ -263,7 +266,7 @@
 
 	      			<?php if ($appr['status_approve'] == 1): ?>
 
-		      			<tr style="background-color: limegreen; color: white; font-weight: bold;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: limegreen; color: white; font-weight: bold;" id="tr_dashboard" onclick="showData(
 			      			`group`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -279,7 +282,7 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 			      			)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td id="tr_dashboard_no"> <?= $no++; ?> </td>
+				        	<td id="tr_dashboard_no" style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td id="tr_dashboard_guru"> <?= strtoupper($appr['nama_guru']); ?> </td>
 				        	<td> 
 
@@ -294,7 +297,17 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
@@ -305,7 +318,7 @@
 
 		      		<?php elseif($appr['status_approve'] == 2): ?>
 
-		      			<tr style="background-color: red; color: yellow;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: red; color: yellow;" id="tr_dashboard" onclick="showData(
 		      				`group`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -321,7 +334,7 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`,
 			      			`<?= $appr['isi_alasan']; ?>`)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td id="tr_dashboard_no"> <?= $no++; ?> </td>
+				        	<td id="tr_dashboard_no" style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td id="tr_dashboard_guru"> <?= $appr['nama_guru']; ?> </td>
 				        	<td> 
 
@@ -336,14 +349,24 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 			        		<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
 
 		      		<?php elseif($appr['status_approve'] == 0): ?>
 		      			
-		      			<tr style="background-color: aqua;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: aqua;" id="tr_dashboard" onclick="showData(
 		      				`group`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -358,7 +381,7 @@
 			      			`<?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?>`,
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> <?= $appr['nama_guru']; ?> </td>
 				        	<td> 
 
@@ -373,7 +396,17 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i class="glyphicon glyphicon-ok"></i> </td>
@@ -388,7 +421,7 @@
 
 	      			<?php if ($appr['status_approve'] == 1): ?>
 
-		      			<tr style="background-color: limegreen; color: white; font-weight: bold;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: limegreen; color: white; font-weight: bold;" id="tr_dashboard" onclick="showData(
 			      			`std`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -404,7 +437,7 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`
 			      			)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td id="tr_dashboard_no"> <?= $no++; ?> </td>
+				        	<td id="tr_dashboard_no" style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td id="tr_dashboard_guru"> <?= strtoupper($appr['nama_guru']); ?> </td>
 				        	<td> 
 
@@ -419,7 +452,17 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i style="color: gold;" class="glyphicon glyphicon-ok"></i> </td>
@@ -430,7 +473,7 @@
 
 		      		<?php elseif($appr['status_approve'] == 2): ?>
 
-		      			<tr style="background-color: red; color: yellow;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: red; color: yellow;" id="tr_dashboard" onclick="showData(
 		      				`std`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -446,7 +489,7 @@
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`,
 			      			`<?= $appr['isi_alasan']; ?>`)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td id="tr_dashboard_no"> <?= $no++; ?> </td>
+				        	<td id="tr_dashboard_no" style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td id="tr_dashboard_guru"> <?= $appr['nama_guru']; ?> </td>
 				        	<td> 
 
@@ -461,14 +504,24 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_disetujui']); ?> </td>
 			        		<td> NOT APPROVE <i style="color: yellow;" class="glyphicon glyphicon-remove"></i> </td>
 				        </tr>
 
 		      		<?php elseif($appr['status_approve'] == 0): ?>
 		      			
-		      			<tr style="background-color: aqua;" id="tr_dashboard" onclick="showData(
+		      			<tr style="text-align: center; background-color: aqua;" id="tr_dashboard" onclick="showData(
 		      				`std`,
 			      			`<?= $appr['room_key']; ?>`,
 			      			`<?= $appr['daily_id']; ?>`,
@@ -483,7 +536,7 @@
 			      			`<?= strtoupper($appr['nama_siswa_or_nama_group_kelas']); ?>`,
 			      			`<?= $appr['judul']; ?>`,
 			      			`<?= $appr['isi_daily']; ?>`)" data-status="<?= $appr['status_approve']; ?>" style="text-align: center;">
-				        	<td> <?= $no++; ?> </td>
+				        	<td style="text-align: center;"> <?= $no++; ?> </td>
 				        	<td> <?= $appr['nama_guru']; ?> </td>
 				        	<td> 
 
@@ -498,7 +551,17 @@
 				        		<?php endif ?>
 
 				        	</td>
-				        	<td> <?= $appr['judul']; ?> </td>
+
+				        	<?php if (strlen($appr['judul']) > 50): ?>
+
+				        		<td> <?= substr($appr['judul'], 0,50); ?> <strong> ... </strong> </td>
+
+				        	<?php else: ?>
+
+				        		<td> <?= $appr['judul']; ?> </td>
+				        		
+				        	<?php endif ?>
+
 				        	<td> <?= format_tgl_indo($appr['tgl_dibuat']); ?> </td>
 				        	<?php if ($appr['status_approve'] == 1): ?>
 				        		<td> APPROVE <i class="glyphicon glyphicon-ok"></i> </td>
@@ -520,9 +583,12 @@
 
 </div>
 
+<script src="<?= $basekepsek; ?>view/daily/query/dataTables1.js"></script>
 <script type="text/javascript">
 
 	let grouporstd      = "";
+
+	var table = new DataTable('#dashboard_daily');
 
 	function showData(stdOrGroup, roomKey, dailyID, stat, from, dateOri, datePosted, dateAppr, imgUpload, nip, nis, siswa, title, main, reason='ksg') {
 
@@ -555,7 +621,7 @@
           	$("#hightlight_cancel_not_approve").hide();
           	$("#hightlight_pengirim").val(dataHgSender);
           	$("#hightlight_tanggal_upload").val(dataHgTglUpload);
-          	$("#hightlight_title_daily").val(dataHgJudul);
+          	$("#hightlight_title_daily").html(dataHgJudul);
           	$("#hightlight_siswa_daily").val(dataHgSiswa);
           	$("#highlight_id_daily_waiiting").val(dataHgDailyId);
           	$("#highlight_nip_daily_waiiting").val(nip);
@@ -594,7 +660,7 @@
 	      	$("#hg_pengirim_appr").val(dataHgSender);
 	      	$("#hg_siswa_daily_appr").val(dataHgSiswa);
 	      	$("#hg_tanggal_upload_appr").val(dataHgTglUpload);
-	      	$("#hg_title_daily_appr").val(title);
+	      	$("#hg_title_daily_appr").html(title);
 	      	$("#highlight_id_daily_waiiting").val(dataHgDailyId);
 
 	      	// Isi Input Pada Modal
@@ -621,7 +687,7 @@
 			$("#hg_pengirim_notappr").val(from);
 			$("#hg_tanggal_upload_notappr").val(datePosted);
 			$("#hg_siswa_daily_notappr").val(siswa);
-			$("#hg_title_daily_notappr").val(title);
+			$("#hg_title_daily_notappr").html(title);
 
 			let hgImage     = document.querySelector("img[id='hg_foto_upload_notappr']");
 			hgImage.setAttribute("src", `../image_uploads/${imgUpload}`);

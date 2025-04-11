@@ -315,6 +315,9 @@
   </div>
 <?php } ?>
 
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css">
+
 <div class="box box-info">
 
 	<br>
@@ -341,7 +344,7 @@
 
 	    <br><br>
 
-	    <table id="hightlight_list_siswa" style="text-align: center;" class="table table-bordered table-hover">
+	    <table id="groupclass" class="display nowrap" style="width:100%">
 
 	      	<thead>
 		        <tr style="background-color: lightyellow; font-weight: bold;">
@@ -359,10 +362,10 @@
 	      		<?php foreach ($queryGetAllDataStudentByGroup as $data): ?>
 	      			
 	      			<tr>
-	      				<td> <?= $no++; ?> </td>
-	      				<td> <?= $data['nis']; ?> </td>
-	      				<td> <?= $data['nama']; ?> </td>
-	      				<td> 
+	      				<td style="text-align: center !important;"> <?= $no++; ?> </td>
+	      				<td style="text-align: center !important;"> <?= $data['nis']; ?> </td>
+	      				<td style="text-align: center !important;"> <?= $data['nama']; ?> </td>
+	      				<td style="text-align: center !important;"> 
 	      					<button class="btn btn-sm btn-primary" onclick="editModal(`<?= $data['nama']; ?>`, `<?= $data['nis']; ?>`, `<?= $data['hp']; ?>`)"> <i class="glyphicon glyphicon-pencil"></i> EDIT </button> |
 	      					<button class="btn btn-sm btn-danger" data-target="#hapus<?= $data['nis']; ?>" data-toggle="modal"> <i class="glyphicon glyphicon-ban-circle"></i> KELUARKAN SISWA DARI GROUP KELAS </button>
 	      				</td>
@@ -447,9 +450,12 @@
   	</div>    
 </div>
 
+<script src="<?= $basegu; ?>view/daily/query/dataTables1.js"></script>
 <script type="text/javascript">
 	
 	$(document).ready( function () {
+
+		var table = new DataTable('#groupclass');
 
 		$("#isgroupclass").click();
         $("#is_groupclass").css({

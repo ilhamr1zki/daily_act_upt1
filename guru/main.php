@@ -208,6 +208,31 @@
       display: none;
     }
 
+    #main_daily,
+    #hightlight_main_daily,
+    #main_daily_appr,
+    #main_daily_notappr,
+    #hg_main_daily_appr,
+    #hg_main_daily_notappr,
+    #inpage_title_daily_wt_appr,
+    #inpage_main_daily_wt_appr,
+    #inpage_main_daily_appr,
+    #inpage_main_daily_notappr,
+    #reason_notappr,
+    #hg_reason_notappr,
+    #inpage_reason_notappr,
+    #title_daily,
+    #hightlight_title_daily,
+    #title_daily_notappr,
+    #title_daily_appr,
+    #hg_title_daily_appr,
+    #inpage_title_daily_notappr,
+    #inpage_title_daily_appr,
+    #hg_title_daily_notappr {
+      height: auto !important;
+      word-break: break-all;
+    }
+
     body {
       font-family:arial;
     }
@@ -303,12 +328,6 @@
       font-weight: bold;
     }
 
-    #spp1 {
-      width: 20%;
-      margin-right: 10px;
-      text-align: end;
-    }
-
     #tombol-cetak {
       display: flex; 
       gap: 5px; 
@@ -376,32 +395,6 @@
     #div_slash {
       margin-left: -38px;
       top: -5px;
-    }
-
-    .uang_spp, 
-    .uang_pangkal, 
-    .uang_regis,
-    .uang_seragam,
-    .uang_buku,
-    .uang_kegiatan,
-    .lain2 {
-      width: 20%;
-      margin-right: 10px; 
-      text-align: end;
-    }
-
-    .ket_uang_spp, 
-    .ket_uang_pangkal, 
-    .ket_uang_regis,
-    .ket_uang_seragam,
-    .ket_uang_buku,
-    .ket_uang_kegiatan,
-    .ket_lain2 {
-      width: 25%;
-    }
-
-    #spp2 {
-      width: 25%;
     }
 
     .judul {
@@ -504,33 +497,13 @@
 
     @media only screen and (max-width: 600px) {
 
-      .cobasidebar {
-        margin-top: 17%;
-      }
-
-      #cobacontent {
-        min-height: 250px !important;
-        margin-right: auto !important;
-        margin-left: auto !important;
-        padding-left: 15px !important;
-        padding-right: 15px !important;
+      .customsidebar {
+        margin-top: 3%;
       }
 
     }
 
     @media only screen and (max-width: 768px) {
-
-      .uang_spp, 
-      .uang_pangkal, 
-      .uang_regis,
-      .uang_seragam,
-      .uang_buku,
-      .uang_kegiatan,
-      .lain2 {
-        width: 40%;
-        margin-right: 10px; 
-        text-align: end;
-      }
 
       #cdastd {
         font-size: 12px;
@@ -651,16 +624,6 @@
         flex-direction: column;
         margin-right: 50px;
       }
-
-      .ket_uang_spp, 
-      .ket_uang_pangkal, 
-      .ket_uang_regis,
-      .ket_uang_seragam,
-      .ket_uang_buku,
-      .ket_uang_kegiatan,
-      .ket_lain2 {
-        width: 53%;
-      }
       
       #tombol {
         width: 100%;
@@ -688,16 +651,6 @@
 
       #jun22 {
         margin-left: 180px;
-      }      
-
-      #spp1 {
-        width: 30%;
-        margin-right: 10px;
-        text-align: end;
-      }
-
-      #spp2 {
-        width: 63%;
       }
 
       .flex-container {
@@ -843,7 +796,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="title_daily">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="title_daily" name="title_daily" readonly class="form-control">
+                <!-- <input type="text" id="title_daily" name="title_daily" readonly class="form-control"> -->
+                <div id="title_daily" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -920,7 +876,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="title_daily_appr" name="title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="title_daily_appr" name="title_daily_appr" readonly class="form-control"> -->
+                <div id="title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1010,7 +969,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="title_daily_notappr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="title_daily_notappr" name="title_daily_notappr" readonly class="form-control">
+                <!-- <input type="text" id="title_daily_notappr" name="title_daily_notappr" readonly class="form-control"> -->
+                <div id="title_daily_notappr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1091,7 +1053,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="hg_title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="hg_title_daily_appr" name="hg_title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="hg_title_daily_appr" name="hg_title_daily_appr" readonly class="form-control"> -->
+                <div id="hg_title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1178,7 +1143,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="hg_title_daily_notappr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="hg_title_daily_notappr" name="hg_title_daily_notappr" readonly class="form-control">
+                <!-- <input type="text" id="hg_title_daily_notappr" name="hg_title_daily_notappr" readonly class="form-control"> -->
+                <div id="hg_title_daily_notappr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1252,7 +1220,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="hightlight_title_daily">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="hightlight_title_daily" name="hightlight_title_daily" readonly class="form-control">
+                <!-- <input type="text" id="hightlight_title_daily" name="hightlight_title_daily" readonly class="form-control"> -->
+                <div id="hightlight_title_daily" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1327,7 +1298,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="inpage_title_daily_wt_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="inpage_title_daily_wt_appr" name="inpage_title_daily_wt_appr" readonly class="form-control">
+                <!-- <input type="text" id="inpage_title_daily_wt_appr" name="inpage_title_daily_wt_appr" readonly class="form-control"> -->
+                <div id="inpage_title_daily_wt_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1400,7 +1374,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="inpage_title_daily_appr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="inpage_title_daily_appr" name="inpage_title_daily_appr" readonly class="form-control">
+                <!-- <input type="text" id="inpage_title_daily_appr" name="inpage_title_daily_appr" readonly class="form-control"> -->
+                <div id="inpage_title_daily_appr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1486,7 +1463,10 @@ oncontextmenu="return false">
 
               <div class="form-group">
                 <label for="inpage_title_daily_notappr">TITLE DAILY ACTIVITY</label>
-                <input type="text" id="inpage_title_daily_notappr" name="inpage_title_daily_notappr" readonly class="form-control">
+                <!-- <input type="text" id="inpage_title_daily_notappr" name="inpage_title_daily_notappr" readonly class="form-control"> -->
+                <div id="inpage_title_daily_notappr" class="form-control" style="height: 150px;border: 1px solid #eee;padding: 10px; background-color: #eee;">
+                  
+                </div>
               </div>
 
               <div class="form-group">
@@ -1583,7 +1563,7 @@ oncontextmenu="return false">
                   
                 </ul>
               </li>
-              <li class="footer"><a href="status_not_approved" id="v_all"> View all (<strong id="viewAllStatNotAppr"></strong>) Status Not Approved </a></li>
+              <li class="footer"><a href="<?= $basegu; ?>status_not_approved" id="v_all"> View all (<strong id="viewAllStatNotAppr"></strong>) Status Not Approved </a></li>
             </ul>
           </li>
 
@@ -1601,7 +1581,7 @@ oncontextmenu="return false">
                   
                 </ul>
               </li>
-              <li class="footer"><a href="status_waiting_approval" id="view_all">View all (<strong id="viewAllStatWait"></strong>) Status Waiting </a></li>
+              <li class="footer"><a href="<?= $basegu; ?>status_waiting_approval" id="view_all">View all (<strong id="viewAllStatWait"></strong>) Status Waiting </a></li>
             </ul>
           </li>
 
@@ -1660,7 +1640,7 @@ oncontextmenu="return false">
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar cobasidebar">
+    <section class="sidebar customsidebar">
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
@@ -1812,21 +1792,6 @@ oncontextmenu="return false">
     $act=($_GET['on']);
     if($act=='kelas'){
       require 'view/a-kelas.php';
-    }
-
-    #region checkpembayaraninputdata
-    else if ($act == 'checkpembayarandaninputdata') {
-      require 'view/spp/check_pembayaran/check_pembayaran_dan_inputdata.php';
-    }
-
-    #region edit data
-    elseif ($act == 'editdata') {
-      require 'view/spp/edit_data/editdata.php';
-    }
-
-    #region import data
-    elseif($act == 'upload') {
-      require 'view/spp/upload/uploadfile.php';
     }
 
     #region dashboard
@@ -2114,7 +2079,7 @@ oncontextmenu="return false">
               $("#siswa_daily").val(dataSiswa);
               $("#tanggal_upload").val(dataTglUpload);
               image.setAttribute("src", `../image_uploads/${dataImage}`);
-              $("#title_daily").val(dataJudul);
+              $("#title_daily").html(dataJudul);
               $("#main_daily").html(dataIsi);
 
             });
@@ -2214,7 +2179,7 @@ oncontextmenu="return false">
 
               imageAppr.setAttribute("src", `../image_uploads/${dataImageAprr}`);
 
-              $("#title_daily_appr").val(dataTitleAppr);
+              $("#title_daily_appr").html(dataTitleAppr);
               $("#main_daily_appr").html(dataIsiAppr);
               $("#df_nis_lookdaily").val(dataNisSiswa);
               $("#df_siswa_lookdaily").val(dataSiswa);
@@ -2260,7 +2225,7 @@ oncontextmenu="return false">
 
               imageNotAppr.setAttribute("src", `../image_uploads/${dataImageNotAprr}`);
 
-              $("#title_daily_notappr").val(dataTitleAppr);
+              $("#title_daily_notappr").html(dataTitleAppr);
               $("#main_daily_notappr").html(dataIsiAppr);
 
               if(dataReason == 'no_comment') {

@@ -158,11 +158,21 @@
 		        		<?php foreach ($dataActivityGroupFromTeacher as $data): ?>
 					      	
 					      	<tr style="background-color: limegreen; color: white; font-weight: bold;">
-						        <td style="text-align: center;">  <?= $no++; ?> </td>
-						        <td style="text-align: center;">  <?= $data['nama_guru'] ?> </td>
-						        <td style="text-align: center;">  <?= strtoupper($data['nama_group_kelas']) ?> </td>
-						        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
-						        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
+						        <td style="text-align: center;"> <?= $no++; ?> </td>
+						        <td style="text-align: center;"> <?= $data['nama_guru'] ?> </td>
+						        <td style="text-align: center;"> <?= strtoupper($data['nama_group_kelas']) ?> </td>
+
+						        <?php if (strlen($data['judul_daily']) > 50): ?>
+
+						        	<td style="text-align: center;"> <?= substr($data['judul_daily'], 0, 50); ?> <strong> ... </strong> </td>
+
+						        <?php else: ?>
+
+						        	<td style="text-align: center;"> <?= $data['judul_daily'] ?> </td>
+						        	
+						        <?php endif ?>
+
+						        <td style="text-align: center;"> <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 						        <td style="text-align: center;">
 							        <form action="<?= $basekepsek; ?>lookactivity/<?= $data['room_key']; ?>" method="post">
 							        	<input type="hidden" name="frompage_lookdaily" value="<?= $diMenu; ?>">
@@ -170,7 +180,7 @@
 							        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>">
 							        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
 							        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
-							        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+							        	<input type="hidden" name="foto_upload_lookdaily" value="<?= $data['foto_upload']; ?>">
 							        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
 							        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
 							        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
@@ -217,7 +227,17 @@
 					        <td style="text-align: center;">  <?= $no++; ?> </td>
 					        <td style="text-align: center;">  <?= $data['nama_guru'] ?> </td>
 					        <td style="text-align: center;">  <?= strtoupper($data['nama_group_kelas']) ?> </td>
-					        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
+
+					        <?php if (strlen($data['judul_daily']) > 50): ?>
+
+					        	<td style="text-align: center;"> <?= substr($data['judul_daily'], 0, 50); ?> <strong> ... </strong> </td>
+
+					        <?php else: ?>
+
+					        	<td style="text-align: center;"> <?= $data['judul_daily'] ?> </td>
+					        	
+					        <?php endif ?>
+
 					        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 					        <td style="text-align: center;">
 						        <form action="<?= $basekepsek; ?>lookactivity/<?= $data['room_key']; ?>" method="post">
@@ -226,7 +246,7 @@
 						        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>">
 						        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
 						        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
-						        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+						        	<input type="hidden" name="foto_upload_lookdaily" value="<?= $data['foto_upload']; ?>">
 						        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
 						        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
 						        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">

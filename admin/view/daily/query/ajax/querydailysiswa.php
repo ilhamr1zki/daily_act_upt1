@@ -157,12 +157,6 @@
       font-weight: bold;
     }
 
-    #spp1 {
-      width: 20%;
-      margin-right: 10px;
-      text-align: end;
-    }
-
     #tombol-cetak {
       display: flex; 
       gap: 5px; 
@@ -230,32 +224,6 @@
     #div_slash {
       margin-left: -38px;
       top: -5px;
-    }
-
-    .uang_spp, 
-    .uang_pangkal, 
-    .uang_regis,
-    .uang_seragam,
-    .uang_buku,
-    .uang_kegiatan,
-    .lain2 {
-      width: 20%;
-      margin-right: 10px; 
-      text-align: end;
-    }
-
-    .ket_uang_spp, 
-    .ket_uang_pangkal, 
-    .ket_uang_regis,
-    .ket_uang_seragam,
-    .ket_uang_buku,
-    .ket_uang_kegiatan,
-    .ket_lain2 {
-      width: 25%;
-    }
-
-    #spp2 {
-      width: 25%;
     }
 
     .judul {
@@ -360,18 +328,6 @@
 
     @media only screen and (max-width: 768px) {
 
-      .uang_spp, 
-      .uang_pangkal, 
-      .uang_regis,
-      .uang_seragam,
-      .uang_buku,
-      .uang_kegiatan,
-      .lain2 {
-        width: 40%;
-        margin-right: 10px; 
-        text-align: end;
-      }
-
       #dotTo {
         margin-left: 23px;
       }
@@ -428,16 +384,6 @@
         flex-direction: column;
         margin-right: 50px;
       }
-
-      .ket_uang_spp, 
-      .ket_uang_pangkal, 
-      .ket_uang_regis,
-      .ket_uang_seragam,
-      .ket_uang_buku,
-      .ket_uang_kegiatan,
-      .ket_lain2 {
-        width: 53%;
-      }
       
       #tombol {
         width: 100%;
@@ -465,16 +411,6 @@
 
       #jun22 {
         margin-left: 180px;
-      }      
-
-      #spp1 {
-        width: 30%;
-        margin-right: 10px;
-        text-align: end;
-      }
-
-      #spp2 {
-        width: 63%;
       }
 
       .flex-container {

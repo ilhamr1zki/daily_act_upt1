@@ -152,7 +152,17 @@
 			      	<tr style="background-color: limegreen; color: white; font-weight: bold;">
 				        <td style="text-align: center;">  <?= $no++; ?> </td>
 				        <td style="text-align: center;">  <?= strtoupper($data['nama_group_kelas']) ?> </td>
-				        <td style="text-align: center;">  <?= $data['judul_daily'] ?> </td>
+
+				        <?php if (strlen($data['judul_daily']) > 50): ?>
+
+				        	<td style="text-align: center;"> <?= substr($data['judul_daily'], 0, 50); ?> <strong> ... </strong> </td>
+
+				        <?php else: ?>
+
+				        	<td style="text-align: center;"> <?= $data['judul_daily'] ?> </td>
+				        	
+				        <?php endif ?>
+
 				        <td style="text-align: center;">  <?= formatDateEnglish($data['daily_tanggal_disetujui_atau_tidak']); ?> </td>
 				        <td style="text-align: center;">
 					        <form action="lookactivity/<?= $data['room_key']; ?>" method="post">
@@ -162,7 +172,7 @@
 					        	<input type="hidden" name="nis_or_idgroup_lookdaily" value="<?= $data['id_group_kelas']; ?>"> 
 					        	<input type="hidden" name="nama_siswa_or_groupkelas_lookdaily" value="<?= strtoupper($data['nama_group_kelas']); ?>">
 					        	<input type="hidden" name="guru_lookdaily" value="<?= strtoupper($data['nama_guru']); ?>">
-					        	<input type="hidden" name="foto_upload_lookdaily" value="<?= strtoupper($data['foto_upload']); ?>">
+					        	<input type="hidden" name="foto_upload_lookdaily" value="<?= $data['foto_upload']; ?>">
 					        	<input type="hidden" name="tgl_posting_lookdaily" value="<?= format_tgl_indo($data['daily_tanggal_disetujui_atau_tidak']); ?>">
 					        	<input type="hidden" name="nipguru_lookdaily" value="<?= $data['nip_guru']; ?>">
 					        	<input type="hidden" name="tglori_posting_lookdaily" value="<?= $data['daily_tanggal_disetujui_atau_tidak']; ?>">
@@ -191,7 +201,7 @@
 	</div>
 
 <!-- <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script> -->
-<script src="view/daily/query/dataTables1.js"></script>
+<script src="<?= $basegu; ?>view/daily/query/dataTables1.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script> -->
 <script src="view/daily/query/moment.min.js"></script>
 <!-- <script src="https://cdn.datatables.net/datetime/1.5.2/js/dataTables.dateTime.min.js"></script> -->
@@ -200,6 +210,7 @@
 <script type="text/javascript">
 	
 	let minDate, maxDate;
+	var table = new DataTable('#example');
  
 		 // Custom filtering function which will search data in column four between two values
 		DataTable.ext.search.push(function (settings, data, dataIndex) {
@@ -227,7 +238,6 @@
 		  });
 		   
 		  // DataTables initialisation
-		  let table = new DataTable('#example');
 		   
 		  // Refilter the table
 		  document.querySelectorAll('#min, #max').forEach((el) => {
